@@ -44,7 +44,7 @@
           </svg>
         </div>
         <div class="mb-5">
-          <h1 id="mainTitle">
+          <h1 id="mainTitle" class="title">
             <svg
               width="22"
               height="24"
@@ -63,9 +63,39 @@
             </svg>
             Gerenciador de Tarefas
           </h1>
-          <button id="addTask" class="button" type="button">+ Adicionar nova tarefa</button>
+          <button id="addTask" class="button" type="button" onclick="openModal(addTaskModal)">+ Adicionar nova tarefa</button>
         </div>
       </header>
+      <section id="addTaskModal" class="modalContainer" style="display: none;">
+        <main>
+          <form id="addTaskForm" class="form" method="post" novalidate>
+            <h1 id="addTaskTitle" class="title">
+              Adicionar nova tarefa
+            </h1>
+            <section>
+              <label for="numberInput">Número</label>
+              <input id="numberInput" class="bigInput" name="numberInput" type="number">
+              <label for="descriptionInput">Descrição</label>
+              <input id="descriptionInput" class="bigInput" name="descriptionInput" type="text">
+              <label for="dateInput">Data</label>
+              <input id="dateInput" class="smallInput" name="dateInput" type="date">
+              <label for="statusInput">Status</label>
+              <select id="statusInput"class="smallInput"  name="statusInput">
+                <option value="none" disabled selected></option>
+                <option value="concluded">Concluído</option>
+                <option value="inProgress">Em andamento</option>
+                <option value="concluded">Paralisado</option>
+              </select>
+            </section>
+            <section class="modalButtons">
+              <div id="cancelAddTask" class="cancelModal" onclick="closeModal(addTaskModal)">
+                cancelar
+              </div>
+              <button type="submit" class="button" onclick="closeModal(addTaskModal)">SALVAR</button>
+            </section>
+          </form>
+        </main>
+      </section>
       <main class="table-responsive">
         <table class="table table-borderless table-hover">
           <thead>
@@ -135,7 +165,7 @@
           integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
           crossorigin="anonymous"
         ></script>
-        <script src="assets/script/script.js"></script>
+        <script src="assets/script.js"></script>
       </footer>
     </div>
   </body>
