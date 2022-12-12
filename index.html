@@ -13,7 +13,7 @@
     />
     <link rel="stylesheet" href="assets/style.css" />
   </head>
-  <body>
+  <body onload="loadTasks()">
     <div id="leftBar">&nbsp;</div>
     <div id="content">
       <header id="header">
@@ -63,13 +63,13 @@
             </svg>
             Gerenciador de Tarefas
           </h1>
-          <button id="addTask" class="button" type="button" onclick="openModal(addTaskModal)">+ Adicionar nova tarefa</button>
+          <button id="addTask" class="button" type="button" onclick="openModal(taskModal)">+ Adicionar nova tarefa</button>
         </div>
       </header>
-      <section id="addTaskModal" class="modalContainer" style="display: none;">
+      <section id="taskModal" class="modalContainer" style="display: none;">
         <main>
-          <form id="addTaskForm" class="form" method="post" novalidate>
-            <h1 id="addTaskTitle" class="title">
+          <form id="taskForm" class="form" method="post" novalidate>
+            <h1 id="taskTitle" class="title">
               Adicionar nova tarefa
             </h1>
             <section>
@@ -88,10 +88,10 @@
               </select>
             </section>
             <section class="modalButtons">
-              <div id="cancelAddTask" class="cancelModal" onclick="closeModal(addTaskModal)">
+              <div id="cancelModal" class="cancelModal" onclick="closeModal(taskModal)">
                 cancelar
               </div>
-              <button type="submit" class="button" onclick="closeModal(addTaskModal)">SALVAR</button>
+              <button type="submit" class="button" onclick="closeModal(taskModal)">SALVAR</button>
             </section>
           </form>
         </main>
@@ -107,12 +107,12 @@
               <th scope="col">Ação</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="taskTable">
             <tr>
-              <td id="taskNumber" class="taskCell" scope="row">1</th>
-              <td id="taskDescription" class="taskCell">teste2</td>
-              <td id="taskDate" class="taskCell">teste3</td>
-              <td id="taskStatus" class="taskCell">teste4</td>
+              <td id="taskNumber" class="taskCell" scope="row"></th>
+              <td id="taskDescription" class="taskCell"></td>
+              <td id="taskDate" class="taskCell"></td>
+              <td id="taskStatus" class="taskCell"></td>
               <td id="taskFunctions" class="taskCell d-flex gap-3">
                 <i id="editButton"
                   ><svg
