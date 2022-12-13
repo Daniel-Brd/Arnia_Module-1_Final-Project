@@ -1,3 +1,53 @@
 {
-  "tasks": []
+  "tasks": [
+    {
+      "Number": "1",
+      "Description": "Fazer a tela estática",
+      "Date": "2022-12-31",
+      "Status": "Concluído",
+      "id": 1
+    },
+    {
+      "Number": "2",
+      "Description": "Definir banco de dados",
+      "Date": "2022-12-20",
+      "Status": "Em andamento",
+      "id": 2
+    },
+    {
+      "Number": "3",
+      "Description": "Criar banco de dados",
+      "Date": "2022-12-25",
+      "Status": "Em andamento",
+      "id": 3
+    },
+    {
+      "Number": "4",
+      "Description": "Definir APIs Reset",
+      "Date": "2022-12-01",
+      "Status": "Em andamento",
+      "id": 4
+    },
+    {
+      "Number": "5",
+      "Description": "Criar APIs Reset",
+      "Date": "2022-12-01",
+      "Status": "Em andamento",
+      "id": 5
+    },
+    {
+      "Number": "6",
+      "Description": "Desenvolver a parte dinâmica do FrontEnd",
+      "Date": "2022-12-20",
+      "Status": "Concluído",
+      "id": 6
+    },
+    {
+      "Number": "7",
+      "Description": "Integrar Front com Backend",
+      "Date": "2022-12-31",
+      "Status": "Concluído",
+      "id": 7
+    }
+  ]
 }

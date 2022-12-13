@@ -139,13 +139,18 @@ form input, form select{
   align-items: center;
 }
 
-option:hover {
-  background-color: var(--main-purple);
-  color: var(--light-background);
+.modalButtons .cancelModal, #taskFunctions{
+  cursor: pointer;
 }
 
-.modalButtons .cancelModal{
-  cursor: pointer;
+tr .Concluído{
+  color: #27AE60;
+}
+tr .Em-andamento{
+  color: #F8B04E;
+}
+tr .Paralisado{
+  color: #EB5757;
 }
 
 @media (max-width: 768px){

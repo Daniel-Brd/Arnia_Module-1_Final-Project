@@ -63,35 +63,33 @@
             </svg>
             Gerenciador de Tarefas
           </h1>
-          <button id="addTask" class="button" type="button" onclick="openModal(taskModal)">+ Adicionar nova tarefa</button>
+          <button id="addTask" class="button" type="button" onclick="openModal(taskModal)">
+            + Adicionar nova tarefa
+          </button>
         </div>
       </header>
-      <section id="taskModal" class="modalContainer" style="display: none;">
+      <section id="taskModal" class="modalContainer" style="display: none">
         <main>
-          <form id="taskForm" class="form" method="post" novalidate>
-            <h1 id="taskTitle" class="title">
-              Adicionar nova tarefa
-            </h1>
+          <form id="taskForm" class="form" method="post">
+            <h1 id="taskTitle" class="title">Adicionar nova tarefa</h1>
             <section>
               <label for="numberInput">Número</label>
-              <input id="numberInput" class="bigInput" name="numberInput" type="number">
+              <input id="numberInput" class="bigInput" name="numberInput" type="number" min="0" />
               <label for="descriptionInput">Descrição</label>
-              <input id="descriptionInput" class="bigInput" name="descriptionInput" type="text">
+              <input id="descriptionInput" class="bigInput" name="descriptionInput" type="text" />
               <label for="dateInput">Data</label>
-              <input id="dateInput" class="smallInput" name="dateInput" type="date">
+              <input id="dateInput" class="smallInput" name="dateInput" type="date" />
               <label for="statusInput">Status</label>
-              <select id="statusInput"class="smallInput"  name="statusInput">
+              <select id="statusInput" class="smallInput" name="statusInput">
                 <option value="none" disabled selected></option>
-                <option value="concluded">Concluído</option>
-                <option value="inProgress">Em andamento</option>
-                <option value="concluded">Paralisado</option>
+                <option value="Concluído">Concluído</option>
+                <option value="Em andamento">Em andamento</option>
+                <option value="Paralisado">Paralisado</option>
               </select>
             </section>
             <section class="modalButtons">
-              <div id="cancelModal" class="cancelModal" onclick="closeModal(taskModal)">
-                cancelar
-              </div>
-              <button type="submit" class="button" onclick="closeModal(taskModal)">SALVAR</button>
+              <div id="cancelModal" class="cancelModal">cancelar</div>
+              <button type="submit" class="button">SALVAR</button>
             </section>
           </form>
         </main>
@@ -108,7 +106,7 @@
             </tr>
           </thead>
           <tbody id="taskTable">
-            <tr>
+            <!-- <tr>
               <td id="taskNumber" class="taskCell" scope="row"></th>
               <td id="taskDescription" class="taskCell"></td>
               <td id="taskDate" class="taskCell"></td>
@@ -143,7 +141,7 @@
                   </svg>
                 </i>
               </td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
       </main>
