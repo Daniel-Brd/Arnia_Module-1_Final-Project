@@ -1,18 +1,27 @@
 const tasks = []
 let currentTask = null
 const taskModal = document.getElementById('taskModal')
-const cancelModal = document.getElementById('cancelModal')
+const confirmActionModal = document.getElementById('confirmActionModal')
 const addTaskButton = document.getElementById('addTask')
+const deleteButton = document.getElementById('confirmDelete')
 const taskForm = document.getElementById('taskForm')
 
 // funções de modal
 
-function openModal() {
+function openTaskModal() {
   taskModal.style.display = "block"
 }
 
-function closeModal() {
+function closeTaskModal() {
   taskModal.style.display = "none"
+}
+
+function openConfirmActionModal() {
+  confirmActionModal.style.display = "block"
+}
+
+function closeConfirmActionModal() {
+  confirmActionModal.style.display = "none"
 }
 
 function clearForm() {
@@ -24,10 +33,11 @@ function clearForm() {
   document.getElementById('statusInput').value = ''
 }
 
-cancelModal.addEventListener('click', () => {
+function cancelModal() {
   clearForm()
-  closeModal()
-})
+  closeTaskModal()
+  closeConfirmActionModal()
+}
 
 editTaskModal = async (Number) => {
   currentTask = await getTask(Number)
@@ -37,7 +47,7 @@ editTaskModal = async (Number) => {
   document.getElementById('descriptionInput').value = currentTask.Description
   document.getElementById('dateInput').value = currentTask.Date
   document.getElementById('statusInput').value = currentTask.Status
-  openModal()
+  openTaskModal()
 }
 
 taskForm.addEventListener('submit', (event) => {
@@ -64,7 +74,7 @@ submitTask = async (task) => {
     await editTask(currentTask.Number, task)
   }
   clearForm()
-  closeModal
+  closeTaskModal
   location.reload()
 }
 
@@ -97,10 +107,22 @@ editTask = async (Number, task) => {
 }
 
 deleteTask = async (Number) => {
-  await fetch(`http://localhost:3000/tasks/${Number}`, {
-    method: "DELETE"
-  })
-  location.reload()
+  openConfirmActionModal()
+  confirmActionModal.innerHTML =
+    `<main class="modalContent">
+      <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
+      <section class="modalButtons">
+        <div id="cancelModal" class="cancelModal" onclick="cancelModal()">cancelar</div>
+        <button id="confirmDelete" type="button" class="button" onclick="confirmDelete(${Number})">Sim</button>
+      </section>
+    </main>`
+
+  confirmDelete = async (Number) => {
+    await fetch(`http://localhost:3000/tasks/${Number}`, {
+      method: "DELETE"
+    })
+    location.reload()
+  }
 }
 
 // exibição das tarefas
@@ -108,6 +130,11 @@ deleteTask = async (Number) => {
 loadTasks = async () => {
   const data = await fetch(`http://localhost:3000/tasks`)
   const tasks = await data.json()
+
+  tasks.sort(function (a, b) {
+    return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0;
+  });
+
   printTasks(tasks)
   document.getElementById("numberInput").max = tasks.length + 1
 }
@@ -139,3 +166,36 @@ printTasks = async (tasks) => {
   });
 }
 
+// let taskNumbers = {}
+// function findRepeated() {
+//     tasks.forEach((task) => {
+//         taskNumbers[task.Number] = (taskNumbers[task.Number] || 0) + 1
+//     })
+//     const repeatedValue = Object.keys(taskNumbers).find((number) => {
+//         return taskNumbers[number] > 1;
+//     })
+//     return repeatedValue;
+// }
+// console.log(parseInt(findRepeated()));
+
+// function taskOrganizer() {
+//     // função que converte Number de string para num
+//     tasks.forEach(task => {
+//         task.Number = parseInt(task.Number)
+//     })
+//     // função que remove e armazena a ultima posição do vetor, no caso, a nova tarefa
+//     lastTask = tasks.pop()
+//     // função que altera a numeração de todas as tarefa com numero maior que o da nova tarefa
+//     tasks.forEach(task => {
+//         if (task.Number >= lastTask.Number) {
+//             task.Number = task.Number + 1
+//         } else {
+//             task.Number = task.Number
+//         }
+//     })
+//     // função que concatena a nova tarefa ao array com numeração alterada
+//     tasks.push(lastTask)
+//     // função que ordena numeralmente as tarefas
+// };
+// taskOrganizer()
+// console.log(tasks);

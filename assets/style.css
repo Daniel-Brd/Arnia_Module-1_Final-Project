@@ -94,7 +94,7 @@
   background-color: var(--transparent-black)
 }
 
-.modalContainer .form{
+.modalContainer .modalContent{
   position: absolute;
   transform: translateY(50%)translateX(50%);
   width: 60%;
@@ -143,14 +143,17 @@ form input, form select{
   cursor: pointer;
 }
 
-tr .Concluído{
+tr .Concluída{
   color: #27AE60;
+  font-weight: 400;
 }
 tr .Em-andamento{
   color: #F8B04E;
+  font-weight: 400;
 }
 tr .Paralisado{
   color: #EB5757;
+  font-weight: 400;
 }
 
 @media (max-width: 768px){

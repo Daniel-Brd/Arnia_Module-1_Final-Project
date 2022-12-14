@@ -63,14 +63,14 @@
             </svg>
             Gerenciador de Tarefas
           </h1>
-          <button id="addTask" class="button" type="button" onclick="openModal(taskModal)">
+          <button id="addTask" class="button" type="button" onclick="openTaskModal()">
             + Adicionar nova tarefa
           </button>
         </div>
       </header>
       <section id="taskModal" class="modalContainer" style="display: none">
         <main>
-          <form id="taskForm" class="form" method="post">
+          <form id="taskForm" class="form modalContent" method="post">
             <h1 id="taskTitle" class="title">Adicionar nova tarefa</h1>
             <section>
               <label for="numberInput">Número</label>
@@ -82,16 +82,19 @@
               <label for="statusInput">Status</label>
               <select id="statusInput" class="smallInput" name="statusInput">
                 <option value="none" disabled selected></option>
-                <option value="Concluído">Concluído</option>
+                <option value="Concluída">Concluída</option>
                 <option value="Em andamento">Em andamento</option>
                 <option value="Paralisado">Paralisado</option>
               </select>
             </section>
             <section class="modalButtons">
-              <div id="cancelModal" class="cancelModal">cancelar</div>
+              <div id="cancelModal" class="cancelModal" onclick="cancelModal()">cancelar</div>
               <button type="submit" class="button">SALVAR</button>
             </section>
           </form>
+        </main>
+      </section>
+      <section id="confirmActionModal" class="modalContainer" style="display: none">
         </main>
       </section>
       <main class="table-responsive">
