@@ -127,16 +127,17 @@ const confirmDelete = async (taskId) => {
 
 // tasks functions
 
-const pageOnLoad = async () => {
-  const tasks = await getTasksArray()
-  printTasks(tasks)
-  document.getElementById("numberInput").max = tasks.length + 1
-}
 
 const getTasksArray = async () => {
   const data = await fetch(`http://localhost:3000/tasks`)
   const tasks = await data.json()
   return tasks
+}
+
+const pageOnLoad = async () => {
+  const tasks = await getTasksArray()
+  printTasks(tasks)
+  document.getElementById("numberInput").max = tasks.length + 1
 }
 
 function tableTempalte(table, tasks) {
@@ -146,7 +147,7 @@ function tableTempalte(table, tasks) {
       `<tr>
       <td id="taskNumber" class="taskCell" scope="row">${task.Number}</th>
       <td id="taskDescription" class="taskCell">${task.Description}</td>
-      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR")}</td>
+      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR", { timeZone: "Europe/London" })}</td>
       <td id="taskStatus" class="taskCell ${task.Status.replace(' ', '-')}">${task.Status}</td>
       <td id="taskFunctions" class="taskCell d-flex gap-3">
         <i id="editButton" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -170,21 +171,44 @@ const printTasks = async (tasks) => {
   tableTempalte(taskTable, tasks)
 }
 
-// filters function
+// taskFilters function
 
-const statusFilter = async (status) => {
-  const data = await fetch(`http://localhost:3000/tasks?Status=${status}`)
-  const tasks = await data.json()
-  taskTable.innerHTML = ""
-  console.log(tasks)
-  printTasks(tasks)
+const filterTask = async (key, value) => {
+  if (key === 'Status') {
+    const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
+    const tasks = await data.json()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  } else if (key === 'Date') {
+    let date = value.toISOString().slice(0, 10).replaceAll('/', '-')
+    const data = await fetch(`http://localhost:3000/tasks?${key}=${date}`)
+    const tasks = await data.json()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  }
+  else if (key === 'q') {
+    const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
+    const tasks = await data.json()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  }
+  else if (key === '') {
+    const tasks = await getTasksArray()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  }
 }
 
+// const searchTask = async () => {
+//   const data = await fetch(`http://localhost:3000/tasks?q=${}`)
+//   const tasks = await data.json()
+//   taskTable.innerHTML = ""
 
+// }
 
-// tasks.sort(function (a, b) {
-//   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0;
-// });
+  // tasks.sort(function (a, b) {
+  //   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0;
+  // });
 
 // const indexByNumber = async (number) => {
 //   const tasks = await getTasksArray()
