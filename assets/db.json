@@ -11,7 +11,7 @@
       "Number": "2",
       "Description": "Definir banco de dados",
       "Date": "2022-12-20",
-      "Status": "Concluída",
+      "Status": "Paralisada",
       "id": 2
     },
     {
@@ -32,7 +32,7 @@
       "Number": "5",
       "Description": "Criar APIs Reset",
       "Date": "2022-12-01",
-      "Status": "Concluída",
+      "Status": "Paralisada",
       "id": 5
     },
     {
@@ -53,8 +53,15 @@
       "Number": "8",
       "Description": "Adicionar ordenação",
       "Date": "2022-12-15",
-      "Status": "Paralisado",
+      "Status": "Em andamento",
       "id": 8
+    },
+    {
+      "Number": "9",
+      "Description": "Adicionar filtros",
+      "Date": "2022-12-15",
+      "Status": "Em andamento",
+      "id": 9
     }
   ]
 }

@@ -69,6 +69,21 @@
   color: var(--light-background);
 }
 
+#taskFilters{
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5vw;
+  flex-wrap: wrap-reverse;
+  width: 65.97vw;
+}
+
+#taskFilters #taskFiltersButtons{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5vw;
+}
+
 .table{
   background-color: var(--light-background);
   width: 65.97vw;
@@ -151,7 +166,7 @@ tr .Em-andamento{
   color: #F8B04E;
   font-weight: 400;
 }
-tr .Paralisado{
+tr .Paralisada{
   color: #EB5757;
   font-weight: 400;
 }

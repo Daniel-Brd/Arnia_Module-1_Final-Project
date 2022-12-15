@@ -13,7 +13,7 @@
     />
     <link rel="stylesheet" href="assets/style.css" />
   </head>
-  <body onload="loadTasks()">
+  <body onload="pageOnLoad()">
     <div id="leftBar">&nbsp;</div>
     <div id="content">
       <header id="header">
@@ -63,9 +63,21 @@
             </svg>
             Gerenciador de Tarefas
           </h1>
-          <button id="addTask" class="button" type="button" onclick="openTaskModal()">
+          <button id="addTask" class="button mb-5" type="button" onclick="openTaskModal()">
             + Adicionar nova tarefa
           </button>
+          <section id="taskFilters">
+            <div id="taskFiltersButtons">
+              <button id="" class="button" type="button">Hoje</button>
+              <button id="" class="button" type="button" onclick="statusFilter('Em andamento')">Em andamento</button>
+              <button id="" class="button" type="button" onclick="statusFilter('Concluída')">Concluída</button>
+              <button id="" class="button" type="button" onclick="statusFilter('Paralisada')">Paralisada</button>
+              <button id="" class="button" type="button" >Atrasados</button>
+            </div>
+            <div class="button">
+              <input id="searchBar" class="" name="seachBar" type="text" placeholder="pesquisar">
+            </div>
+          </section>
         </div>
       </header>
       <section id="taskModal" class="modalContainer" style="display: none">
@@ -84,7 +96,7 @@
                 <option value="none" disabled selected></option>
                 <option value="Concluída">Concluída</option>
                 <option value="Em andamento">Em andamento</option>
-                <option value="Paralisado">Paralisado</option>
+                <option value="Paralisada">Paralisada</option>
               </select>
             </section>
             <section class="modalButtons">
@@ -101,10 +113,10 @@
         <table class="table table-borderless table-hover">
           <thead>
             <tr>
-              <th scope="col">Núm</th>
-              <th scope="col">Descrição</th>
-              <th scope="col">Data de entrega</th>
-              <th scope="col">Status</th>
+              <th scope="col">Núm &#8691;</th>
+              <th scope="col">Descrição &#8691;</th>
+              <th scope="col">Data de entrega &#8691;</th>
+              <th scope="col">Status &#8691;</th>
               <th scope="col">Ação</th>
             </tr>
           </thead>
