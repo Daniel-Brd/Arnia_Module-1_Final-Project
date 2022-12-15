@@ -127,16 +127,17 @@ const confirmDelete = async (taskId) => {
 
 // tasks functions
 
-const pageOnLoad = async () => {
-  const tasks = await getTasksArray()
-  printTasks(tasks)
-  document.getElementById("numberInput").max = tasks.length + 1
-}
 
 const getTasksArray = async () => {
   const data = await fetch(`http://localhost:3000/tasks`)
   const tasks = await data.json()
   return tasks
+}
+
+const pageOnLoad = async () => {
+  const tasks = await getTasksArray()
+  printTasks(tasks)
+  document.getElementById("numberInput").max = tasks.length + 1
 }
 
 function tableTempalte(table, tasks) {
@@ -172,31 +173,42 @@ const printTasks = async (tasks) => {
 
 // taskFilters function
 
-const taskFilter = async (key, value) => {
-  if (typeof value === 'string') {
+const filterTask = async (key, value) => {
+  if (key === 'Status') {
     const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
     const tasks = await data.json()
     taskTable.innerHTML = ""
     printTasks(tasks)
-  } else if (typeof value === 'object') {
+  } else if (key === 'Date') {
     let date = value.toISOString().slice(0, 10).replaceAll('/', '-')
     const data = await fetch(`http://localhost:3000/tasks?${key}=${date}`)
     const tasks = await data.json()
     taskTable.innerHTML = ""
     printTasks(tasks)
   }
+  else if (key === 'q') {
+    const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
+    const tasks = await data.json()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  }
+  else if (key === '') {
+    const tasks = await getTasksArray()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  }
 }
 
-function teste() {
-  let hoje = new Date()
-  hoje = hoje.toLocaleDateString()
-  console.log(hoje);
-}
-teste()
+// const searchTask = async () => {
+//   const data = await fetch(`http://localhost:3000/tasks?q=${}`)
+//   const tasks = await data.json()
+//   taskTable.innerHTML = ""
 
-// tasks.sort(function (a, b) {
-//   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0;
-// });
+// }
+
+  // tasks.sort(function (a, b) {
+  //   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0;
+  // });
 
 // const indexByNumber = async (number) => {
 //   const tasks = await getTasksArray()

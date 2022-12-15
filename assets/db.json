@@ -69,6 +69,20 @@
       "Date": "2022-12-31",
       "Status": "Em andamento",
       "id": 10
+    },
+    {
+      "Number": "11",
+      "Description": "Função que organiza números repetidos",
+      "Date": "2023-01-15",
+      "Status": "Em andamento",
+      "id": 11
+    },
+    {
+      "Number": "12",
+      "Description": "Imlementar função \"Pesquisar\"",
+      "Date": "2022-12-15",
+      "Status": "Concluída",
+      "id": 12
     }
   ]
 }

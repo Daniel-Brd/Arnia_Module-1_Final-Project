@@ -45,15 +45,15 @@
         </button>
         <section id="taskFilters">
           <div id="taskFiltersButtons">
-            <button id="" class="button" type="button" onclick="taskFilter('Date', new Date())">Hoje</button>
-            <button id="" class="button" type="button" onclick="taskFilter('Status','Em andamento')">Em
+            <button id="" class="button" type="button" onclick="filterTask('Date', new Date())">Hoje</button>
+            <button id="" class="button" type="button" onclick="filterTask('Status','Concluída')">Concluída</button>
+            <button id="" class="button" type="button" onclick="filterTask('Status','Em andamento')">Em
               andamento</button>
-            <button id="" class="button" type="button" onclick="taskFilter('Status','Concluída')">Concluída</button>
-            <button id="" class="button" type="button" onclick="taskFilter('Status','Paralisada')">Paralisada</button>
-            <button id="" class="button" type="button" onclick="taskFilter('Status','2022-12-15')">Atrasados</button>
+            <button id="" class="button" type="button" onclick="filterTask('Status','Paralisada')">Paralisada</button>
+            <button id="" class="button" type="button" onclick="filterTask('','')">Limpar filtros</button>
           </div>
           <div class="button">
-            <input id="searchBar" class="" name="seachBar" type="text" placeholder="pesquisar">
+            <input id="searchBar" class="" name="seachBar" type="text" placeholder="pesquisar" oninput="filterTask('q', this.value)">
           </div>
         </section>
       </div>
