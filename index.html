@@ -1,127 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gerenciador de Tarefas</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="assets/style.css" />
-  </head>
-  <body onload="pageOnLoad()">
-    <div id="leftBar">&nbsp;</div>
-    <div id="content">
-      <header id="header">
-        <div class="mb-5">
-          <svg
-            width="216"
-            height="64"
-            viewBox="0 0 216 64"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-          >
-            <rect width="216" height="64" fill="url(#pattern0)" />
-            <defs>
-              <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
-                <use
-                  xlink:href="#image0_5_182"
-                  transform="translate(0 -0.00292488) scale(0.00246305 0.00831281)"
-                />
-              </pattern>
-              <image
-                id="image0_5_182"
-                width="406"
-                height="121"
-                xlink:href="data:image/png;base64,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"
-              />
-            </defs>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerenciador de Tarefas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+
+<body onload="pageOnLoad()">
+  <div id="leftBar">&nbsp;</div>
+  <div id="content">
+    <header id="header">
+      <div class="mb-5">
+        <svg width="216" height="64" viewBox="0 0 216 64" fill="none" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink">
+          <rect width="216" height="64" fill="url(#pattern0)" />
+          <defs>
+            <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+              <use xlink:href="#image0_5_182" transform="translate(0 -0.00292488) scale(0.00246305 0.00831281)" />
+            </pattern>
+            <image id="image0_5_182" width="406" height="121"
+              xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZYAAAB5CAYAAAAanQd1AAAACXBIWXMAACxKAAAsSgF3enRNAAAVXklEQVR4nO2dz4sb2XbHv/NDCeElr/v9Ba3ZB9z5A0LrQcjWGgSC2kyXF7Xxxj3LkIDlLENgevJjNlq42psCgbCcRVYhrobwFll1bxOI1RCSIY9kWpAs3tM8Oot75JZltVQ/zqm6JX0/0NhuqU5dl3TvuefHPeeTu7s7NJ35uN8B0AVwnPPSWwCTVm8Ua4+JEEL2lU+arljm434M4LSkmGsAnVZvdFt+RIQQst98WvcAyjAf97sor1QA4BGAWEEOIYTsPY1WLADOFWU9FpcaIYSQEjRWsczH/TaAI2WxobI8QgjZOxodY5mP+ymAE2WxX7R6o6myTEII2Rsaa7EImq6wBaGBTEII2RsarVhavdEEwI2y2FBZHiGE7BWNVixCrCzvaD7uh8oyCSFkb9gFxUJ3GCGEeETjFYscarxQFnsyH/fznuInhBCCHVAsQmwg88xAJiGE7DyNTjdeZj7uX8GdoNdiBqDNMi+EEJKPXbFYAP1YywEYayGEkNzsjGKRCsUzZbF0hxFCSE4aoVjm4/5hxjpesfKtj6TQJSGEkIw0QrHAuaTeZljkLVKPabUQQkgOmqJYzlb+XIvU+HqjfO8TKXhJCCEkA94rFrFSFlWMsyzyscEwaLUQQkhGvFcs+Dgza5vVYlI/bD7uHyrLJISQncRrxSLWyeOVX2dZ5C1SjxnEJ4SQDHxe9wC2sM46WSzy8YbrYgDfKI9lsOWehBBFoiA5hJvrIYBjuLkPAJcAJgDiYRLwALOHeGuxiFUSPvDyNneYRf2wI7YuJqQaoiDpApgCeAnXzO9g6eUTuI3jNAoSxj89xFvFArdTOXjgtUcZFnlWPSakgURBEgJ4jYfn/4IDAN9EQRJbj4nkw2fFMtjyerjpxVZvdAXgWmswwilTjwmxQyyVlzkvO42CZGAwHFIQLxWLWCNHW952WkMQH6DVQogJElMpOmefR0HSVhwOKYGXigXZF+9tsZYYrB9GSFNYPrNWBM5NT/BOsYir6TTj28MM74mLjuUBDti6mBATyqb0dzQGQcrjnWJBPldTliKRdIcR0gzaJa/X7MdESuCjYslrztZVP4ytiwnRhYphR/BKsYiLaVuK4SqsH0bIbqCdxUlqwivFguIupsGmF43qh2XJSiOEZGda8nrtOU4K4o1iEdfSScHLu0w9JqTxTGq+nijhjWJBOddSliKRcQn5D0F3GCF6TFDueIDF5pEUwAvFItZG1hTjhxhsetGwfhirHhOigBSUDAte/mKYBFO90ZAyeKFYoONSylIkkq2LCfGYYRJMALzIednFMAkGBsMhBfFFsWgtzuGmF43qh7F1MSGKiJJ4gmxusRfDJAhNB0RyU7tiWWk9XJYsRSItrJaBgUxC9pZhEsRwBya/huu/ssw1nFXzBS0VP/nk7u6u1gHMx/0UxbPB1vGi1RsNNtzvEC6tMe95mU3MALQljkMIIXtNrRaLWBeaSgXYUi9IFn/ttES2LiaEEKFuV9jAQGaa4T2xwX0HBjIJIaRx1KZYxCVlscuPt72h1Rul0D+ly9bFhBAC4PMa772p9XBR3kjRySycw/XN1uQM2SwmsoYoSDoAjgEc4t6l2cbHyR3XAG7hYmVTAOkwCVL7EdaPPKP2yg/gntm6Io43uC+VciV/v9qX57ULSAOzNu7nxuLfCx4KJyx/9oD7/JfnzZWcHVKntuD9fNyfQi8bbMGXUhcsy/0PAfygfH8A+CKHcttrpGNgV34elxQ3g4udDXbloNzS8+nALSra1X+v4Z7ZZJgEV8qySUFk87D4OYb+BnyZGZzCuYLbFF9pzJ9aFIu4jN4qi71p9UbtnOOIUf7E/yobs9J8RnZGofyzk+GSqfzEeb6MMnHOUF6ZPMQTSVctTRQkx3CL+yHcJN/GwiqIi+wGRZmE8lNlGflrOCt+YrWLzcLS8wbud+ibSOXPxipHmXeLDZZ2MlMRbuA2HKkcWM1NXYplAv1F5dtWb5TroKWRgpu1eqPGVT2WL/cViu2OZgCOtykXUSgDVDN5viw6KRZEQdIF8Lrg5TMA7ayLtDybEPobnbzMAJxXfT5EFGqMcuvCJYBunYoxK0vWaAg/lMlDLDwBkzzzqfIYi6QYW+xUcx98bPVG6Xzcv4GuS+5gPu6Hrd4oVpRZBWcobnIfwE2QwboXlRaNvByjfFp52cKoIbZ8LytWtlk4APA8CpIQQFhhLGaA8t+PE7jPvFN2MFYseQXKzLcqOYDb7JxGQXIDN4+3eijqyAoLDWRelohrsH6Yo2xHzLXXy65/imqVCuCClGUpu9g/+EyjIGlHQZLCWcy+KJVljgC8jYLEvGKwbDyeKYk7EXeaV8jnHQN4B+A5mqFUVjmCG/u7KEhiUZJrqUOxWCy6cYlrLXo4PNrD1sUfuf9kUXqNeiaRD7052ut+GQXJGZzb0UeFssqzKEhSWfyt0J4r3hxWjoLkMAqSAdznXbebU5NTbFAwlSqWgq2HtzEr43YSS+eN2mjuaaLVooJMpgn0dqF5ufExM0yeSwqX5t6kHesJAEvlspObMHFzXqG5FkoWFgpmsPz9qNpi8c1a0ZSxyr61Lj4B3rs1UlTv+lrGB2vlA8Q90xQrZR2PYKdcdmqeyAbiHM7NqX2kwleeA7gSZVqdYhHXkEX6ZGkfsJx9seiXvVdWy5JSqTJNdh1eKRZRKimav8g8gs0mbGdY+qzrstbrZBGXO6vSYrFYZMsE7VeJleQsExrI9Jlz1K9UZh6dKm9L8kKK3XGFPJYYEVlh6bOuew7UzWElikWp9fA6Yk9lLTiSuNK+4ENw0idr5Qjue7UrSmXBYFNG0D4i6dl1Jap4R1UWi8UOZ3FwRwXDIH5oIJM8TFr3AFbYxYXmAKzm/R5RKi/rHodPVKVYQm2BP/7ms783aKxlsdtl6+Jq8cli2WVOabVQqTyE+cl75dbD7/n8s9/8hbbMVm8Uz8f9c+jvMgeg5ZKFS9zXH7uFy6IC7qu5Lup1PZRZddmEch4FWRQLnOLDirULFnW1qsw6G2CPv9c1K5XluQJ8/L3oLP29jfvqyJVY0FWUdLFwg123eiOrgnMx9DM6uvNx/5Cti9dygZx1iID3gdIuPozrmJ8Sr5CFqzeFKwY4zXqhZCaFcM/HMhPNm4OIVSPPuEqlcg23NqUZi22m6365VPCyA8MjAaaKxaj1MGC7gJxDX7Fkqhu1Z7yAK3ZYSNmKIppIhtIxgNumVrdd4QbOEihcZViewxmAM9lVW1jhAHAQBUm3bLHPprGUVm/NDO6zy1U9fBMi5xzAufw/zuDWJtUNiLXFMjCQqRq0X6XVG03n4/4l9BXiGahYAGfCh4oT5Rb+BeyLcAPXSybWFDpMgliqIKSwSYPtYv/iWhPY90g5R4mNVxZE9gAuyy+GYlanWfDeqvXw//2q9Q8VuJRiA5lsXQxcDJOg42O5lZr5Fq7tQGwhXBaQDpw7RZuOgUxvEQvZMo71Bq7dwqDieOFUU5hlVlgIA61+9W8/+ydtmatI7bGZgeh9Plj2ZJgEYd2D8IwZ3HM5s15ERH5oIPrIuEClN0h8YmB4iyfDJGhEP5ltWCoW9UX0V/PP/7vzZ39TlTspNpD5eE9Tjy+sduMNZgagU+VzkdjLhYHonSwiuQarWNUMwB/s0hwxUSzi8lHPRnn3/e9ZHGB8iNhI7r5ZLde0VNbSqSnZIDaQufOKRYorWmRRLTYYu5B48h4ri8Vk8fzPH377zy3krkPSmS180qGBTJ8J6x6Ah3xd10IiddS03bz74AobGMjcSaUCGCgWq9bD/zX7yds/fvFXFhWIN2HhdjvYo/phF7s4aUpyOUyCurMDU2V5O61YxFqxCNh3d3V+WFgsJtbKv/7HT/7OQu4WJmAQvwxx3QPwkEHdA8B9RQMtdt0VNjCQ+bVHVbjVsVAsobbAX//42S8rDNq/R9KaLXL0H+1B6vHNLk+cglx78kymdQ+gKUgmmLa14oPVaoqqYjFqPYx33//0F9oyc2D1BQiN5PpCWvcAPMSXg4TTugfQICy8C6GBTK/QtlhMXDzf//Bbf2khNwuGQfxdb108rXsAHpLWPQCSm1BZ3sU+HBBWUyzi2lEvGfE///s7//xHg782PxS5hdhI7i7HWtK6B+Ah07oHQLIjhU4tKp3vPJoWS6go6z3/8u+/+48WcnMSG8kNjeQSD9mHneqO0VGWtxfWCqCkWKxaD//6x89++Yd/+rd/UkbG0+6r46fdV52n3VeF3U4SxLc4sbxvrYsJaRLatQ5jZXneolXd2MSl8+77n/7i9wtc97T7KoQb06OV39/Afbjn302+yluPJ4ZNT/cQe/SFI6QJSDaYZvWQvcqS1HKFhUpyPiBv0P5p99Xh0+6rFK4Bz7p4zxGA5wCmT7uvOnlkt3qjFK60uTZsXUyIf3SU5fmSEVgJpRWLuHIsutRd5gnai6srRbac8wMAb592X+U1da1SjwdGcgkhxdA+9Jkqy/MaDYslVJCxjjjn+yfIn5UWP+2+aud5f075WenueOoxIU2DiqUEpRSLYevhmfREyYS4tYqM4wA5rAXDIP6idTEhxA80Fcv1LvRYyUNZi2WgMYg1xDnfXyZ5IG9A3spXustnWghpDNK4TPP8ylRRViMorFisWg8LeWMZnTI3yxPIb/VGE9gE8Y/m477V8ySEZEfbDbaTFYw3UcZiCWHTTe2y1RtNc15jMY5NxEZyQyO5hJD6mNY9gKopo1isXDexkVxNYiO5+9q6mBCf0LZYpsryvKeQYhGXjUWKca6gfV2IRWXVJpmxFkLqhRmaJSlqsYSag1iiaGC87CJfxAcal7znQ4RMPSaENJncisWq9bBQ9ABimUytiwLlXSyD+AewS4oghBBzilgsVq6aa+l9kpvvJl/FKNYzZYZyKdNMPSaEkBVyKRZx0YQ2QyldLiVE/v70Z99NvpqWuKdViZd9aF1MCNlR8losFo1vAKcQSu3+v5t8dQV3niWL5TID8EQsncJIEP+yjIwNhEZyCSHElLyKxcpFM5FyKaVYUi4vsD7+MYMryXJcVqksoSVnlVOmHhNCmkjmfixWrYcFNZeSBOIHAAZSYLItL92K4lGl1RvF83H/HDaWXAhWPiak6exdlmeeRl+h0RhuigbttyHxk6mF7BViAM8M5IagYiGkaqbK8o7BfiwfIy4Zi+6JgF0AvEqs/g9sXUxI9UyV5bWV5VnQ1hSWNcYSat50hdhQdiVIEL9IunMWQiO5hJD1aJe41y4RY0FbU1jdiuVCI2jvCVZWy8l83G/CF5OQnWCYBNqu+UdSit9nVPtqbY2xGLYeBpStlShIOnBZYce4D5gtHtg17nciKVwZl6thEkyVbj+BUy4WQfwz0HIhpEpuoLvudeGpdyYKEvVKH1mC96H2TYWbVm+UlhUSBUkI96FtKzOznNH2XjtHQXIN94FPyiiZVm90Ox/3J7CJRZ3Ox/2zHbLuCPGdKfZEscBgjd/oChMXjEXrYaCE6ygKksMoSAZRkNwCeIlytcseAfgGwLsoSOIoSNolZFkmIoSGsgkhH5Iqy3tccm0xQcakXvtxW4zFsmZVXOSiKEjO4HYTz6HvdjqFUzDnRXyikjZtFcRn/TBCqiM1kBkayCxLbCH0QcUidcGsUozf5HXrREHSjoIkhbMurDtGPgMwLeh7tEw9ZtVjQipgmASpgdgzn6wWCSOYeKQ2WSyhxQ2FOM+bZYG/gp1bbh0HAF5HQZJXUUyQvxhmVmi1EFId2s38DuBJnCUKkmO4MIIJmxSL1SJ2I71MMiFa9TWq72u/4FkUJHHWN4slZnXK9oT1wwipDIt5fCLu/NoQpZJa3mOtYjFsPQzk0NiiVMy0ag5O8ygX2O5KaLUQUg1WG8RvZG2rHPH+pDDeqD9ksdQetPdIqSzIrFwkjdqiuyTA1sWEVMIwCW7hqqFb8DIKkoGR7I+QTNpzVOT9+UixiKvFKpbxRsqfbERMNR9riJ3mMGOtxs/WxYRUR2wo+3kUJKl1QF8Ojl/BplDuWtZZLLVaK5LmG6O+mMo2vhHFt43YcAwDQ9mEEEGyw6ya+QFuE69xhu4joiDpSibtW9iFNtbywcl749bDs4xB+zPY9X3RIsaWwnJyEv8CNinbR/Nxv6NRuYAQspUB3OJsySmcR2RRCSQtUrNMrJOu/FSqTJZZLeli1XoYyGattOEOPvrOoyhIzoZJsM3dFcPuLFAI48wOQoizWqIgsdokrrKoBIIoSABnLU1xX8p/+e8d+fMQbqNb5XGMjay6wgaG98oSc7C8vzaDbafzjYP4bF1MSHWcwe582iZO4BTac/l5CWc9vV363TN4pFSAJcUirYetTKfLbUF7sVaq2BFocYBsbsPYcAxZ7k8IKYlkiIV1j6MpLFssoeF94gzvaeL5jCxjjmu+PyFEgWESTGCXfrxTfAqYtx6etXqjOMP7QqP7W3K0LUNMLDXt0hALDti6mJDqGCZBCNsssbq4hqLSXFgsoZbANcTb3iCZDL6mF28jzPCeuOb7E0L06MKuinkdXMMlAqRaAheKxdKlkiVo3zG8vzWdbW+QNGurID5bFxNSIRJv6WA3lMs1gI78n9RaMn8qrhQra+E6y0l7NFuxZD1zExuOgbEWQipkSblYubmr4BL3SgVybkYl8+1TbDnoV5KsZU0aveMWV942YsMhZLn/NrTbHqvtfmpE08qsI1X1IaaeyUsVxlA5wyS4HSZBF8CLusdSgBfDJHivVJZQmbeWimWG7NVBmxpfWdDe9gbjIP6RQmHKVGMgws2aL2wTST2VVYphEkyhqzTTktdrb0KsqhKvZZgEAwA/h527W5MbAD+XMa8jVbjH1bbWxGWYZOkSmbHulu+0M77P8gtfVrHE0NtV+1hAtAgDRVm+PROt8eTZQK5FNiHf6gwHl0VKoZRFaoodw1/rZQZnpbS3dMfc9FpWrj5VErTKDNkn5d6UgJe0a4uA39YDqNtY8hmX3XV9m6HUTSOQnf2XKKdwZwCeGLW6LYx8RmUX8xss+ehLMkD5dNdr1Fj5W1xjAwBfwJ/zLjdwyq69wUp5j0LRzW+HSTD95O7uDhLAb5cQtswtnLUyzfJmOXEfKt27LtKsC4e4rLrQfd5xFuswK9IMKK8leQtgIovxTiGle4p8ZlO4Z+KtW1DmXxf5N3hXcmBQezzHcBucvOPJPAerYmltC1F9Qcg3AOKin5H0w2rnvGyysBY/ubu7K3JfQgghGRGF2YVTmhZ1vS7hYlWphcLPCxULIYRUjGSSHsNZZp2ll9YpnRt8mHmXyp9XAKZ1xJS28f8yy+lDHzc2GQAAAABJRU5ErkJggg==" />
+          </defs>
+        </svg>
+      </div>
+      <div class="mb-5">
+        <h1 id="mainTitle" class="title">
+          <svg width="22" height="24" viewBox="0 0 22 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M2.38095 24H19.0476C20.3607 24 21.4286 22.9236 21.4286 21.6V3.6C21.4286 2.2764 20.3607 1.2 19.0476 1.2H16.6667C16.6667 0.88174 16.5412 0.576515 16.318 0.351472C16.0947 0.126428 15.7919 0 15.4762 0H5.95238C5.63665 0 5.33385 0.126428 5.11059 0.351472C4.88733 0.576515 4.7619 0.88174 4.7619 1.2H2.38095C1.06786 1.2 0 2.2764 0 3.6V21.6C0 22.9236 1.06786 24 2.38095 24ZM2.38095 3.6H4.7619V6H16.6667V3.6H19.0476V21.6H2.38095V3.6Z"
+              fill="#68519D" />
+            <path
+              d="M9.49182 13.8479L7.29996 11.7588L5.57141 13.4063L9.49182 17.1428L15.8571 11.076L14.1286 9.42856L9.49182 13.8479Z"
+              fill="#68519D" />
           </svg>
-        </div>
-        <div class="mb-5">
-          <h1 id="mainTitle" class="title">
-            <svg
-              width="22"
-              height="24"
-              viewBox="0 0 22 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M2.38095 24H19.0476C20.3607 24 21.4286 22.9236 21.4286 21.6V3.6C21.4286 2.2764 20.3607 1.2 19.0476 1.2H16.6667C16.6667 0.88174 16.5412 0.576515 16.318 0.351472C16.0947 0.126428 15.7919 0 15.4762 0H5.95238C5.63665 0 5.33385 0.126428 5.11059 0.351472C4.88733 0.576515 4.7619 0.88174 4.7619 1.2H2.38095C1.06786 1.2 0 2.2764 0 3.6V21.6C0 22.9236 1.06786 24 2.38095 24ZM2.38095 3.6H4.7619V6H16.6667V3.6H19.0476V21.6H2.38095V3.6Z"
-                fill="#68519D"
-              />
-              <path
-                d="M9.49182 13.8479L7.29996 11.7588L5.57141 13.4063L9.49182 17.1428L15.8571 11.076L14.1286 9.42856L9.49182 13.8479Z"
-                fill="#68519D"
-              />
-            </svg>
-            Gerenciador de Tarefas
-          </h1>
-          <button id="addTask" class="button mb-5" type="button" onclick="openTaskModal()">
-            + Adicionar nova tarefa
-          </button>
-          <section id="taskFilters">
-            <div id="taskFiltersButtons">
-              <button id="" class="button" type="button">Hoje</button>
-              <button id="" class="button" type="button" onclick="statusFilter('Em andamento')">Em andamento</button>
-              <button id="" class="button" type="button" onclick="statusFilter('Concluída')">Concluída</button>
-              <button id="" class="button" type="button" onclick="statusFilter('Paralisada')">Paralisada</button>
-              <button id="" class="button" type="button" >Atrasados</button>
-            </div>
-            <div class="button">
-              <input id="searchBar" class="" name="seachBar" type="text" placeholder="pesquisar">
-            </div>
+          Gerenciador de Tarefas
+        </h1>
+        <button id="addTask" class="button mb-5" type="button" onclick="openTaskModal()">
+          + Adicionar nova tarefa
+        </button>
+        <section id="taskFilters">
+          <div id="taskFiltersButtons">
+            <button id="" class="button" type="button" onclick="taskFilter('Date', new Date())">Hoje</button>
+            <button id="" class="button" type="button" onclick="taskFilter('Status','Em andamento')">Em
+              andamento</button>
+            <button id="" class="button" type="button" onclick="taskFilter('Status','Concluída')">Concluída</button>
+            <button id="" class="button" type="button" onclick="taskFilter('Status','Paralisada')">Paralisada</button>
+            <button id="" class="button" type="button" onclick="taskFilter('Status','2022-12-15')">Atrasados</button>
+          </div>
+          <div class="button">
+            <input id="searchBar" class="" name="seachBar" type="text" placeholder="pesquisar">
+          </div>
+        </section>
+      </div>
+    </header>
+    <section id="taskModal" class="modalContainer" style="display: none">
+      <main>
+        <form id="taskForm" class="form modalContent" method="post">
+          <h1 id="taskTitle" class="title">Adicionar nova tarefa</h1>
+          <section>
+            <label for="numberInput">Número</label>
+            <input id="numberInput" class="bigInput" name="numberInput" type="number" min="0" />
+            <label for="descriptionInput">Descrição</label>
+            <input id="descriptionInput" class="bigInput" name="descriptionInput" type="text" />
+            <label for="dateInput">Data</label>
+            <input id="dateInput" class="smallInput" name="dateInput" type="date" />
+            <label for="statusInput">Status</label>
+            <select id="statusInput" class="smallInput" name="statusInput">
+              <option value="none" disabled selected></option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Paralisada">Paralisada</option>
+            </select>
           </section>
-        </div>
-      </header>
-      <section id="taskModal" class="modalContainer" style="display: none">
-        <main>
-          <form id="taskForm" class="form modalContent" method="post">
-            <h1 id="taskTitle" class="title">Adicionar nova tarefa</h1>
-            <section>
-              <label for="numberInput">Número</label>
-              <input id="numberInput" class="bigInput" name="numberInput" type="number" min="0" />
-              <label for="descriptionInput">Descrição</label>
-              <input id="descriptionInput" class="bigInput" name="descriptionInput" type="text" />
-              <label for="dateInput">Data</label>
-              <input id="dateInput" class="smallInput" name="dateInput" type="date" />
-              <label for="statusInput">Status</label>
-              <select id="statusInput" class="smallInput" name="statusInput">
-                <option value="none" disabled selected></option>
-                <option value="Concluída">Concluída</option>
-                <option value="Em andamento">Em andamento</option>
-                <option value="Paralisada">Paralisada</option>
-              </select>
-            </section>
-            <section class="modalButtons">
-              <div id="cancelModal" class="cancelModal" onclick="cancelModal()">cancelar</div>
-              <button type="submit" class="button">SALVAR</button>
-            </section>
-          </form>
-        </main>
-      </section>
-      <section id="confirmActionModal" class="modalContainer" style="display: none">
-        </main>
-      </section>
-      <main class="table-responsive">
-        <table class="table table-borderless table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Núm &#8691;</th>
-              <th scope="col">Descrição &#8691;</th>
-              <th scope="col">Data de entrega &#8691;</th>
-              <th scope="col">Status &#8691;</th>
-              <th scope="col">Ação</th>
-            </tr>
-          </thead>
-          <tbody id="taskTable">
-            <!-- <tr>
+          <section class="modalButtons">
+            <div id="cancelModal" class="cancelModal" onclick="cancelModal()">cancelar</div>
+            <button type="submit" class="button">SALVAR</button>
+          </section>
+        </form>
+      </main>
+    </section>
+    <section id="confirmActionModal" class="modalContainer" style="display: none">
+      </main>
+    </section>
+    <main class="table-container">
+      <table class="table table-borderless table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Núm &#8691;</th>
+            <th scope="col">Descrição &#8691;</th>
+            <th scope="col">Data de entrega &#8691;</th>
+            <th scope="col">Status &#8691;</th>
+            <th scope="col">Ação</th>
+          </tr>
+        </thead>
+        <tbody id="taskTable">
+          <!-- <tr>
               <td id="taskNumber" class="taskCell" scope="row"></th>
               <td id="taskDescription" class="taskCell"></td>
               <td id="taskDate" class="taskCell"></td>
@@ -157,29 +135,22 @@
                 </i>
               </td>
             </tr> -->
-          </tbody>
-        </table>
-      </main>
-      <div id="rightBar">
-        <svg
-          width="265"
-          height="634"
-          viewBox="0 0 265 634"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M0 634L270 0L268.472 436.632L190.528 634H0Z" fill="#F8B04E" />
-        </svg>
-      </div>
-      <footer>
-        <!-- JavaScript Bundle with Popper -->
-        <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-          crossorigin="anonymous"
-        ></script>
-        <script src="assets/script.js"></script>
-      </footer>
+        </tbody>
+      </table>
+    </main>
+    <div id="rightBar">
+      <svg width="265" height="634" viewBox="0 0 265 634" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 634L270 0L268.472 436.632L190.528 634H0Z" fill="#F8B04E" />
+      </svg>
     </div>
-  </body>
+    <footer>
+      <!-- JavaScript Bundle with Popper -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+      <script src="assets/script.js"></script>
+    </footer>
+  </div>
+</body>
+
 </html>

@@ -146,7 +146,7 @@ function tableTempalte(table, tasks) {
       `<tr>
       <td id="taskNumber" class="taskCell" scope="row">${task.Number}</th>
       <td id="taskDescription" class="taskCell">${task.Description}</td>
-      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR")}</td>
+      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR", { timeZone: "Europe/London" })}</td>
       <td id="taskStatus" class="taskCell ${task.Status.replace(' ', '-')}">${task.Status}</td>
       <td id="taskFunctions" class="taskCell d-flex gap-3">
         <i id="editButton" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -170,17 +170,29 @@ const printTasks = async (tasks) => {
   tableTempalte(taskTable, tasks)
 }
 
-// filters function
+// taskFilters function
 
-const statusFilter = async (status) => {
-  const data = await fetch(`http://localhost:3000/tasks?Status=${status}`)
-  const tasks = await data.json()
-  taskTable.innerHTML = ""
-  console.log(tasks)
-  printTasks(tasks)
+const taskFilter = async (key, value) => {
+  if (typeof value === 'string') {
+    const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
+    const tasks = await data.json()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  } else if (typeof value === 'object') {
+    let date = value.toISOString().slice(0, 10).replaceAll('/', '-')
+    const data = await fetch(`http://localhost:3000/tasks?${key}=${date}`)
+    const tasks = await data.json()
+    taskTable.innerHTML = ""
+    printTasks(tasks)
+  }
 }
 
-
+function teste() {
+  let hoje = new Date()
+  hoje = hoje.toLocaleDateString()
+  console.log(hoje);
+}
+teste()
 
 // tasks.sort(function (a, b) {
 //   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0;

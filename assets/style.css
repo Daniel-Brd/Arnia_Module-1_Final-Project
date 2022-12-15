@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-:root{
+:root {
   --main-purple: #68519D;
   --main-yellow: #F8B04E;
   --light-purple: #D7CAE5;
@@ -12,7 +12,7 @@
 
 /* Index Style */
 /*  */
-*{
+* {
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
@@ -41,16 +41,16 @@
   max-height: 100vh;
 }
 
-.title{
+.title {
   color: var(--main-purple);
   font-weight: 800;
   font-size: 20px;
   line-height: 30px;
 }
 
-#mainTitle svg{
+#mainTitle svg {
   margin: 0.5em;
-} 
+}
 
 .button {
   background-color: var(--light-background);
@@ -64,12 +64,12 @@
   line-height: 21px;
 }
 
-.button:hover{
+.button:hover {
   background-color: var(--main-purple);
   color: var(--light-background);
 }
 
-#taskFilters{
+#taskFilters {
   display: flex;
   justify-content: space-between;
   gap: 1.5vw;
@@ -77,14 +77,18 @@
   width: 65.97vw;
 }
 
-#taskFilters #taskFiltersButtons{
+#taskFilters #taskFiltersButtons {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.5vw;
 }
 
-.table{
+.table-container {
+  height: 200px;
+}
+
+.table {
   background-color: var(--light-background);
   width: 65.97vw;
   color: var(--dark-purple);
@@ -93,13 +97,30 @@
 .table tbody tr:nth-child(even) {
   background-color: #F5F5F5;
 }
+
+tr .Concluída {
+  color: #27AE60;
+  font-weight: 400;
+}
+
+tr .Em-andamento {
+  color: #F8B04E;
+  font-weight: 400;
+}
+
+tr .Paralisada {
+  color: #EB5757;
+  font-weight: 400;
+}
+
+
 /*  */
 /* Index Style */
 
 /* Modal Style */
 /*  */
 
-.modalContainer{
+.modalContainer {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -109,7 +130,7 @@
   background-color: var(--transparent-black)
 }
 
-.modalContainer .modalContent{
+.modalContainer .modalContent {
   position: absolute;
   transform: translateY(50%)translateX(50%);
   width: 60%;
@@ -124,13 +145,14 @@
   gap: 60px;
 }
 
-form label{
+form label {
   padding: 10px 0 5px 0;
   width: 100%;
   color: var(--main-purple);
 }
 
-form input, form select{
+form input,
+form select {
   color: var(--dark-purple);
   border: 1px solid #000000;
   border-radius: 10px;
@@ -138,46 +160,34 @@ form input, form select{
   width: 100%;
 }
 
-.smallInput{
+.smallInput {
   width: 40%;
   min-width: 12em;
 }
 
-#dateInput{
+#dateInput {
   text-align: center;
 }
 
-.modalButtons{
+.modalButtons {
   color: #828282;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.modalButtons .cancelModal, #taskFunctions{
+.modalButtons .cancelModal,
+#taskFunctions {
   cursor: pointer;
 }
 
-tr .Concluída{
-  color: #27AE60;
-  font-weight: 400;
-}
-tr .Em-andamento{
-  color: #F8B04E;
-  font-weight: 400;
-}
-tr .Paralisada{
-  color: #EB5757;
-  font-weight: 400;
-}
-
-@media (max-width: 768px){
-  .table{
+@media (max-width: 768px) {
+  .table {
     width: 100%;
     border-radius: 10px;
   }
 
-  #header{
+  #header {
     text-align: center;
   }
 
@@ -186,7 +196,7 @@ tr .Paralisada{
     max-height: 100vh;
   }
 
-  .modalContainer{
+  .modalContainer {
     text-align: center;
   }
 }
