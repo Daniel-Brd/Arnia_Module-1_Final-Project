@@ -109,7 +109,7 @@ const editTask = async (taskId, task) => {
 const deleteTask = async (taskId) => {
   openConfirmActionModal()
   confirmActionModal.innerHTML =
-    `<main class="modalContent">
+    `<main class="modalContent contentFlex">
       <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
       <section class="modalButtons">
         <div id="cancelModal" class="cancelModal" onclick="cancelModal()">cancelar</div>
@@ -149,7 +149,7 @@ function tableTempalte(table, tasks) {
       <td id="taskDescription" class="taskCell">${task.Description}</td>
       <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR", { timeZone: "Europe/London" })}</td>
       <td id="taskStatus" class="taskCell ${task.Status.replace(' ', '-')}">${task.Status}</td>
-      <td id="taskFunctions" class="taskCell d-flex gap-3">
+      <td id="taskFunctions" class="taskCell">
         <i id="editButton" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14.4 13.575H0.6C0.268125 13.575 0 13.8431 0 14.175V14.85C0 14.9325 0.0675 15 0.15 15H14.85C14.9325 15 15 14.9325 15 14.85V14.175C15 13.8431 14.7319 13.575 14.4 13.575ZM2.73188 12C2.76938 12 2.80688 11.9963 2.84438 11.9906L5.99813 11.4375C6.03562 11.43 6.07125 11.4131 6.0975 11.385L14.0456 3.43687C14.063 3.41953 14.0768 3.39892 14.0862 3.37624C14.0956 3.35356 14.1005 3.32924 14.1005 3.30469C14.1005 3.28013 14.0956 3.25582 14.0862 3.23313C14.0768 3.21045 14.063 3.18985 14.0456 3.1725L10.9294 0.054375C10.8938 0.01875 10.8469 0 10.7963 0C10.7456 0 10.6988 0.01875 10.6631 0.054375L2.715 8.0025C2.68687 8.03063 2.67 8.06437 2.6625 8.10188L2.10938 11.2556C2.09113 11.3561 2.09765 11.4594 2.12836 11.5568C2.15907 11.6542 2.21305 11.7426 2.28562 11.8144C2.40937 11.9344 2.565 12 2.73188 12Z"
               fill="#2C2661" />
@@ -167,8 +167,8 @@ function tableTempalte(table, tasks) {
 };
 
 const printTasks = async (tasks) => {
-  const taskTable = document.getElementById('taskTable')
-  tableTempalte(taskTable, tasks)
+  const tableBody = document.getElementById('tableBody')
+  tableTempalte(tableBody, tasks)
 }
 
 // taskFilters function
@@ -177,24 +177,24 @@ const filterTask = async (key, value) => {
   if (key === 'Status') {
     const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
     const tasks = await data.json()
-    taskTable.innerHTML = ""
+    tableBody.innerHTML = ""
     printTasks(tasks)
   } else if (key === 'Date') {
     let date = value.toISOString().slice(0, 10).replaceAll('/', '-')
     const data = await fetch(`http://localhost:3000/tasks?${key}=${date}`)
     const tasks = await data.json()
-    taskTable.innerHTML = ""
+    tableBody.innerHTML = ""
     printTasks(tasks)
   }
   else if (key === 'q') {
     const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
     const tasks = await data.json()
-    taskTable.innerHTML = ""
+    tableBody.innerHTML = ""
     printTasks(tasks)
   }
   else if (key === '') {
     const tasks = await getTasksArray()
-    taskTable.innerHTML = ""
+    tableBody.innerHTML = ""
     printTasks(tasks)
   }
 }
@@ -202,7 +202,7 @@ const filterTask = async (key, value) => {
 // const searchTask = async () => {
 //   const data = await fetch(`http://localhost:3000/tasks?q=${}`)
 //   const tasks = await data.json()
-//   taskTable.innerHTML = ""
+//   tableBody.innerHTML = ""
 
 // }
 

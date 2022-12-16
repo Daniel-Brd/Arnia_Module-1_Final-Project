@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
+  font-size: 1px;
   --main-purple: #68519D;
   --main-yellow: #F8B04E;
   --light-purple: #D7CAE5;
@@ -8,13 +9,33 @@
   --light-yellow: #FBF0E2;
   --light-background: #ffffff;
   --transparent-black: rgba(0, 0, 0, 0.25);
+  --itens-gap: 24rem;
+  --content-gap: 48rem;
+  --content-width: 65.97vw;
 }
 
 /* Index Style */
 /*  */
 * {
+  font-size: 16rem;
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.contentFlex {
+  display: flex;
+  flex-direction: column;
+  gap: var(--content-gap);
+  width: var(--content-width);
+}
+
+.itensFlex {
+  display: flex;
+  flex-direction: column;
+  gap: var(--itens-gap);
 }
 
 #leftBar {
@@ -48,8 +69,10 @@
   line-height: 30px;
 }
 
-#mainTitle svg {
-  margin: 0.5em;
+#mainTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 }
 
 .button {
@@ -57,7 +80,8 @@
   border: 1px solid var(--main-purple);
   color: var(--main-purple);
   border-radius: 20px;
-  min-width: 121px;
+  width: fit-content;
+  height: fit-content;
   padding: 0.5em 2em;
   font-weight: 400;
   font-size: 14px;
@@ -74,7 +98,6 @@
   justify-content: space-between;
   gap: 1.5vw;
   flex-wrap: wrap-reverse;
-  width: 65.97vw;
 }
 
 #taskFilters #taskFiltersButtons {
@@ -84,18 +107,39 @@
   gap: 1.5vw;
 }
 
-.table-container {
-  height: 200px;
+#taskFunctions {
+  display: flex;
+  justify-content: space-around;
+}
+
+#tableContainer {
+  width: min-content;
 }
 
 .table {
   background-color: var(--light-background);
   width: 65.97vw;
   color: var(--dark-purple);
+  border-radius: 10px;
+  border-collapse: collapse;
+  text-align: left;
 }
 
 .table tbody tr:nth-child(even) {
   background-color: #F5F5F5;
+}
+
+.table tbody tr:nth-child(even):hover {
+  background-color: var(--transparent-black);
+}
+
+td,
+th {
+  padding: 0.5em;
+}
+
+tr:hover {
+  background-color: var(--transparent-black);
 }
 
 tr .Concluída {
@@ -140,9 +184,6 @@ tr .Paralisada {
   background-color: var(--light-background);
   box-shadow: 4px 4px 4px var(--transparent-black);
   border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 60px;
 }
 
 form label {
@@ -184,7 +225,6 @@ form select {
 @media (max-width: 768px) {
   .table {
     width: 100%;
-    border-radius: 10px;
   }
 
   #header {
