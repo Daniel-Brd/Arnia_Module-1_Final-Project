@@ -129,15 +129,44 @@ const confirmDelete = async (taskId) => {
 
 
 const getTasksArray = async () => {
-  const data = await fetch(`http://localhost:3000/tasks`)
+  const data = await fetch(`http://localhost:3000/tasks/`)
   const tasks = await data.json()
   return tasks
 }
 
+let currentPage = 1
+const pageNavigate = async (type) => {
+  if (currentPage < 1) {
+    currentPage = 1
+  }
+  else if (type === "next") {
+    currentPage = currentPage + 1
+  } else if (type === "previous") {
+    currentPage = currentPage - 1
+  }
+  console.log(currentPage);
+  return paginateTable(currentPage, 6)
+}
+
+const paginateTable = async (array, currentPage, itensPerPage) => {
+  const firstIndex = (currentPage - 1) * itensPerPage
+  const lastIndex = firstIndex + itensPerPage
+  array = await array.slice(firstIndex, lastIndex)
+  return await array
+}
+
+
+// const getTasksArray = async (currentPage) => {
+//   const data = await fetch(`http://localhost:3000/tasks?_page=${currentPage}&_limit=6`)
+//   const tasks = await data.json()
+//   return tasks
+// }
+
+
+
 const pageOnLoad = async () => {
   const tasks = await getTasksArray()
   printTasks(tasks)
-  document.getElementById("numberInput").max = tasks.length + 1
 }
 
 function tableTempalte(table, tasks) {
@@ -168,33 +197,46 @@ function tableTempalte(table, tasks) {
 
 const printTasks = async (tasks) => {
   const taskTable = document.getElementById('taskTable')
+  taskTable.innerHTML = ""
   tableTempalte(taskTable, tasks)
 }
 
 // taskFilters function
 
-const filterTask = async (key, value) => {
-  if (key === 'Status') {
-    const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
-    const tasks = await data.json()
-    taskTable.innerHTML = ""
-    printTasks(tasks)
-  } else if (key === 'Date') {
-    let date = value.toISOString().slice(0, 10).replaceAll('/', '-')
-    const data = await fetch(`http://localhost:3000/tasks?${key}=${date}`)
-    const tasks = await data.json()
-    taskTable.innerHTML = ""
+const filterTask = async (filterTipe, value) => {
+  if (filterTipe === 'forToday') {
+    let tasks = await getTasksArray()
+    const dateValue = value.toISOString().slice(0, 10).replaceAll('/', '-')
+    tasks = tasks.filter((task) => {
+      return task.Date === dateValue
+    })
     printTasks(tasks)
   }
-  else if (key === 'q') {
-    const data = await fetch(`http://localhost:3000/tasks?${key}=${value}`)
+  else if (filterTipe === 'status') {
+    let tasks = await getTasksArray()
+    tasks = tasks.filter((task) => {
+      return task.Status === value
+    })
+    tasks = await paginateTable(tasks, currentPage, 6)
+    return await printTasks(tasks)
+  }
+  else if (filterTipe === 'late') {
+    let tasks = await getTasksArray()
+    const lateTask = tasks.filter((task) => {
+      let taskDate = new Date(task.Date)
+      let todayDate = value
+      return taskDate.valueOf() < todayDate.valueOf()
+    })
+    printTasks(lateTask)
+
+  }
+  else if (filterTipe === 'search') {
+    const data = await fetch(`http://localhost:3000/tasks?q=${value}`)
     const tasks = await data.json()
-    taskTable.innerHTML = ""
     printTasks(tasks)
   }
-  else if (key === '') {
+  else if (filterTipe === 'cleanFilters') {
     const tasks = await getTasksArray()
-    taskTable.innerHTML = ""
     printTasks(tasks)
   }
 }
