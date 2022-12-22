@@ -1,9 +1,12 @@
 let currentTask = null
+let currentPage = 1
 const taskModal = document.getElementById('taskModal')
 const confirmActionModal = document.getElementById('confirmActionModal')
 const addTaskButton = document.getElementById('addTask')
 const deleteButton = document.getElementById('confirmDelete')
 const taskForm = document.getElementById('taskForm')
+const taskTable = document.getElementById('taskTable')
+
 
 // modal functions
 
@@ -40,7 +43,6 @@ function cancelModal() {
 
 const editTaskModal = async (taskId) => {
   currentTask = await getTask(taskId)
-  console.log(currentTask);
   document.getElementById('taskTitle').innerHTML = 'Editar tarefa'
   document.getElementById('numberInput').readOnly = true
   document.getElementById('numberInput').value = currentTask.Number
@@ -116,8 +118,8 @@ const deleteTask = async (taskId) => {
         <button id="confirmDelete" type="button" class="button" onclick="confirmDelete(${taskId})">Sim</button>
       </section>
     </main>`
-
 }
+
 const confirmDelete = async (taskId) => {
   await fetch(`http://localhost:3000/tasks/${taskId}`, {
     method: "DELETE"
@@ -132,41 +134,6 @@ const getTasksArray = async () => {
   const data = await fetch(`http://localhost:3000/tasks/`)
   const tasks = await data.json()
   return tasks
-}
-
-let currentPage = 1
-const pageNavigate = async (type) => {
-  if (currentPage < 1) {
-    currentPage = 1
-  }
-  else if (type === "next") {
-    currentPage = currentPage + 1
-  } else if (type === "previous") {
-    currentPage = currentPage - 1
-  }
-  console.log(currentPage);
-  return paginateTable(currentPage, 6)
-}
-
-const paginateTable = async (array, currentPage, itensPerPage) => {
-  const firstIndex = (currentPage - 1) * itensPerPage
-  const lastIndex = firstIndex + itensPerPage
-  array = await array.slice(firstIndex, lastIndex)
-  return await array
-}
-
-
-// const getTasksArray = async (currentPage) => {
-//   const data = await fetch(`http://localhost:3000/tasks?_page=${currentPage}&_limit=6`)
-//   const tasks = await data.json()
-//   return tasks
-// }
-
-
-
-const pageOnLoad = async () => {
-  const tasks = await getTasksArray()
-  printTasks(tasks)
 }
 
 function tableTempalte(table, tasks) {
@@ -193,64 +160,98 @@ function tableTempalte(table, tasks) {
       </td>
     </tr>`
   })
-};
-
-const printTasks = async (tasks) => {
-  const taskTable = document.getElementById('taskTable')
-  taskTable.innerHTML = ""
-  tableTempalte(taskTable, tasks)
 }
 
-// taskFilters function
+const addFilter = async (filterTipe) => {
+  taskTable.className = filterTipe.toString()
+  currentPage = 1
+  return printTasks(currentPage, itensPerPage)
+}
 
-const filterTask = async (filterTipe, value) => {
-  if (filterTipe === 'forToday') {
-    let tasks = await getTasksArray()
-    const dateValue = value.toISOString().slice(0, 10).replaceAll('/', '-')
+const tasksFilter = async () => {
+  let tasks = await getTasksArray()
+  const todayDate = new Date()
+  if (taskTable.classList.contains('forToday')) {
+    const dateValue = todayDate.toISOString().slice(0, 10).replaceAll('/', '-')
     tasks = tasks.filter((task) => {
       return task.Date === dateValue
     })
-    printTasks(tasks)
+    return tasks
   }
-  else if (filterTipe === 'status') {
-    let tasks = await getTasksArray()
+  else if (taskTable.classList.contains('Concluída')) {
     tasks = tasks.filter((task) => {
-      return task.Status === value
+      return task.Status === 'Concluída'
     })
-    tasks = await paginateTable(tasks, currentPage, 6)
-    return await printTasks(tasks)
+    return tasks
   }
-  else if (filterTipe === 'late') {
-    let tasks = await getTasksArray()
-    const lateTask = tasks.filter((task) => {
-      let taskDate = new Date(task.Date)
-      let todayDate = value
+  else if (taskTable.classList.contains('Em-andamento')) {
+    tasks = tasks.filter((task) => {
+      return task.Status === 'Em andamento'
+    })
+    return tasks
+  }
+  else if (taskTable.classList.contains('Paralisada')) {
+    tasks = tasks.filter((task) => {
+      return task.Status === 'Paralisada'
+    })
+    return tasks
+  }
+  else if (taskTable.classList.contains('late')) {
+    tasks = tasks.filter((task) => {
+      return task.Status !== 'Concluída'
+    })
+    tasks = tasks.filter((task) => {
+      const taskDate = new Date(task.Date)
       return taskDate.valueOf() < todayDate.valueOf()
     })
-    printTasks(lateTask)
+    return tasks
+  }
+  else if (taskTable.classList.contains('search')) {
+    searchBarValue = document.getElementById('searchBar').value.toLowerCase()
+    console.log(searchBarValue);
+    tasks = tasks.filter((task) => {
+      return task.Description.toLowerCase().includes(searchBarValue)
+    })
+    console.log(tasks);
+    return tasks
+  }
+  else if (taskTable.classList.contains('noFilters')) {
+    return tasks
+  }
 
-  }
-  else if (filterTipe === 'search') {
-    const data = await fetch(`http://localhost:3000/tasks?q=${value}`)
-    const tasks = await data.json()
-    printTasks(tasks)
-  }
-  else if (filterTipe === 'cleanFilters') {
-    const tasks = await getTasksArray()
-    printTasks(tasks)
-  }
+  return tasks
 }
 
-// const searchTask = async () => {
-//   const data = await fetch(`http://localhost:3000/tasks?q=${}`)
-//   const tasks = await data.json()
-//   taskTable.innerHTML = ""
+const itensPerPage = 6
+const pageNavigate = async (type) => {
+  const filteredTasks = await tasksFilter()
+  maxPage = Math.round(filteredTasks.length / itensPerPage)
+  if (type === "next" && currentPage < maxPage) {
+    currentPage = currentPage + 1
+  }
+  else if (type === "previous" && currentPage > 1) {
+    currentPage = currentPage - 1
+  }
+  printTasks(currentPage, itensPerPage)
+}
 
-// }
+
+const printTasks = async (currentPage, itensPerPage) => {
+  const filteredTasks = await tasksFilter()
+  const firstIndex = (currentPage - 1) * itensPerPage
+  const lastIndex = firstIndex + itensPerPage
+  const page = filteredTasks.slice(firstIndex, lastIndex)
+  taskTable.innerHTML = ""
+  tableTempalte(taskTable, page)
+}
+
+const pageOnLoad = async () => {
+  printTasks(1, itensPerPage)
+}
 
   // tasks.sort(function (a, b) {
-  //   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0;
-  // });
+  //   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
+  // })
 
 // const indexByNumber = async (number) => {
 //   const tasks = await getTasksArray()
@@ -259,7 +260,7 @@ const filterTask = async (filterTipe, value) => {
 //       return true
 //     }
 //   })
-//   return index;
+//   return index
 // }
 
 
@@ -273,11 +274,11 @@ const filterTask = async (filterTipe, value) => {
 //         taskNumbers[task.Number] = (taskNumbers[task.Number] || 0) + 1
 //     })
 //     const repeatedValue = Object.keys(taskNumbers).find((number) => {
-//         return taskNumbers[number] > 1;
+//         return taskNumbers[number] > 1
 //     })
-//     return repeatedValue;
+//     return repeatedValue
 // }
-// console.log(parseInt(findRepeated()));
+// console.log(parseInt(findRepeated()))
 
 // function taskOrganizer() {
 //     // função que converte Number de string para num
@@ -297,6 +298,6 @@ const filterTask = async (filterTipe, value) => {
 //     // função que concatena a nova tarefa ao array com numeração alterada
 //     tasks.push(lastTask)
 //     // função que ordena numeralmente as tarefas
-// };
+// }
 // taskOrganizer()
-// console.log(tasks);
+// console.log(tasks)
