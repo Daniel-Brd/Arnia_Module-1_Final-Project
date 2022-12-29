@@ -18,21 +18,21 @@
       "Number": "3",
       "Description": "Criar banco de dados",
       "Date": "2022-12-25",
-      "Status": "Em andamento",
+      "Status": "Concluída",
       "id": 3
     },
     {
       "Number": "4",
       "Description": "Definir APIs Reset",
       "Date": "2022-12-01",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 4
     },
     {
       "Number": "5",
       "Description": "Criar APIs Reset",
       "Date": "2022-12-01",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 5
     },
     {
@@ -60,14 +60,14 @@
       "Number": "9",
       "Description": "Adicionar filtros",
       "Date": "2022-12-16",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 9
     },
     {
       "Number": "10",
       "Description": "Adicionar filtro de atrasados",
       "Date": "2022-12-31",
-      "Status": "Em andamento",
+      "Status": "Concluída",
       "id": 10
     },
     {
@@ -104,6 +104,13 @@
       "Date": "2022-12-21",
       "Status": "Concluída",
       "id": 15
+    },
+    {
+      "Number": "16",
+      "Description": "Bloquear botões clicados",
+      "Date": "2022-12-30",
+      "Status": "Em andamento",
+      "id": 16
     }
   ]
 }

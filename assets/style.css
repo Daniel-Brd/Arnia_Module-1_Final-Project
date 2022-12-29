@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 :root {
+  font-size: 1px;
   --main-purple: #68519D;
   --main-yellow: #F8B04E;
   --light-purple: #D7CAE5;
@@ -8,11 +9,14 @@
   --light-yellow: #FBF0E2;
   --light-background: #ffffff;
   --transparent-black: rgba(0, 0, 0, 0.25);
+  --tr-size: 2.5em
 }
 
 /* Index Style */
 /*  */
 * {
+  margin: 0;
+  padding: 0;
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
@@ -38,21 +42,20 @@
 #content {
   display: flex;
   flex-direction: column;
+  gap: 8.26vh;
   width: 65.97vw;
-  height: 100%;
-  padding: 10.45vh 8.33vw;
-  max-height: 100vh;
+  margin: 10.45vh 8.33vw;
 }
 
 .title {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding-bottom: 2.31vh;
   color: var(--main-purple);
   font-weight: 800;
-  font-size: 20px;
+  font-size: 20rem;
   line-height: 30px;
-}
-
-#mainTitle svg {
-  margin: 0.5em;
 }
 
 .button {
@@ -60,11 +63,11 @@
   border: 1px solid var(--main-purple);
   color: var(--main-purple);
   border-radius: 20px;
-  min-width: 121px;
   padding: 0.5em 2em;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 14rem;
+  width: fit-content;
+  cursor: pointer;
 }
 
 .button:hover {
@@ -72,32 +75,53 @@
   color: var(--light-background);
 }
 
-#taskFilters {
+.tableContainer{
   display: flex;
-  justify-content: space-between;
-  gap: 1.5vw;
-  flex-wrap: wrap-reverse;
-  width: 100%;
+  flex-direction: column;
+  gap: 2.31vh;
 }
 
-#taskFilters #taskFiltersButtons {
+#tasksFilters {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1.5vw;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5em;
+  font-size: 14rem;
 }
 
+#tableNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .table {
+  font-size: 16rem;
   background-color: var(--light-background);
   width: 100%;
   color: var(--dark-purple);
   border-radius: 10px;
+  border-collapse: collapse;
+  text-align: left;
+}
 
+.table td,
+.table th {
+  height: var(--tr-size);
+  padding: 0.5em 0.75em;
+}
+
+.table tbody tr:hover {
+  box-shadow: inset 0 0 0 var(--tr-size) var(--transparent-black);
 }
 
 .table tbody tr:nth-child(even) {
   background-color: #F5F5F5;
+}
+
+.table tbody tr:nth-child(even):hover {
+  box-shadow: inset 0 0 0 var(--tr-size) var(--transparent-black);
 }
 
 tr .Concluída {
@@ -115,6 +139,14 @@ tr .Paralisada {
   font-weight: 400;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
+#taskFunctions {
+  display: flex;
+  gap: 0.75em;
+}
 
 /*  */
 /* Index Style */
@@ -135,22 +167,28 @@ tr .Paralisada {
 .modalContainer .modalContent {
   position: absolute;
   transform: translateY(50%)translateX(50%);
-  width: 60%;
   bottom: 50%;
   right: 50%;
-  padding: 4.17vw;
+  padding: 5.22vh 4.17vw 4.13vh 4.17vw;
   background-color: var(--light-background);
-  box-shadow: 4px 4px 4px var(--transparent-black);
+  box-shadow: 4px 4px 8px var(--transparent-black);
   border-radius: 10px;
+  font-weight: 500;
+}
+
+.formulary {
+  font-size: 14rem;
   display: flex;
   flex-direction: column;
-  gap: 60px;
+  width: 38.54vw;
+  padding-bottom: 4.13vh;
 }
 
 form label {
   padding: 10px 0 5px 0;
   width: 100%;
   color: var(--main-purple);
+  font-size: inherit;
 }
 
 form input,
@@ -158,17 +196,22 @@ form select {
   color: var(--dark-purple);
   border: 1px solid #000000;
   border-radius: 10px;
-  padding: 0.75em;
+  padding: 1em;
   width: 100%;
+  font-size: inherit;
+  cursor: text;
 }
 
 .smallInput {
   width: 40%;
   min-width: 12em;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 #dateInput {
   text-align: center;
+  text-transform: uppercase;
 }
 
 .modalButtons {
@@ -176,24 +219,48 @@ form select {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 2.31vh;
+  font-size: 14px;
 }
 
-.modalButtons .cancelModal,
-#taskFunctions {
+.modalButtons .cancelModal {
   cursor: pointer;
 }
 
 @media (max-width: 768px) {
 
+:root{
+  font-size: 0.75px;
+}
+
+*{
+  text-align: center;
+}
+
   #header {
     text-align: center;
   }
 
+  #leftBar {
+    display: none;
+  }
+
+  #rigthBar {
+    display: none;
+  }
+
   #content {
     width: 100%;
-    padding: 10.45vh 9.24vw;
+    align-items: center;
+    padding: 10.45vh 4.62vw;
+    margin: 0;
     max-height: 100vh;
   }
+
+#tasksFilters{
+  justify-content: center;
+  gap: 1em;
+}
 
   .modalContainer {
     text-align: center;
