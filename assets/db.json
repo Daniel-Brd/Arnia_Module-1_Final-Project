@@ -1,3 +1,88 @@
 {
-  "tasks": []
+  "tasks": [
+    {
+      "Number": "1",
+      "Description": "Fazer a tela estática",
+      "Date": "2022-12-31",
+      "Status": "Concluída",
+      "id": 1
+    },
+    {
+      "Number": "2",
+      "Description": "Definir banco de dados",
+      "Date": "2022-12-20",
+      "Status": "Concluída",
+      "id": 2
+    },
+    {
+      "Number": "7",
+      "Description": "Criar banco de dados",
+      "Date": "2022-12-25",
+      "Status": "Concluída",
+      "id": 3
+    },
+    {
+      "Number": "4",
+      "Description": "Definir APIs Reset",
+      "Date": "2022-12-01",
+      "Status": "Concluída",
+      "id": 4
+    },
+    {
+      "Number": "5",
+      "Description": "Criar APIs Reset",
+      "Date": "2022-12-01",
+      "Status": "Concluída",
+      "id": 5
+    },
+    {
+      "Number": "6",
+      "Description": "Desenvolver a parte dinâmica do FrontEnd",
+      "Date": "2022-12-20",
+      "Status": "Concluída",
+      "id": 6
+    },
+    {
+      "Number": "7",
+      "Description": "Adicionar Dark Mode",
+      "Date": "2022-12-14",
+      "Status": "Paralisada",
+      "id": 7
+    },
+    {
+      "Number": "8",
+      "Description": "Adicionar ordenação",
+      "Date": "2022-12-15",
+      "Status": "Paralisada",
+      "id": 8
+    },
+    {
+      "Number": "9",
+      "Description": "Adicionar filtros",
+      "Date": "2022-12-16",
+      "Status": "Concluída",
+      "id": 9
+    },
+    {
+      "Number": "10",
+      "Description": "Adicionar filtro de atrasados",
+      "Date": "2022-12-31",
+      "Status": "Concluída",
+      "id": 10
+    },
+    {
+      "Number": "11",
+      "Description": "Função que organiza números repetidos",
+      "Date": "2023-01-15",
+      "Status": "Paralisada",
+      "id": 11
+    },
+    {
+      "Number": "12",
+      "Description": "Imlementar função \"Pesquisar\"",
+      "Date": "2022-12-15",
+      "Status": "Concluída",
+      "id": 12
+    }
+  ]
 }
