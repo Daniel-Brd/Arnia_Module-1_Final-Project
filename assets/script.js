@@ -23,7 +23,6 @@ function closeConfirmActionModal() {
 
 function clearForm() {
   document.getElementById('taskTitle').innerHTML = 'Adicionar nova tarefa'
-  document.getElementById('numberInput').readOnly = false
   document.getElementById('numberInput').value = ''
   document.getElementById('descriptionInput').value = ''
   document.getElementById('dateInput').value = ''
@@ -36,10 +35,9 @@ function cancelModal() {
   closeConfirmActionModal()
 }
 
-const editTaskModal = async (taskId) => {
+async function editTaskModal(taskId) {
   currentTask = await getTask(taskId)
   document.getElementById('taskTitle').innerHTML = 'Editar tarefa'
-  document.getElementById('numberInput').readOnly = true
   document.getElementById('numberInput').value = currentTask.Number
   document.getElementById('descriptionInput').value = currentTask.Description
   document.getElementById('dateInput').value = currentTask.Date
@@ -70,7 +68,7 @@ taskForm.addEventListener('submit', (event) => {
   submitTask(task)
 })
 
-const submitTask = async (task) => {
+async function submitTask(task) {
   if (currentTask === null) {
     await createTask(task)
   } else {
@@ -81,7 +79,7 @@ const submitTask = async (task) => {
   location.reload()
 }
 
-const createTask = async (task) => {
+async function createTask(task) {
   await fetch(`http://localhost:3000/tasks`, {
     method: "POST",
     headers: {
@@ -92,13 +90,13 @@ const createTask = async (task) => {
   })
 }
 
-const getTask = async (taskId) => {
+async function getTask(taskId) {
   const data = await fetch(`http://localhost:3000/tasks/${taskId}`)
   const task = await data.json()
   return task
 }
 
-const editTask = async (taskId, task) => {
+async function editTask(taskId, task) {
   await fetch(`http://localhost:3000/tasks/${taskId}`, {
     method: "PUT",
     headers: {
@@ -109,7 +107,7 @@ const editTask = async (taskId, task) => {
   })
 }
 
-const deleteTask = async (taskId) => {
+async function deleteTask(taskId) {
   openConfirmActionModal()
   confirmActionModal.innerHTML =
     `<main class="modalContent">
@@ -121,7 +119,7 @@ const deleteTask = async (taskId) => {
     </main>`
 }
 
-const confirmDelete = async (taskId) => {
+async function confirmDelete(taskId) {
   await fetch(`http://localhost:3000/tasks/${taskId}`, {
     method: "DELETE"
   })
@@ -133,21 +131,10 @@ const confirmDelete = async (taskId) => {
 // start of tasks functions
 //
 const taskTable = document.getElementById('taskTable')
-const showFilters = document.getElementById('showTaskFilters')
-const taskFilters = document.getElementById('taskFiltersButtons')
+const taskFilters = document.getElementById('tasksFilters')
 let currentPage = 1
 
-function openTaskFilters() {
-  if (taskFilters.style.display === "none") {
-    taskFilters.style.display = "flex"
-    showFilters.style.width = "auto"
-  } else if (taskFilters.style.display === "flex") {
-    taskFilters.style.display = "none"
-    showFilters.style.width = "23.68%"
-  }
-}
-
-const getTasksArray = async () => {
+async function getTasksArray() {
   const data = await fetch(`http://localhost:3000/tasks/`)
   const tasks = await data.json()
   return tasks
@@ -179,47 +166,47 @@ function tableTempalte(table, tasks) {
   })
 }
 
-const addFilterType = async (filterType) => {
-  if (!taskTable.classList.contains(filterType) || taskTable.classList.contains('search')) {
-    taskTable.className = filterType
+async function addFilterType(filterType) {
+  if (!taskFilters.classList.contains(filterType) || taskFilters.classList.contains('search')) {
+    taskFilters.className = filterType
     currentPage = 1
     return printTasks(currentPage, itensPerPage)
   } else {
-    taskTable.className = 'noFilters'
+    taskFilters.className = 'noFilters'
     currentPage = 1
     return printTasks(currentPage, itensPerPage)
   }
 }
 
-const tasksFilter = async () => {
+async function tasksFilter() {
   let tasks = await getTasksArray()
   const todayDate = new Date()
-  if (taskTable.classList.contains('forToday')) {
+  if (taskFilters.classList.contains('forToday')) {
     const dateValue = todayDate.toISOString().slice(0, 10).replaceAll('/', '-')
     tasks = tasks.filter((task) => {
       return task.Date === dateValue
     })
     return tasks
   }
-  else if (taskTable.classList.contains('Concluída')) {
+  else if (taskFilters.classList.contains('concluded')) {
     tasks = tasks.filter((task) => {
       return task.Status === 'Concluída'
     })
     return tasks
   }
-  else if (taskTable.classList.contains('Em-andamento')) {
+  else if (taskFilters.classList.contains('in-work')) {
     tasks = tasks.filter((task) => {
       return task.Status === 'Em andamento'
     })
     return tasks
   }
-  else if (taskTable.classList.contains('Paralisada')) {
+  else if (taskFilters.classList.contains('stopped')) {
     tasks = tasks.filter((task) => {
       return task.Status === 'Paralisada'
     })
     return tasks
   }
-  else if (taskTable.classList.contains('late')) {
+  else if (taskFilters.classList.contains('late')) {
     tasks = tasks.filter((task) => {
       return task.Status !== 'Concluída'
     })
@@ -229,25 +216,58 @@ const tasksFilter = async () => {
     })
     return tasks
   }
-  else if (taskTable.classList.contains('search')) {
-    console.log('teste');
+  else if (taskFilters.classList.contains('search')) {
     searchBarValue = document.getElementById('searchBar').value.toLowerCase()
-    console.log(searchBarValue);
     tasks = tasks.filter((task) => {
       return task.Description.toLowerCase().includes(searchBarValue)
     })
-    console.log(tasks);
     return tasks
   }
-  else if (taskTable.classList.contains('noFilters')) {
+  else if (taskFilters.classList.contains('noFilters')) {
     return tasks
   }
-
   return tasks
 }
 
-const itensPerPage = 10
-const pageNavigate = async (type) => {
+async function addSortType(sortType) {
+  if (!taskTable.classList.contains(sortType)) {
+    taskTable.className = sortType
+    return printTasks(currentPage, itensPerPage)
+  } else {
+    taskTable.className = ''
+    return printTasks(currentPage, itensPerPage)
+  }
+}
+
+async function tasksSort() {
+  let tasks = await tasksFilter()
+  if (taskTable.classList.contains('number')) {
+    tasks.sort(function (a, b) {
+      return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
+    })
+  } else if (taskTable.classList.contains('description')) {
+    tasks.sort(function (a, b) {
+      return a.Description < b.Description ? -1 : a.Description > b.Description ? 1 : 0
+    })
+  } else if (taskTable.classList.contains('date')) {
+    tasks.forEach(task => {
+      let date = new Date(task.Date)
+      task.Date = date.valueOf()
+    });
+    tasks.sort(function (a, b) {
+      return a.Date < b.Date ? -1 : a.Date > b.Date ? 1 : 0
+    })
+  } else if (taskTable.classList.contains('status')) {
+    tasks.sort(function (a, b) {
+      return a.Status < b.Status ? -1 : a.Status > b.Status ? 1 : 0
+    })
+  }
+  return tasks
+}
+
+
+const itensPerPage = 8
+async function pageNavigate(type) {
   const filteredTasks = await tasksFilter()
   maxPage = Math.ceil(filteredTasks.length / itensPerPage)
   if (type === "next" && currentPage < maxPage) {
@@ -260,22 +280,19 @@ const pageNavigate = async (type) => {
 }
 
 
-const printTasks = async (currentPage, itensPerPage) => {
-  const filteredTasks = await tasksFilter()
+async function printTasks(currentPage, itensPerPage) {
+  const tasks = await tasksSort()
   const firstIndex = (currentPage - 1) * itensPerPage
   const lastIndex = firstIndex + itensPerPage
-  const page = filteredTasks.slice(firstIndex, lastIndex)
+  const page = tasks.slice(firstIndex, lastIndex)
   taskTable.innerHTML = ""
   tableTempalte(taskTable, page)
 }
 
-const pageOnLoad = async () => {
+async function pageOnLoad() {
   printTasks(1, itensPerPage)
 }
 
-  // tasks.sort(function (a, b) {
-  //   return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
-  // })
 
 // const indexByNumber = async (number) => {
 //   const tasks = await getTasksArray()

@@ -45,20 +45,20 @@
       <section id="tasksFilters">
           <button id="forToday" class="button" type="button" onclick="addFilterType('forToday')">Hoje</button>
           <button id="late" class="button" type="button" onclick="addFilterType('late')">Atrasadas</button>
-          <button id="Concluída" class="button" type="button" onclick="addFilterType('Concluída')">Concluída</button>
-          <button id="Em-andamento" class="button" type="button" onclick="addFilterType('Em-andamento')">Em
+          <button id="Concluída" class="button" type="button" onclick="addFilterType('concluded')">Concluída</button>
+          <button id="Em-andamento" class="button" type="button" onclick="addFilterType('in-work')">Em
             andamento</button>
-            <button id="Paralisada" class="button" type="button" onclick="addFilterType('Paralisada')">Paralisada</button>
+            <button id="Paralisada" class="button" type="button" onclick="addFilterType('stopped')">Paralisada</button>
             <input id="searchBar" class="button" name="seachBar" type="text" placeholder="pesquisar"
               oninput="addFilterType('search')">
       </section>
       <table class="table">
         <thead>
           <tr>
-            <th scope="col">Núm</th>
-            <th scope="col">Descrição</th>
-            <th scope="col">Data de entrega</th>
-            <th scope="col">Status</th>
+            <th scope="col" class="pointer" onclick="addSortType('number')">Núm</th>
+            <th scope="col" class="pointer" onclick="addSortType('description')">Descrição</th>
+            <th scope="col" class="pointer" onclick="addSortType('date')">Data de entrega</th>
+            <th scope="col" class="pointer" onclick="addSortType('status')">Status</th>
             <th scope="col">Ação</th>
           </tr>
         </thead>
@@ -66,8 +66,8 @@
         </tbody>
       </table>
       <div id="tableNav">
-        <button id="previousPage" class="button" type="button" onclick="pageNavigate('previous',6)">anterior</button>
-        <button id="nextPage" class="button" type="button" onclick="pageNavigate('next',6)">próxima</button>
+        <button id="previousPage" class="button" type="button" onclick="pageNavigate('previous')">anterior</button>
+        <button id="nextPage" class="button" type="button" onclick="pageNavigate('next')">próxima</button>
       </div>
       <section id="taskModal" class="modalContainer" style="display: none">
         <main>

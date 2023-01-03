@@ -15,7 +15,7 @@
       "id": 2
     },
     {
-      "Number": "3",
+      "Number": "7",
       "Description": "Criar banco de dados",
       "Date": "2022-12-25",
       "Status": "Concluída",
@@ -46,14 +46,14 @@
       "Number": "7",
       "Description": "Adicionar Dark Mode",
       "Date": "2022-12-14",
-      "Status": "Concluída",
+      "Status": "Paralisada",
       "id": 7
     },
     {
       "Number": "8",
       "Description": "Adicionar ordenação",
       "Date": "2022-12-15",
-      "Status": "Concluída",
+      "Status": "Paralisada",
       "id": 8
     },
     {
@@ -74,7 +74,7 @@
       "Number": "11",
       "Description": "Função que organiza números repetidos",
       "Date": "2023-01-15",
-      "Status": "Em andamento",
+      "Status": "Paralisada",
       "id": 11
     },
     {
@@ -83,34 +83,6 @@
       "Date": "2022-12-15",
       "Status": "Concluída",
       "id": 12
-    },
-    {
-      "Number": "13",
-      "Description": "testeteste",
-      "Date": "",
-      "Status": "Em andamento",
-      "id": 13
-    },
-    {
-      "Number": "14",
-      "Description": "teste hoje",
-      "Date": "2022-12-21",
-      "Status": "Em andamento",
-      "id": 14
-    },
-    {
-      "Number": "15",
-      "Description": "teste muito doido",
-      "Date": "2022-12-21",
-      "Status": "Concluída",
-      "id": 15
-    },
-    {
-      "Number": "16",
-      "Description": "Bloquear botões clicados",
-      "Date": "2022-12-30",
-      "Status": "Em andamento",
-      "id": 16
     }
   ]
 }
