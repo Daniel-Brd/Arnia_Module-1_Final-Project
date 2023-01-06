@@ -1,23 +1,35 @@
 
 // start of modal functions 
 //
+const addTaskButton = document.getElementById('addTask')
+const closeTaskButton = document.querySelector('.cancelModal')
 const taskModal = document.getElementById('taskModal')
 const confirmActionModal = document.getElementById('confirmActionModal')
 let currentTask = null
 
-function openTaskModal() {
+async function openTask() {
+  document.getElementById('numberInput').setAttribute('placeholder', `${await maxTaskNumber()}`)
+  document.getElementById('numberInput').setAttribute('max', `${await maxTaskNumber()}`)
   taskModal.style.display = "block"
 }
 
-function closeTaskModal() {
+addTaskButton.addEventListener('click', () => {
+  openTask()
+})
+
+function closeTask() {
   taskModal.style.display = "none"
 }
 
-function openConfirmActionModal() {
+closeTaskButton.addEventListener('click', () => {
+  cancelModal()
+})
+
+function openConfirmAction() {
   confirmActionModal.style.display = "block"
 }
 
-function closeConfirmActionModal() {
+function closeConfirmAction() {
   confirmActionModal.style.display = "none"
 }
 
@@ -31,8 +43,8 @@ function clearForm() {
 
 function cancelModal() {
   clearForm()
-  closeTaskModal()
-  closeConfirmActionModal()
+  closeTask()
+  closeConfirmAction()
 }
 
 async function editTaskModal(taskId) {
@@ -42,7 +54,7 @@ async function editTaskModal(taskId) {
   document.getElementById('descriptionInput').value = currentTask.Description
   document.getElementById('dateInput').value = currentTask.Date
   document.getElementById('statusInput').value = currentTask.Status
-  openTaskModal()
+  openTask()
 }
 //
 // end of modal functions
@@ -68,15 +80,23 @@ taskForm.addEventListener('submit', (event) => {
   submitTask(task)
 })
 
+
 async function submitTask(task) {
-  if (currentTask === null) {
-    await createTask(task)
-  } else {
-    await editTask(currentTask.id, task)
+  let validate = await validateTask()
+  if (validate === 'error') {
+    return
   }
-  clearForm()
-  closeTaskModal
-  location.reload()
+  else if (currentTask === null) {
+    await createTask(task)
+    clearForm()
+    closeTask
+    location.reload()
+  } else if (currentTask !== null) {
+    await editTask(currentTask.id, task)
+    clearForm()
+    closeTask
+    location.reload()
+  }
 }
 
 async function createTask(task) {
@@ -108,12 +128,12 @@ async function editTask(taskId, task) {
 }
 
 async function deleteTask(taskId) {
-  openConfirmActionModal()
+  openConfirmAction()
   confirmActionModal.innerHTML =
     `<main class="modalContent">
       <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
       <section class="modalButtons">
-        <div id="cancelModal" class="cancelModal" onclick="cancelModal()">cancelar</div>
+        <div id="cancelModal" class="cancelModal" onclick="cancelModal()">Cancelar</div>
         <button id="confirmDelete" type="button" class="button" onclick="confirmDelete(${taskId})">Sim</button>
       </section>
     </main>`
@@ -127,12 +147,16 @@ async function confirmDelete(taskId) {
 }
 //
 // end of database functions
-
+//
+//
+//
+//
+//
+//
+//
 // start of tasks functions
 //
-const taskTable = document.getElementById('taskTable')
-const taskFilters = document.getElementById('tasksFilters')
-let currentPage = 1
+const tasksTable = document.getElementById('tasksTable')
 
 async function getTasksArray() {
   const data = await fetch(`http://localhost:3000/tasks/`)
@@ -140,11 +164,10 @@ async function getTasksArray() {
   return tasks
 }
 
-function tableTempalte(table, tasks) {
-  tasks.forEach((task) => {
-    const date = new Date(task.Date)
-    return table.innerHTML = table.innerHTML +
-      `<tr>
+function tableTemplate(task) {
+  const date = new Date(task.Date)
+  return tasksTable.innerHTML = tasksTable.innerHTML +
+    `<tr>
       <td id="taskNumber" class="taskCell" scope="row">${task.Number}</th>
       <td id="taskDescription" class="taskCell">${task.Description}</td>
       <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR", { timeZone: "Europe/London" })}</td>
@@ -163,134 +186,94 @@ function tableTempalte(table, tasks) {
         </i>
       </td>
     </tr>`
+}
+
+async function maxTaskNumber() {
+  let tasks = await getTasksArray()
+  let tasksNumbers = tasks.map((task) => {
+    return task.Number
+  })
+  let max = tasksNumbers.reduce(function (a, b) {
+    return Math.max(a, b);
+  });
+  return max + 1
+}
+
+async function findRepeatedNumber() {
+  let tasks = await getTasksArray()
+  let maxNumber = await maxTaskNumber()
+  maxNumber = maxNumber.toString()
+  let numberInputValue = document.getElementById('numberInput').value
+
+  if (currentTask !== null) {
+    const repeatedNumberTask = tasks.filter(task => {
+      if (task.Number === numberInputValue && task.Number !== currentTask.Number && task.Number !== maxNumber) {
+        return task.Number
+      }
+    })
+    if (repeatedNumberTask.length > 0) {
+      return repeatedNumberTask[0].Number
+    } else {
+      return false
+    }
+  } else {
+    const repeatedNumberTask = tasks.filter(task => {
+      if (task.Number === numberInputValue && task.Number !== maxNumber) {
+        return task.Number
+      }
+    })
+    if (repeatedNumberTask.length > 0) {
+      return repeatedNumberTask[0].Number
+    } else {
+      return false
+    }
+  }
+
+}
+
+
+
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+async function validateTask() {
+  const repeatedNumber = await findRepeatedNumber()
+  const numberInputError = document.getElementById('numberInputError')
+  if (repeatedNumber !== false) {
+    numberInputError.style.display = "block"
+    setTimeout(() => { numberInputError.style.display = 'none'; }, 3000)
+    numberInputError.innerHTML = `Já existe uma tarefa com o número ${repeatedNumber}.`
+    return 'error'
+  }
+}
+
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+
+async function printTasks(tasks) {
+  tasksTable.innerHTML = ""
+  tasks.forEach((task) => {
+    tableTemplate(task)
   })
 }
 
-async function addFilterType(filterType) {
-  if (!taskFilters.classList.contains(filterType) || taskFilters.classList.contains('search')) {
-    taskFilters.className = filterType
-    currentPage = 1
-    return printTasks(currentPage, itensPerPage)
-  } else {
-    taskFilters.className = 'noFilters'
-    currentPage = 1
-    return printTasks(currentPage, itensPerPage)
-  }
-}
-
-async function tasksFilter() {
-  let tasks = await getTasksArray()
-  const todayDate = new Date()
-  if (taskFilters.classList.contains('forToday')) {
-    const dateValue = todayDate.toISOString().slice(0, 10).replaceAll('/', '-')
-    tasks = tasks.filter((task) => {
-      return task.Date === dateValue
-    })
-    return tasks
-  }
-  else if (taskFilters.classList.contains('concluded')) {
-    tasks = tasks.filter((task) => {
-      return task.Status === 'Concluída'
-    })
-    return tasks
-  }
-  else if (taskFilters.classList.contains('in-work')) {
-    tasks = tasks.filter((task) => {
-      return task.Status === 'Em andamento'
-    })
-    return tasks
-  }
-  else if (taskFilters.classList.contains('stopped')) {
-    tasks = tasks.filter((task) => {
-      return task.Status === 'Paralisada'
-    })
-    return tasks
-  }
-  else if (taskFilters.classList.contains('late')) {
-    tasks = tasks.filter((task) => {
-      return task.Status !== 'Concluída'
-    })
-    tasks = tasks.filter((task) => {
-      const taskDate = new Date(task.Date)
-      return taskDate.valueOf() < todayDate.valueOf()
-    })
-    return tasks
-  }
-  else if (taskFilters.classList.contains('search')) {
-    searchBarValue = document.getElementById('searchBar').value.toLowerCase()
-    tasks = tasks.filter((task) => {
-      return task.Description.toLowerCase().includes(searchBarValue)
-    })
-    return tasks
-  }
-  else if (taskFilters.classList.contains('noFilters')) {
-    return tasks
-  }
-  return tasks
-}
-
-async function addSortType(sortType) {
-  if (!taskTable.classList.contains(sortType)) {
-    taskTable.className = sortType
-    return printTasks(currentPage, itensPerPage)
-  } else {
-    taskTable.className = ''
-    return printTasks(currentPage, itensPerPage)
-  }
-}
-
-async function tasksSort() {
-  let tasks = await tasksFilter()
-  if (taskTable.classList.contains('number')) {
-    tasks.sort(function (a, b) {
-      return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
-    })
-  } else if (taskTable.classList.contains('description')) {
-    tasks.sort(function (a, b) {
-      return a.Description < b.Description ? -1 : a.Description > b.Description ? 1 : 0
-    })
-  } else if (taskTable.classList.contains('date')) {
-    tasks.forEach(task => {
-      let date = new Date(task.Date)
-      task.Date = date.valueOf()
-    });
-    tasks.sort(function (a, b) {
-      return a.Date < b.Date ? -1 : a.Date > b.Date ? 1 : 0
-    })
-  } else if (taskTable.classList.contains('status')) {
-    tasks.sort(function (a, b) {
-      return a.Status < b.Status ? -1 : a.Status > b.Status ? 1 : 0
-    })
-  }
-  return tasks
-}
-
-
-const itensPerPage = 8
-async function pageNavigate(type) {
-  const filteredTasks = await tasksFilter()
-  maxPage = Math.ceil(filteredTasks.length / itensPerPage)
-  if (type === "next" && currentPage < maxPage) {
-    currentPage = currentPage + 1
-  }
-  else if (type === "previous" && currentPage > 1) {
-    currentPage = currentPage - 1
-  }
-  printTasks(currentPage, itensPerPage)
-}
-
-
-async function printTasks(currentPage, itensPerPage) {
-  const tasks = await tasksSort()
-  const firstIndex = (currentPage - 1) * itensPerPage
-  const lastIndex = firstIndex + itensPerPage
-  const page = tasks.slice(firstIndex, lastIndex)
-  taskTable.innerHTML = ""
-  tableTempalte(taskTable, page)
-}
-
 async function pageOnLoad() {
-  printTasks(1, itensPerPage)
+  let tasks = await getTasksArray()
+  printTasks(tasks)
 }
 
 

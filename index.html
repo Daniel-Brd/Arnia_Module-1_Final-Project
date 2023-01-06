@@ -37,7 +37,7 @@
           </svg>
           Gerenciador de Tarefas
         </h1>
-        <button id="addTask" class="button" type="button" onclick="openTaskModal()">
+        <button id="addTask" class="button" type="button">
           + Adicionar nova tarefa
         </button>
       </div>
@@ -45,10 +45,10 @@
       <section id="tasksFilters">
           <button id="forToday" class="button" type="button" onclick="addFilterType('forToday')">Hoje</button>
           <button id="late" class="button" type="button" onclick="addFilterType('late')">Atrasadas</button>
-          <button id="Concluída" class="button" type="button" onclick="addFilterType('concluded')">Concluída</button>
-          <button id="Em-andamento" class="button" type="button" onclick="addFilterType('in-work')">Em
+          <button id="concluded" class="button" type="button" >Concluída</button>
+          <button id="in-work" class="button" type="button" onclick="addFilterType('in-work')">Em
             andamento</button>
-            <button id="Paralisada" class="button" type="button" onclick="addFilterType('stopped')">Paralisada</button>
+            <button id="stopped" class="button" type="button" onclick="addFilterType('stopped')">Paralisada</button>
             <input id="searchBar" class="button" name="seachBar" type="text" placeholder="pesquisar"
               oninput="addFilterType('search')">
       </section>
@@ -62,7 +62,7 @@
             <th scope="col">Ação</th>
           </tr>
         </thead>
-        <tbody id="taskTable">
+        <tbody id="tasksTable">
         </tbody>
       </table>
       <div id="tableNav">
@@ -71,31 +71,35 @@
       </div>
       <section id="taskModal" class="modalContainer" style="display: none">
         <main>
-          <form id="taskForm" class="modalContent" method="post">
+          <form id="taskForm" class="modalContent" method="post" >
             <h1 id="taskTitle" class="title">Adicionar nova tarefa</h1>
             <section class="formulary">
-              <label for="numberInput">Número</label>
-              <input id="numberInput" class="bigInput" name="numberInput" type="number" min="0" />
+              <div>
+                <label for="numberInput">Número</label>
+                <input id="numberInput" class="input bigInput " name="numberInput" type="number" min="1" required/>
+                <span id="numberInputError" class="errorModal" style="display: none;"></span>
+              </div>
               <label for="descriptionInput">Descrição</label>
-              <input id="descriptionInput" class="bigInput" name="descriptionInput" type="text" />
+              <input id="descriptionInput" class="input bigInput" name="descriptionInput" type="text" required/>
               <label for="dateInput">Data</label>
-              <input id="dateInput" class="smallInput" name="dateInput" type="date" />
+              <input id="dateInput" class="input smallInput" name="dateInput" type="date" required/>
               <label for="statusInput">Status</label>
-              <select id="statusInput" class="smallInput" name="statusInput">
+              <select id="statusInput" class="input smallInput" name="statusInput" required>
                 <option value="none" disabled selected></option>
                 <option value="Concluída">Concluída</option>
                 <option value="Em andamento">Em andamento</option>
-                <option value="Paralisada">Paralisada</option>
+                <option value="Paralisada" on>Paralisada</option>
               </select>
             </section>
             <section class="modalButtons">
-              <div id="cancelModal" class="cancelModal" onclick="cancelModal()">Cancelar</div>
+              <div id="cancelModal" class="cancelModal">Cancelar</div>
               <button type="submit" class="button">Salvar</button>
             </section>
           </form>
         </main>
       </section>
       <section id="confirmActionModal" class="modalContainer" style="display: none">
+      </section>
     </main>
     </main>
       <svg id="rightBar" width="265" height="634" viewBox="0 0 265 634" fill="none" xmlns="http://www.w3.org/2000/svg">
