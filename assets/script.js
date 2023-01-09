@@ -242,6 +242,7 @@ async function findRepeatedNumber() {
 //implementando
 //implementando
 //implementando
+
 async function validateTask() {
   const repeatedNumber = await findRepeatedNumber()
   const numberInputError = document.getElementById('numberInputError')
@@ -250,6 +251,28 @@ async function validateTask() {
     setTimeout(() => { numberInputError.style.display = 'none'; }, 3000)
     numberInputError.innerHTML = `Já existe uma tarefa com o número ${repeatedNumber}.`
     return 'error'
+  }
+}
+
+
+
+async function orderByNumber(tasks) {
+  const numberHeader = document.getElementById('numberHeader')
+  if (numberHeader.classList.contains('decreasing')) {
+    await tasks.sort((a, b) => {
+      return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
+    })
+    numberHeader.classList.remove('decreasing')
+    numberHeader.classList.add('increasing')
+    return tasks
+  }
+  else if (numberHeader.classList.contains('increasing')) {
+    await tasks.sort((a, b) => {
+      return parseInt(a.Number) < parseInt(b.Number) ? 1 : parseInt(a.Number) > parseInt(b.Number) ? -1 : 0
+    })
+    numberHeader.classList.remove('increasing')
+    numberHeader.classList.add('decreasing')
+    return tasks
   }
 }
 
