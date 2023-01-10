@@ -158,8 +158,8 @@ async function confirmDelete(taskId) {
 //
 const tasksTable = document.getElementById('tasksTable')
 
-async function getTasksArray() {
-  const data = await fetch(`http://localhost:3000/tasks/`)
+async function getTasksArray(filterType) {
+  const data = await fetch(`http://localhost:3000/tasks`)
   const tasks = await data.json()
   return tasks
 }
@@ -256,24 +256,56 @@ async function validateTask() {
 
 
 
-async function orderByNumber(tasks) {
-  const numberHeader = document.getElementById('numberHeader')
-  if (numberHeader.classList.contains('decreasing')) {
-    await tasks.sort((a, b) => {
-      return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
+
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+//implementando
+
+function filterTasks(tasks) {
+  const todayDate = new Date()
+  if (tasksTable.classList.contains('forToday')) {
+    const dateValue = todayDate.toISOString().slice(0, 10).replaceAll('/', '-')
+    tasks = tasks.filter((task) => {
+      return task.Date === dateValue
     })
-    numberHeader.classList.remove('decreasing')
-    numberHeader.classList.add('increasing')
     return tasks
   }
-  else if (numberHeader.classList.contains('increasing')) {
-    await tasks.sort((a, b) => {
-      return parseInt(a.Number) < parseInt(b.Number) ? 1 : parseInt(a.Number) > parseInt(b.Number) ? -1 : 0
+  else if (tasksTable.classList.contains('concluded')) {
+    tasks = tasks.filter((task) => {
+      return task.Status === 'Concluída'
     })
-    numberHeader.classList.remove('increasing')
-    numberHeader.classList.add('decreasing')
     return tasks
   }
+  else if (tasksTable.classList.contains('in-work')) {
+    tasks = tasks.filter((task) => {
+      return task.Status === 'Em andamento'
+    })
+    return tasks
+  }
+  else if (tasksTable.classList.contains('stopped')) {
+    tasks = tasks.filter((task) => {
+      return task.Status === 'Paralisada'
+    })
+    return tasks
+  }
+  else if (tasksTable.classList.contains('late')) {
+    tasks = tasks.filter((task) => {
+      return task.Status !== 'Concluída'
+    })
+    tasks = tasks.filter((task) => {
+      const taskDate = new Date(task.Date)
+      return taskDate.valueOf() < todayDate.valueOf()
+    })
+    return tasks
+  }
+  return tasks
 }
 
 //implementando
@@ -286,8 +318,198 @@ async function orderByNumber(tasks) {
 //implementando
 //implementando
 //implementando
+let tasksTableClasses = ['numberAscending', null, null]
 
-async function printTasks(tasks) {
+function searchTasks(tasks) {
+  if (tasksTable.classList.contains('search')) {
+    searchBarValue = searchBar.value.toLowerCase()
+    tasks = tasks.filter((task) => {
+      return task.Description.toLowerCase().includes(searchBarValue)
+    })
+    // const data = await fetch(`http://localhost:3000/tasks?q=${searchBarValue}`)
+    // const tasks = await data.json()
+    return tasks
+  }
+  return tasks
+}
+
+function orderTasks(tasks) {
+  //number sort
+  if (tasksTable.classList.contains('numberAscending')) {
+    tasks.sort((a, b) => {
+      return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
+    })
+    return tasks
+  } else if (tasksTable.classList.contains('numberDescending')) {
+    tasks.sort((a, b) => {
+      return parseInt(a.Number) < parseInt(b.Number) ? 1 : parseInt(a.Number) > parseInt(b.Number) ? -1 : 0
+    })
+    return tasks
+  }
+  // description sort
+  else if (tasksTable.classList.contains('descriptionAscending')) {
+    tasks.sort((a, b) => {
+      return a.Description < b.Description ? -1 : a.Description > b.Description ? 1 : 0
+    })
+    return tasks
+  } else if (tasksTable.classList.contains('descriptionDescending')) {
+    tasks.sort((a, b) => {
+      return a.Description < b.Description ? 1 : a.Description > b.Description ? -1 : 0
+    })
+    return tasks
+  }
+  // date sort
+  else if (tasksTable.classList.contains('dateAscending')) {
+    tasks.sort((a, b) => {
+      return a.Date < b.Date ? -1 : a.Date > b.Date ? 1 : 0
+    })
+    return tasks
+  } else if (tasksTable.classList.contains('dateDescending')) {
+    tasks.sort((a, b) => {
+      return a.Date < b.Date ? 1 : a.Date > b.Date ? -1 : 0
+    })
+    return tasks
+  }
+  // status sort
+  else if (tasksTable.classList.contains('statusAscending')) {
+    tasks.sort((a, b) => {
+      return a.Status < b.Status ? -1 : a.Status > b.Status ? 1 : 0
+    })
+    return tasks
+  } else if (tasksTable.classList.contains('statusDescending')) {
+    tasks.sort((a, b) => {
+      return a.Status < b.Status ? 1 : a.Status > b.Status ? -1 : 0
+    })
+    return tasks
+  }
+  return tasks
+}
+
+const numberHeader = document.getElementById('numberHeader')
+const descriptionHeader = document.getElementById('descriptionHeader')
+const dateHeader = document.getElementById('dateHeader')
+const statusHeader = document.getElementById('statusHeader')
+
+numberHeader.addEventListener('click', function () {
+  if (tasksTableClasses[0] !== 'numberAscending') {
+    tasksTableClasses.splice(0, 1, 'numberAscending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  else if (tasksTableClasses[0] === 'numberAscending') {
+    tasksTableClasses.splice(0, 1, 'numberDescending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+descriptionHeader.addEventListener('click', function () {
+  if (tasksTableClasses[0] !== 'descriptionAscending') {
+    tasksTableClasses.splice(0, 1, 'descriptionAscending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[0] === 'descriptionAscending') {
+    tasksTableClasses.splice(0, 1, 'descriptionDescending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+dateHeader.addEventListener('click', function () {
+  if (tasksTableClasses[0] !== 'dateAscending') {
+    tasksTableClasses.splice(0, 1, 'dateAscending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[0] === 'dateAscending') {
+    tasksTableClasses.splice(0, 1, 'dateDescending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+statusHeader.addEventListener('click', function () {
+  if (tasksTableClasses[0] !== 'statusAscending') {
+    tasksTableClasses.splice(0, 1, 'statusAscending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[0] === 'statusAscending') {
+    tasksTableClasses.splice(0, 1, 'statusDescending')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+
+
+const forTodayBtn = document.getElementById('for-today')
+const lateBtn = document.getElementById('late')
+const concludedBtn = document.getElementById('concluded')
+const inWorkBtn = document.getElementById('in-work')
+const stoppedBtn = document.getElementById('stopped')
+const searchBar = document.getElementById('searchBar')
+
+forTodayBtn.addEventListener('click', function () {
+  if (tasksTableClasses[1] !== 'forToday') {
+    tasksTableClasses.splice(1, 1, 'forToday')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[1] === 'forToday') {
+    tasksTableClasses.splice(1, 1, 'allTasks')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+lateBtn.addEventListener('click', function () {
+  if (tasksTableClasses[1] !== 'late') {
+    tasksTableClasses.splice(1, 1, 'late')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[1] === 'late') {
+    tasksTableClasses.splice(1, 1, 'allTasks')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+concludedBtn.addEventListener('click', function () {
+  if (tasksTableClasses[1] !== 'concluded') {
+    tasksTableClasses.splice(1, 1, 'concluded')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[1] === 'concluded') {
+    tasksTableClasses.splice(1, 1, 'allTasks')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+inWorkBtn.addEventListener('click', function () {
+  if (tasksTableClasses[1] !== 'in-work') {
+    tasksTableClasses.splice(1, 1, 'in-work')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[1] === 'in-work') {
+    tasksTableClasses.splice(1, 1, 'allTasks')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+stoppedBtn.addEventListener('click', function () {
+  if (tasksTableClasses[1] !== 'stopped') {
+    tasksTableClasses.splice(1, 1, 'stopped')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  } else if (tasksTableClasses[1] === 'stopped') {
+    tasksTableClasses.splice(1, 1, 'allTasks')
+    tasksTable.classList = tasksTableClasses.join(' ')
+  }
+  printTasks()
+})
+
+searchBar.addEventListener('input', function () {
+  tasksTableClasses.splice(2, 2, 'search')
+  tasksTable.classList = tasksTableClasses.join(' ')
+  printTasks()
+})
+
+async function printTasks() {
+  let tasks = await getTasksArray()
+  tasks = orderTasks(tasks)
+  tasks = filterTasks(tasks)
+  tasks = searchTasks(tasks)
   tasksTable.innerHTML = ""
   tasks.forEach((task) => {
     tableTemplate(task)
@@ -295,8 +517,7 @@ async function printTasks(tasks) {
 }
 
 async function pageOnLoad() {
-  let tasks = await getTasksArray()
-  printTasks(tasks)
+  printTasks()
 }
 
 

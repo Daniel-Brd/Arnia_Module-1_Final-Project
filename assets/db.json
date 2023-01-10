@@ -15,7 +15,7 @@
       "id": 2
     },
     {
-      "Number": "3",
+      "Number": "13",
       "Description": "Criar banco de dados",
       "Date": "2022-12-25",
       "Status": "Concluída",
@@ -29,7 +29,7 @@
       "id": 4
     },
     {
-      "Number": "5",
+      "Number": "14",
       "Description": "Criar APIs Reset",
       "Date": "2022-12-01",
       "Status": "Concluída",
@@ -53,11 +53,11 @@
       "Number": "8",
       "Description": "Adicionar ordenação",
       "Date": "2022-12-15",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 8
     },
     {
-      "Number": "9",
+      "Number": "15",
       "Description": "Adicionar filtros",
       "Date": "2022-12-16",
       "Status": "Paralisada",
@@ -74,7 +74,7 @@
       "Number": "11",
       "Description": "Função que organiza números repetidos",
       "Date": "2023-01-15",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 11
     },
     {

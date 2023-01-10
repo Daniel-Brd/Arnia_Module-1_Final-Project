@@ -43,26 +43,25 @@
       </div>
     <main class="tableContainer">
       <section id="tasksFilters">
-          <button id="forToday" class="button" type="button" onclick="addFilterType('forToday')">Hoje</button>
-          <button id="late" class="button" type="button" onclick="addFilterType('late')">Atrasadas</button>
-          <button id="concluded" class="button" type="button" >Concluída</button>
-          <button id="in-work" class="button" type="button" onclick="addFilterType('in-work')">Em
+          <button id="for-today" class="button" type="button">Hoje</button>
+          <button id="late" class="button" type="button">Atrasadas</button>
+          <button id="concluded" class="button" type="button">Concluída</button>
+          <button id="in-work" class="button" type="button">Em
             andamento</button>
-            <button id="stopped" class="button" type="button" onclick="addFilterType('stopped')">Paralisada</button>
-            <input id="searchBar" class="button" name="seachBar" type="text" placeholder="pesquisar"
-              oninput="addFilterType('search')">
+            <button id="stopped" class="button" type="button">Paralisada</button>
+            <input id="searchBar" class="button" name="seachBar" type="text" placeholder="pesquisar">
       </section>
       <table class="table">
         <thead>
           <tr>
-            <th id="numberHeader" scope="col" class="pointer" >Núm</th>
-            <th id="descriptionHeader" scope="col" class="pointer" >Descrição</th>
-            <th id="dateHeader" scope="col" class="pointer" >Data de entrega</th>
-            <th id="statusHeader" scope="col" class="pointer" >Status</th>
+            <th id="numberHeader" scope="col" class="pointer" >Núm <img src="assets/images/up-down_icon.png"></th>
+            <th id="descriptionHeader" scope="col" class="pointer" >Descrição <img src="assets/images/up-down_icon.png"></th>
+            <th id="dateHeader" scope="col" class="pointer" >Data de entrega <img src="assets/images/up-down_icon.png"></th>
+            <th id="statusHeader" scope="col" class="pointer" >Status <img src="assets/images/up-down_icon.png"></th>
             <th id="actionHeader" scope="col">Ação</th>
           </tr>
         </thead>
-        <tbody id="tasksTable">
+        <tbody id="tasksTable" class="">
         </tbody>
       </table>
       <div id="tableNav">
