@@ -19,6 +19,7 @@
   padding: 0;
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
+  list-style: none;
 }
 
 #leftBar {
@@ -75,73 +76,10 @@
   color: var(--light-background);
 }
 
-.tableContainer{
-  display: flex;
-  flex-direction: column;
-  gap: 2.31vh;
-}
-
-#tasksFilters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  gap: 0.5em;
-  font-size: 14rem;
-}
-
 #tableNav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.table {
-  font-size: 16rem;
-  background-color: var(--light-background);
-  width: 100%;
-  color: var(--dark-purple);
-  border-radius: 10px;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.table td,
-.table th {
-  height: var(--tr-size);
-  padding: 0.5em 0.75em;
-}
-
-.table th img{
-  height: 1em;
-  padding-top: 0.25em;
-}
-
-.table tbody tr:hover {
-  box-shadow: inset 0 0 0 var(--tr-size) var(--transparent-black);
-}
-
-.table tbody tr:nth-child(even) {
-  background-color: #F5F5F5;
-}
-
-.table tbody tr:nth-child(even):hover {
-  box-shadow: inset 0 0 0 var(--tr-size) var(--transparent-black);
-}
-
-tr .Concluída {
-  color: #27AE60;
-  font-weight: 400;
-}
-
-tr .Em-andamento {
-  color: #F8B04E;
-  font-weight: 400;
-}
-
-tr .Paralisada {
-  color: #EB5757;
-  font-weight: 400;
 }
 
 .pointer {
@@ -179,48 +117,6 @@ tr .Paralisada {
   box-shadow: 4px 4px 8px var(--transparent-black);
   border-radius: 10px;
   font-weight: 500;
-}
-
-.formulary {
-  font-size: 14rem;
-  display: flex;
-  flex-direction: column;
-  width: 38.54vw;
-  padding-bottom: 4.13vh;
-}
-
-.formulary div{
-  position: relative;
-}
-
-form label {
-  padding: 10px 0 5px 0;
-  width: 100%;
-  color: var(--main-purple);
-  font-size: inherit;
-}
-
-form input,
-form select {
-  color: var(--dark-purple);
-  border: 1px solid #000000;
-  border-radius: 10px;
-  padding: 1em;
-  width: 100%;
-  font-size: inherit;
-  cursor: text;
-}
-
-.smallInput {
-  width: 40%;
-  min-width: 12em;
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-#dateInput {
-  text-align: center;
-  text-transform: uppercase;
 }
 
 .modalButtons {
@@ -282,11 +178,6 @@ form select {
     margin: 0;
     max-height: 100vh;
   }
-
-#tasksFilters{
-  justify-content: center;
-  gap: 1em;
-}
 
   .modalContainer {
     text-align: center;

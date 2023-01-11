@@ -231,18 +231,6 @@ async function findRepeatedNumber() {
 
 }
 
-
-
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-
 async function validateTask() {
   const repeatedNumber = await findRepeatedNumber()
   const numberInputError = document.getElementById('numberInputError')
@@ -254,21 +242,17 @@ async function validateTask() {
   }
 }
 
-
-
-
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-
+let tasksTableClasses = ['numberDescending', 'allTasks', undefined]
 function filterTasks(tasks) {
+  const allTasks = document.getElementById('all')
+  const forTodayBtn = document.getElementById('for-today')
+  const lateBtn = document.getElementById('late')
+  const concludedBtn = document.getElementById('concluded')
+  const inWorkBtn = document.getElementById('in-work')
+  const stoppedBtn = document.getElementById('stopped')
+  const searchBar = document.getElementById('searchBar')
+  const selectedFilter = document.getElementById('selected-filter')
+  const filtersDropdown = document.querySelector('.filters-dropdown')
   const todayDate = new Date()
   if (tasksTable.classList.contains('forToday')) {
     const dateValue = todayDate.toISOString().slice(0, 10).replaceAll('/', '-')
@@ -305,20 +289,75 @@ function filterTasks(tasks) {
     })
     return tasks
   }
+  else if (tasksTable.classList.contains('allTasks')) {
+    selectedFilter.value = 'Filtros'
+    return tasks
+  }
+
+  function dropdownDisplay() {
+    filtersDropdown.classList.toggle('active')
+  }
+
+  selectedFilter.addEventListener('click', function () {
+    dropdownDisplay()
+  }
+  )
+
+  allTasks.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'allTasks')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    dropdownDisplay()
+    printTasks()
+  })
+
+  forTodayBtn.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'forToday')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Hoje'
+    dropdownDisplay()
+    printTasks()
+  })
+
+  lateBtn.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'late')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Atrasadas'
+    dropdownDisplay()
+    printTasks()
+  })
+
+  concludedBtn.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'concluded')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Concluídas'
+    dropdownDisplay()
+    printTasks()
+  })
+
+  inWorkBtn.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'in-work')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Em andamento'
+    dropdownDisplay()
+    printTasks()
+  })
+
+  stoppedBtn.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'stopped')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Paralisada'
+    dropdownDisplay()
+    printTasks()
+  })
+
+  searchBar.addEventListener('input', function () {
+    tasksTableClasses.splice(2, 2, 'search')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    printTasks()
+  })
+
   return tasks
 }
-
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-//implementando
-let tasksTableClasses = ['numberAscending', null, null]
 
 function searchTasks(tasks) {
   if (tasksTable.classList.contains('search')) {
@@ -326,15 +365,17 @@ function searchTasks(tasks) {
     tasks = tasks.filter((task) => {
       return task.Description.toLowerCase().includes(searchBarValue)
     })
-    // const data = await fetch(`http://localhost:3000/tasks?q=${searchBarValue}`)
-    // const tasks = await data.json()
     return tasks
   }
   return tasks
 }
 
 function orderTasks(tasks) {
-  //number sort
+  const numberHeader = document.getElementById('numberHeader')
+  const descriptionHeader = document.getElementById('descriptionHeader')
+  const dateHeader = document.getElementById('dateHeader')
+  const statusHeader = document.getElementById('statusHeader')
+
   if (tasksTable.classList.contains('numberAscending')) {
     tasks.sort((a, b) => {
       return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
@@ -346,7 +387,7 @@ function orderTasks(tasks) {
     })
     return tasks
   }
-  // description sort
+
   else if (tasksTable.classList.contains('descriptionAscending')) {
     tasks.sort((a, b) => {
       return a.Description < b.Description ? -1 : a.Description > b.Description ? 1 : 0
@@ -358,7 +399,7 @@ function orderTasks(tasks) {
     })
     return tasks
   }
-  // date sort
+
   else if (tasksTable.classList.contains('dateAscending')) {
     tasks.sort((a, b) => {
       return a.Date < b.Date ? -1 : a.Date > b.Date ? 1 : 0
@@ -370,7 +411,7 @@ function orderTasks(tasks) {
     })
     return tasks
   }
-  // status sort
+
   else if (tasksTable.classList.contains('statusAscending')) {
     tasks.sort((a, b) => {
       return a.Status < b.Status ? -1 : a.Status > b.Status ? 1 : 0
@@ -382,128 +423,53 @@ function orderTasks(tasks) {
     })
     return tasks
   }
+
+  numberHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'numberAscending') {
+      tasksTableClasses.splice(0, 1, 'numberAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    else if (tasksTableClasses[0] === 'numberAscending') {
+      tasksTableClasses.splice(0, 1, 'numberDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
+
+  descriptionHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'descriptionAscending') {
+      tasksTableClasses.splice(0, 1, 'descriptionAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    } else if (tasksTableClasses[0] === 'descriptionAscending') {
+      tasksTableClasses.splice(0, 1, 'descriptionDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
+
+  dateHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'dateAscending') {
+      tasksTableClasses.splice(0, 1, 'dateAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    } else if (tasksTableClasses[0] === 'dateAscending') {
+      tasksTableClasses.splice(0, 1, 'dateDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
+
+  statusHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'statusAscending') {
+      tasksTableClasses.splice(0, 1, 'statusAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    } else if (tasksTableClasses[0] === 'statusAscending') {
+      tasksTableClasses.splice(0, 1, 'statusDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
   return tasks
 }
-
-const numberHeader = document.getElementById('numberHeader')
-const descriptionHeader = document.getElementById('descriptionHeader')
-const dateHeader = document.getElementById('dateHeader')
-const statusHeader = document.getElementById('statusHeader')
-
-numberHeader.addEventListener('click', function () {
-  if (tasksTableClasses[0] !== 'numberAscending') {
-    tasksTableClasses.splice(0, 1, 'numberAscending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  else if (tasksTableClasses[0] === 'numberAscending') {
-    tasksTableClasses.splice(0, 1, 'numberDescending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-descriptionHeader.addEventListener('click', function () {
-  if (tasksTableClasses[0] !== 'descriptionAscending') {
-    tasksTableClasses.splice(0, 1, 'descriptionAscending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[0] === 'descriptionAscending') {
-    tasksTableClasses.splice(0, 1, 'descriptionDescending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-dateHeader.addEventListener('click', function () {
-  if (tasksTableClasses[0] !== 'dateAscending') {
-    tasksTableClasses.splice(0, 1, 'dateAscending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[0] === 'dateAscending') {
-    tasksTableClasses.splice(0, 1, 'dateDescending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-statusHeader.addEventListener('click', function () {
-  if (tasksTableClasses[0] !== 'statusAscending') {
-    tasksTableClasses.splice(0, 1, 'statusAscending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[0] === 'statusAscending') {
-    tasksTableClasses.splice(0, 1, 'statusDescending')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-
-
-const forTodayBtn = document.getElementById('for-today')
-const lateBtn = document.getElementById('late')
-const concludedBtn = document.getElementById('concluded')
-const inWorkBtn = document.getElementById('in-work')
-const stoppedBtn = document.getElementById('stopped')
-const searchBar = document.getElementById('searchBar')
-
-forTodayBtn.addEventListener('click', function () {
-  if (tasksTableClasses[1] !== 'forToday') {
-    tasksTableClasses.splice(1, 1, 'forToday')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[1] === 'forToday') {
-    tasksTableClasses.splice(1, 1, 'allTasks')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-lateBtn.addEventListener('click', function () {
-  if (tasksTableClasses[1] !== 'late') {
-    tasksTableClasses.splice(1, 1, 'late')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[1] === 'late') {
-    tasksTableClasses.splice(1, 1, 'allTasks')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-concludedBtn.addEventListener('click', function () {
-  if (tasksTableClasses[1] !== 'concluded') {
-    tasksTableClasses.splice(1, 1, 'concluded')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[1] === 'concluded') {
-    tasksTableClasses.splice(1, 1, 'allTasks')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-inWorkBtn.addEventListener('click', function () {
-  if (tasksTableClasses[1] !== 'in-work') {
-    tasksTableClasses.splice(1, 1, 'in-work')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[1] === 'in-work') {
-    tasksTableClasses.splice(1, 1, 'allTasks')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-stoppedBtn.addEventListener('click', function () {
-  if (tasksTableClasses[1] !== 'stopped') {
-    tasksTableClasses.splice(1, 1, 'stopped')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  } else if (tasksTableClasses[1] === 'stopped') {
-    tasksTableClasses.splice(1, 1, 'allTasks')
-    tasksTable.classList = tasksTableClasses.join(' ')
-  }
-  printTasks()
-})
-
-searchBar.addEventListener('input', function () {
-  tasksTableClasses.splice(2, 2, 'search')
-  tasksTable.classList = tasksTableClasses.join(' ')
-  printTasks()
-})
 
 async function printTasks() {
   let tasks = await getTasksArray()
@@ -519,53 +485,3 @@ async function printTasks() {
 async function pageOnLoad() {
   printTasks()
 }
-
-
-// const indexByNumber = async (number) => {
-//   const tasks = await getTasksArray()
-//   const index = tasks.findIndex((task) => {
-//     if (task.Number === number.toString()) {
-//       return true
-//     }
-//   })
-//   return index
-// }
-
-
-
-
-
-
-// let taskNumbers = {}
-// function findRepeated() {
-//     tasks.forEach((task) => {
-//         taskNumbers[task.Number] = (taskNumbers[task.Number] || 0) + 1
-//     })
-//     const repeatedValue = Object.keys(taskNumbers).find((number) => {
-//         return taskNumbers[number] > 1
-//     })
-//     return repeatedValue
-// }
-// console.log(parseInt(findRepeated()))
-
-// function taskOrganizer() {
-//     // função que converte Number de string para num
-//     tasks.forEach(task => {
-//         task.Number = parseInt(task.Number)
-//     })
-//     // função que remove e armazena a ultima posição do vetor, no caso, a nova tarefa
-//     lastTask = tasks.pop()
-//     // função que altera a numeração de todas as tarefa com numero maior que o da nova tarefa
-//     tasks.forEach(task => {
-//         if (task.Number >= lastTask.Number) {
-//             task.Number = task.Number + 1
-//         } else {
-//             task.Number = task.Number
-//         }
-//     })
-//     // função que concatena a nova tarefa ao array com numeração alterada
-//     tasks.push(lastTask)
-//     // função que ordena numeralmente as tarefas
-// }
-// taskOrganizer()
-// console.log(tasks)

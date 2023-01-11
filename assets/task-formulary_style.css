@@ -1,0 +1,41 @@
+.formulary {
+  font-size: 14rem;
+  display: flex;
+  flex-direction: column;
+  width: 38.54vw;
+  padding-bottom: 4.13vh;
+}
+
+.formulary div{
+  position: relative;
+}
+
+form label {
+  padding: 10px 0 5px 0;
+  width: 100%;
+  color: var(--main-purple);
+  font-size: inherit;
+}
+
+form input,
+form select {
+  color: var(--dark-purple);
+  border: 1px solid #000000;
+  border-radius: 10px;
+  padding: 1em;
+  width: 100%;
+  font-size: inherit;
+  cursor: text;
+}
+
+.smallInput {
+  width: 40%;
+  min-width: 12em;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+#dateInput {
+  text-align: center;
+  text-transform: uppercase;
+}

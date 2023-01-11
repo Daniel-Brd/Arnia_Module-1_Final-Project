@@ -7,6 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gerenciador de Tarefas</title>
   <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/table_style.css">
+  <link rel="stylesheet" href="assets/task-formulary_style.css">
+  <link rel="stylesheet" href="assets/filters_style.css">
 </head>
 
 <body onload="pageOnLoad()">
@@ -41,15 +44,20 @@
           + Adicionar nova tarefa
         </button>
       </div>
-    <main class="tableContainer">
-      <section id="tasksFilters">
-          <button id="for-today" class="button" type="button">Hoje</button>
-          <button id="late" class="button" type="button">Atrasadas</button>
-          <button id="concluded" class="button" type="button">Concluída</button>
-          <button id="in-work" class="button" type="button">Em
-            andamento</button>
-            <button id="stopped" class="button" type="button">Paralisada</button>
-            <input id="searchBar" class="button" name="seachBar" type="text" placeholder="pesquisar">
+    <main class="table-container">
+      <section id="tasks-filters">
+        <div class="filters-dropdown">
+            <input id="selected-filter" type="text" class="" value="Filtros" readonly>
+          <ul id="task-filters">
+            <li id="all" type="button">Limpar Filtros</li>
+            <li id="for-today" type="button">Hoje</li>
+            <li id="late" type="button">Atrasadas</li>
+            <li id="concluded" type="button">Concluída</li>
+            <li id="in-work" type="button">Em andamento</li>
+            <li id="stopped" type="button">Paralisada</li>
+          </ul>
+        </div>
+          <input id="searchBar" class="" name="seachBar" type="text" placeholder="pesquisar">
       </section>
       <table class="table">
         <thead>
@@ -61,7 +69,7 @@
             <th id="actionHeader" scope="col">Ação</th>
           </tr>
         </thead>
-        <tbody id="tasksTable" class="">
+        <tbody id="tasksTable">
         </tbody>
       </table>
       <div id="tableNav">
