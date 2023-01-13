@@ -309,12 +309,11 @@ async function maxTaskNumber() {
   let tasksNumbers = await tasks.map((task) => {
     return task.Number
   })
-  console.log(tasksNumbers.length);
   if (tasksNumbers.length > 0) {
     let max = await tasksNumbers.reduce(function (a, b) {
       return Math.max(a, b)
     })
-    return max + 1
+    return parseInt(max) + 1
   } else {
     return 1
   }
