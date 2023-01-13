@@ -15,7 +15,7 @@
       "id": 2
     },
     {
-      "Number": "7",
+      "Number": "13",
       "Description": "Criar banco de dados",
       "Date": "2022-12-25",
       "Status": "Concluída",
@@ -29,7 +29,7 @@
       "id": 4
     },
     {
-      "Number": "5",
+      "Number": "14",
       "Description": "Criar APIs Reset",
       "Date": "2022-12-01",
       "Status": "Concluída",
@@ -46,18 +46,18 @@
       "Number": "7",
       "Description": "Adicionar Dark Mode",
       "Date": "2022-12-14",
-      "Status": "Paralisada",
+      "Status": "Em andamento",
       "id": 7
     },
     {
       "Number": "8",
       "Description": "Adicionar ordenação",
       "Date": "2022-12-15",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 8
     },
     {
-      "Number": "9",
+      "Number": "15",
       "Description": "Adicionar filtros",
       "Date": "2022-12-16",
       "Status": "Concluída",
@@ -74,15 +74,50 @@
       "Number": "11",
       "Description": "Função que organiza números repetidos",
       "Date": "2023-01-15",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 11
     },
     {
       "Number": "12",
-      "Description": "Imlementar função \"Pesquisar\"",
-      "Date": "2022-12-15",
+      "Description": "Implementar Validação no Formulário",
+      "Date": "2023-01-06",
+      "Status": "Em andamento",
+      "id": 13
+    },
+    {
+      "Number": "16",
+      "Description": "teste",
+      "Date": "2023-01-10",
+      "Status": "Em andamento",
+      "id": 14
+    },
+    {
+      "Number": "17",
+      "Description": "teste hoje",
+      "Date": "2023-01-11",
+      "Status": "Em andamento",
+      "id": 15
+    },
+    {
+      "Number": "18",
+      "Description": "aaaaaa",
+      "Date": "2023-01-11",
+      "Status": "Em andamento",
+      "id": 16
+    },
+    {
+      "Number": "19",
+      "Description": "teste",
+      "Date": "2023-01-11",
       "Status": "Concluída",
-      "id": 12
+      "id": 17
+    },
+    {
+      "Number": "20",
+      "Description": "asdasd",
+      "Date": "2023-01-11",
+      "Status": "Concluída",
+      "id": 18
     }
   ]
 }

@@ -1,62 +1,196 @@
 
+let currentTask = null
+const taskModal = document.getElementById('taskModal')
+const confirmActionModal = document.getElementById('confirm-action-modal')
+
+const taskTitle = document.getElementById('task-title')
+const numberInput = document.getElementById('number-input')
+const descriptionInput = document.getElementById('description-input')
+const dateInput = document.getElementById('date-input')
+const selectedStatus = document.getElementById('selected-status')
+
+const taskForm = document.getElementById('taskForm')
+const statusDropdown = document.getElementById('status-dropdown')
+const concludedSelect = document.getElementById('concluded-status-select')
+const inWorkSelect = document.getElementById('in-work-status-select')
+const stoppedSelect = document.getElementById('stopped-status-select')
+
+
+const tasksTable = document.getElementById('tasksTable')
+
+const filtersDropdown = document.getElementById('filters-dropdown')
+const selectedFilter = document.getElementById('selected-filter')
+const allTasksFilterButton = document.getElementById('all-filter-button')
+const forTodayFilterButton = document.getElementById('for-today-filter-button')
+const lateFilterButton = document.getElementById('late-filter-button')
+const concludedFilterButton = document.getElementById('concluded-filter-button')
+const inWorkFilterButton = document.getElementById('in-work-filter-button')
+const stoppedFilterButton = document.getElementById('stopped-filter-button')
+const searchBar = document.getElementById('searchBar')
+
+const numberHeader = document.getElementById('number-header')
+const descriptionHeader = document.getElementById('description-header')
+const dateHeader = document.getElementById('date-header')
+const statusHeader = document.getElementById('status-header')
+
+const NUMBER_REQUIRED = 'Por favor informe o número da tarefa'
+const DESCRIPTION_REQUIRED = 'Por favor informe a descrição da tarefa'
+const DATE_REQUIRED = 'Por favor defina um prazo de conclusão para a tarefa'
+
+
+
 // start of modal functions 
 //
-const taskModal = document.getElementById('taskModal')
-const confirmActionModal = document.getElementById('confirmActionModal')
-let currentTask = null
-
-function openTaskModal() {
+async function openTask() {
+  numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
+  numberInput.setAttribute('max', `${await maxTaskNumber()}`)
   taskModal.style.display = "block"
 }
 
-function closeTaskModal() {
+function closeTask() {
   taskModal.style.display = "none"
 }
 
-function openConfirmActionModal() {
+function openConfirmAction() {
   confirmActionModal.style.display = "block"
 }
 
-function closeConfirmActionModal() {
+function closeConfirmAction() {
   confirmActionModal.style.display = "none"
 }
 
 function clearForm() {
-  document.getElementById('taskTitle').innerHTML = 'Adicionar nova tarefa'
-  document.getElementById('numberInput').value = ''
-  document.getElementById('descriptionInput').value = ''
-  document.getElementById('dateInput').value = ''
-  document.getElementById('statusInput').value = ''
+  taskTitle.innerHTML = 'Adicionar nova tarefa'
+  numberInput.value = ''
+  descriptionInput.value = ''
+  dateInput.value = ''
+  selectedStatus.value = ''
+  let errorText = document.querySelectorAll('.error-text')
+  errorText.forEach(element => {
+    return element.innerHTML = ''
+  });
 }
 
 function cancelModal() {
   clearForm()
-  closeTaskModal()
-  closeConfirmActionModal()
+  closeTask()
+  closeConfirmAction()
 }
 
 async function editTaskModal(taskId) {
   currentTask = await getTask(taskId)
-  document.getElementById('taskTitle').innerHTML = 'Editar tarefa'
-  document.getElementById('numberInput').value = currentTask.Number
-  document.getElementById('descriptionInput').value = currentTask.Description
-  document.getElementById('dateInput').value = currentTask.Date
-  document.getElementById('statusInput').value = currentTask.Status
-  openTaskModal()
+  taskTitle.innerHTML = 'Editar tarefa'
+  numberInput.value = currentTask.Number
+  descriptionInput.value = currentTask.Description
+  dateInput.value = currentTask.Date
+  selectedStatus.value = currentTask.Status
+  openTask()
 }
 //
 // end of modal functions
 
 // start of database functions
 //
-const taskForm = document.getElementById('taskForm')
 
-taskForm.addEventListener('submit', (event) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function submitTask(task) {
+  if (currentTask === null) {
+    await createTask(task)
+    clearForm()
+    closeTask
+    location.reload()
+  } else if (currentTask !== null) {
+    await editTask(currentTask.id, task)
+    clearForm()
+    closeTask
+    location.reload()
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function showMessage(input, message, type) {
+  const text = input.parentNode.querySelector('small')
+  text.innerText = message
+  input.className = `${input.className} ${type ? 'success' : 'error'}`
+  return type
+}
+
+async function showError(input, message) {
+  return showMessage(input, message, false)
+}
+async function showSucces(input) {
+  return showMessage(input, '', true)
+}
+
+async function hasValue(input, message) {
+  if (input.value === '') {
+    return showError(input, message)
+  } else {
+    return showSucces(input)
+  }
+}
+
+async function validateNumber(input, requiredMessage) {
+  const repeatedNumber = await findRepeatedNumber()
+  if (repeatedNumber !== false) {
+    await showError(input, `Já existe uma tarefa com o número ${repeatedNumber}.`)
+    return false
+  }
+
+  if (!await hasValue(input, requiredMessage)) {
+    return false
+  }
+  return true
+}
+
+
+numberInput.addEventListener('blur', async function () {
+  await validateNumber(numberInput, NUMBER_REQUIRED)
+})
+
+descriptionInput.addEventListener('blur', async function () {
+  await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
+})
+
+dateInput.addEventListener('blur', async function () {
+  await hasValue(dateInput, DATE_REQUIRED)
+})
+
+
+
+taskForm.addEventListener('submit', async (event) => {
   event.preventDefault()
-  const taskNumber = taskForm.elements['numberInput'].value
-  const taskDescription = taskForm.elements['descriptionInput'].value
-  const taskDate = taskForm.elements['dateInput'].value
-  const taskStatus = taskForm.elements['statusInput'].value
+  const taskNumber = taskForm.elements['number-input'].value
+  const taskDescription = taskForm.elements['description-input'].value
+  const taskDate = taskForm.elements['date-input'].value
+  const taskStatus = taskForm.elements['selected-status'].value
+
+  const numberValid = await validateNumber(numberInput, NUMBER_REQUIRED)
+  const descriptionValid = await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
+  const dateValid = await hasValue(dateInput, DATE_REQUIRED)
 
   const task = {
     Number: taskNumber,
@@ -65,19 +199,22 @@ taskForm.addEventListener('submit', (event) => {
     Status: taskStatus,
   }
 
-  submitTask(task)
+  if (numberValid && descriptionValid && dateValid) {
+    return submitTask(task)
+  }
 })
 
-async function submitTask(task) {
-  if (currentTask === null) {
-    await createTask(task)
-  } else {
-    await editTask(currentTask.id, task)
-  }
-  clearForm()
-  closeTaskModal
-  location.reload()
-}
+
+
+
+
+
+
+
+
+
+
+
 
 async function createTask(task) {
   await fetch(`http://localhost:3000/tasks`, {
@@ -91,8 +228,8 @@ async function createTask(task) {
 }
 
 async function getTask(taskId) {
-  const data = await fetch(`http://localhost:3000/tasks/${taskId}`)
-  const task = await data.json()
+  const response = await fetch(`http://localhost:3000/tasks/${taskId}`)
+  const task = await response.json()
   return task
 }
 
@@ -108,12 +245,12 @@ async function editTask(taskId, task) {
 }
 
 async function deleteTask(taskId) {
-  openConfirmActionModal()
+  openConfirmAction()
   confirmActionModal.innerHTML =
     `<main class="modalContent">
       <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
-      <section class="modalButtons">
-        <div id="cancelModal" class="cancelModal" onclick="cancelModal()">cancelar</div>
+      <section class="modal-buttons">
+        <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
         <button id="confirmDelete" type="button" class="button" onclick="confirmDelete(${taskId})">Sim</button>
       </section>
     </main>`
@@ -127,27 +264,29 @@ async function confirmDelete(taskId) {
 }
 //
 // end of database functions
-
+//
+//
+//
+//
+//
+//
+//
 // start of tasks functions
 //
-const taskTable = document.getElementById('taskTable')
-const taskFilters = document.getElementById('tasksFilters')
-let currentPage = 1
 
 async function getTasksArray() {
-  const data = await fetch(`http://localhost:3000/tasks/`)
-  const tasks = await data.json()
+  const response = await fetch(`http://localhost:3000/tasks`)
+  const tasks = await response.json()
   return tasks
 }
 
-function tableTempalte(table, tasks) {
-  tasks.forEach((task) => {
-    const date = new Date(task.Date)
-    return table.innerHTML = table.innerHTML +
-      `<tr>
+function tableTemplate(task) {
+  const date = new Date(task.Date + "T00:00:00.000-03:00")
+  return tasksTable.innerHTML = tasksTable.innerHTML +
+    `<tr>
       <td id="taskNumber" class="taskCell" scope="row">${task.Number}</th>
       <td id="taskDescription" class="taskCell">${task.Description}</td>
-      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR", { timeZone: "Europe/London" })}</td>
+      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR")}</td>
       <td id="taskStatus" class="taskCell ${task.Status.replace(' ', '-')}">${task.Status}</td>
       <td id="taskFunctions" class="taskCell">
         <i id="editButton" class="pointer" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -163,182 +302,303 @@ function tableTempalte(table, tasks) {
         </i>
       </td>
     </tr>`
-  })
 }
 
-async function addFilterType(filterType) {
-  if (!taskFilters.classList.contains(filterType) || taskFilters.classList.contains('search')) {
-    taskFilters.className = filterType
-    currentPage = 1
-    return printTasks(currentPage, itensPerPage)
-  } else {
-    taskFilters.className = 'noFilters'
-    currentPage = 1
-    return printTasks(currentPage, itensPerPage)
-  }
-}
-
-async function tasksFilter() {
+async function maxTaskNumber() {
   let tasks = await getTasksArray()
-  const todayDate = new Date()
-  if (taskFilters.classList.contains('forToday')) {
-    const dateValue = todayDate.toISOString().slice(0, 10).replaceAll('/', '-')
+  let tasksNumbers = tasks.map((task) => {
+    return task.Number
+  })
+  let max = tasksNumbers.reduce(function (a, b) {
+    return Math.max(a, b)
+  })
+  return max + 1
+}
+
+async function findRepeatedNumber() {
+  let tasks = await getTasksArray()
+  let maxNumber = await maxTaskNumber()
+  maxNumber = maxNumber.toString()
+  let numberInputValue = numberInput.value
+
+  if (currentTask !== null) {
+    const repeatedNumberTask = tasks.filter(task => {
+      if (task.Number === numberInputValue && task.Number !== currentTask.Number && task.Number !== maxNumber) {
+        return task.Number
+      }
+    })
+    if (repeatedNumberTask.length > 0) {
+      return repeatedNumberTask[0].Number
+    } else {
+      return false
+    }
+  } else {
+    const repeatedNumberTask = tasks.filter(task => {
+      if (task.Number === numberInputValue && task.Number !== maxNumber) {
+        return task.Number
+      }
+    })
+    if (repeatedNumberTask.length > 0) {
+      return repeatedNumberTask[0].Number
+    } else {
+      return false
+    }
+  }
+
+}
+
+let tasksTableClasses = ['number-ascending', 'all-tasks', undefined]
+function filterTasks(tasks) {
+
+  let todayDate = new Date().toISOString().slice(0, 10)
+  todayDate = new Date(todayDate + "T00:00:00.000-03:00")
+
+  if (tasksTable.classList.contains('for-today')) {
     tasks = tasks.filter((task) => {
-      return task.Date === dateValue
+      let thisTaskDate = new Date(task.Date + "T00:00:00.000-03:00")
+      return (todayDate.toLocaleDateString()) === thisTaskDate.toLocaleDateString()
     })
     return tasks
   }
-  else if (taskFilters.classList.contains('concluded')) {
+  else if (tasksTable.classList.contains('concluded')) {
     tasks = tasks.filter((task) => {
       return task.Status === 'Concluída'
     })
     return tasks
   }
-  else if (taskFilters.classList.contains('in-work')) {
+  else if (tasksTable.classList.contains('in-work')) {
     tasks = tasks.filter((task) => {
       return task.Status === 'Em andamento'
     })
     return tasks
   }
-  else if (taskFilters.classList.contains('stopped')) {
+  else if (tasksTable.classList.contains('stopped')) {
     tasks = tasks.filter((task) => {
       return task.Status === 'Paralisada'
     })
     return tasks
   }
-  else if (taskFilters.classList.contains('late')) {
+  else if (tasksTable.classList.contains('late')) {
     tasks = tasks.filter((task) => {
       return task.Status !== 'Concluída'
     })
     tasks = tasks.filter((task) => {
-      const taskDate = new Date(task.Date)
-      return taskDate.valueOf() < todayDate.valueOf()
+      let thisTaskDate = new Date(task.Date + "T00:00:00.000-03:00")
+      return thisTaskDate.valueOf() < (todayDate.valueOf() - 86400000)
     })
     return tasks
   }
-  else if (taskFilters.classList.contains('search')) {
-    searchBarValue = document.getElementById('searchBar').value.toLowerCase()
+  else if (tasksTable.classList.contains('all-tasks')) {
+    selectedFilter.value = 'Filtros'
+    return tasks
+  }
+
+  function dropdownDisplay(dropdown) {
+    if (dropdown === 'filters') {
+      filtersDropdown.classList.toggle('active')
+    } else if (dropdown === 'status') {
+      statusDropdown.classList.toggle('active')
+    }
+  }
+
+  selectedFilter.addEventListener('click', function () {
+    dropdownDisplay('filters')
+  }
+  )
+
+  selectedStatus.addEventListener('click', function () {
+    dropdownDisplay('status')
+  })
+
+  concludedSelect.addEventListener('click', function () {
+    selectedStatus.value = 'Concluída'
+    dropdownDisplay('status')
+  })
+
+  inWorkSelect.addEventListener('click', function () {
+    selectedStatus.value = 'Em andamento'
+    dropdownDisplay('status')
+  })
+
+  stoppedSelect.addEventListener('click', function () {
+    selectedStatus.value = 'Paralisada'
+    dropdownDisplay('status')
+  })
+
+  allTasksFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'all-tasks')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    dropdownDisplay('filters')
+    printTasks()
+  })
+
+  forTodayFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'for-today')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Hoje'
+    dropdownDisplay('filters')
+    printTasks()
+  })
+
+  lateFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'late')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Atrasadas'
+    dropdownDisplay('filters')
+    printTasks()
+  })
+
+  concludedFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'concluded')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Concluídas'
+    dropdownDisplay('filters')
+    printTasks()
+  })
+
+  inWorkFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'in-work')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Em andamento'
+    dropdownDisplay('filters')
+    printTasks()
+  })
+
+  stoppedFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'stopped')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    selectedFilter.value = 'Paralisada'
+    dropdownDisplay('filters')
+    printTasks()
+  })
+
+  searchBar.addEventListener('input', function () {
+    tasksTableClasses.splice(2, 2, 'search')
+    tasksTable.classList = tasksTableClasses.join(' ')
+    printTasks()
+  })
+
+  return tasks
+}
+
+function searchTasks(tasks) {
+  if (tasksTable.classList.contains('search')) {
+    searchBarValue = searchBar.value.toLowerCase()
     tasks = tasks.filter((task) => {
       return task.Description.toLowerCase().includes(searchBarValue)
     })
     return tasks
   }
-  else if (taskFilters.classList.contains('noFilters')) {
-    return tasks
-  }
   return tasks
 }
 
-async function addSortType(sortType) {
-  if (!taskTable.classList.contains(sortType)) {
-    taskTable.className = sortType
-    return printTasks(currentPage, itensPerPage)
-  } else {
-    taskTable.className = ''
-    return printTasks(currentPage, itensPerPage)
-  }
-}
-
-async function tasksSort() {
-  let tasks = await tasksFilter()
-  if (taskTable.classList.contains('number')) {
-    tasks.sort(function (a, b) {
+function orderTasks(tasks) {
+  if (tasksTable.classList.contains('numberAscending')) {
+    tasks.sort((a, b) => {
       return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0
     })
-  } else if (taskTable.classList.contains('description')) {
-    tasks.sort(function (a, b) {
+    return tasks
+  } else if (tasksTable.classList.contains('numberDescending')) {
+    tasks.sort((a, b) => {
+      return parseInt(a.Number) < parseInt(b.Number) ? 1 : parseInt(a.Number) > parseInt(b.Number) ? -1 : 0
+    })
+    return tasks
+  }
+
+  else if (tasksTable.classList.contains('descriptionAscending')) {
+    tasks.sort((a, b) => {
       return a.Description < b.Description ? -1 : a.Description > b.Description ? 1 : 0
     })
-  } else if (taskTable.classList.contains('date')) {
-    tasks.forEach(task => {
-      let date = new Date(task.Date)
-      task.Date = date.valueOf()
-    });
-    tasks.sort(function (a, b) {
+    return tasks
+  } else if (tasksTable.classList.contains('descriptionDescending')) {
+    tasks.sort((a, b) => {
+      return a.Description < b.Description ? 1 : a.Description > b.Description ? -1 : 0
+    })
+    return tasks
+  }
+
+  else if (tasksTable.classList.contains('dateAscending')) {
+    tasks.sort((a, b) => {
       return a.Date < b.Date ? -1 : a.Date > b.Date ? 1 : 0
     })
-  } else if (taskTable.classList.contains('status')) {
-    tasks.sort(function (a, b) {
+    return tasks
+  } else if (tasksTable.classList.contains('dateDescending')) {
+    tasks.sort((a, b) => {
+      return a.Date < b.Date ? 1 : a.Date > b.Date ? -1 : 0
+    })
+    return tasks
+  }
+
+  else if (tasksTable.classList.contains('statusAscending')) {
+    tasks.sort((a, b) => {
       return a.Status < b.Status ? -1 : a.Status > b.Status ? 1 : 0
     })
+    return tasks
+  } else if (tasksTable.classList.contains('statusDescending')) {
+    tasks.sort((a, b) => {
+      return a.Status < b.Status ? 1 : a.Status > b.Status ? -1 : 0
+    })
+    return tasks
   }
+
+  numberHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'numberAscending') {
+      tasksTableClasses.splice(0, 1, 'numberAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    else if (tasksTableClasses[0] === 'numberAscending') {
+      tasksTableClasses.splice(0, 1, 'numberDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
+
+  descriptionHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'descriptionAscending') {
+      tasksTableClasses.splice(0, 1, 'descriptionAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    } else if (tasksTableClasses[0] === 'descriptionAscending') {
+      tasksTableClasses.splice(0, 1, 'descriptionDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
+
+  dateHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'dateAscending') {
+      tasksTableClasses.splice(0, 1, 'dateAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    } else if (tasksTableClasses[0] === 'dateAscending') {
+      tasksTableClasses.splice(0, 1, 'dateDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
+
+  statusHeader.addEventListener('click', function () {
+    if (tasksTableClasses[0] !== 'statusAscending') {
+      tasksTableClasses.splice(0, 1, 'statusAscending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    } else if (tasksTableClasses[0] === 'statusAscending') {
+      tasksTableClasses.splice(0, 1, 'statusDescending')
+      tasksTable.classList = tasksTableClasses.join(' ')
+    }
+    printTasks()
+  })
   return tasks
 }
 
-
-const itensPerPage = 8
-async function pageNavigate(type) {
-  const filteredTasks = await tasksFilter()
-  maxPage = Math.ceil(filteredTasks.length / itensPerPage)
-  if (type === "next" && currentPage < maxPage) {
-    currentPage = currentPage + 1
-  }
-  else if (type === "previous" && currentPage > 1) {
-    currentPage = currentPage - 1
-  }
-  printTasks(currentPage, itensPerPage)
-}
-
-
-async function printTasks(currentPage, itensPerPage) {
-  const tasks = await tasksSort()
-  const firstIndex = (currentPage - 1) * itensPerPage
-  const lastIndex = firstIndex + itensPerPage
-  const page = tasks.slice(firstIndex, lastIndex)
-  taskTable.innerHTML = ""
-  tableTempalte(taskTable, page)
+async function printTasks() {
+  let tasks = await getTasksArray()
+  tasks = orderTasks(tasks)
+  tasks = filterTasks(tasks)
+  tasks = searchTasks(tasks)
+  tasksTable.innerHTML = ""
+  tasks.forEach((task) => {
+    tableTemplate(task)
+  })
 }
 
 async function pageOnLoad() {
-  printTasks(1, itensPerPage)
+  printTasks()
 }
-
-
-// const indexByNumber = async (number) => {
-//   const tasks = await getTasksArray()
-//   const index = tasks.findIndex((task) => {
-//     if (task.Number === number.toString()) {
-//       return true
-//     }
-//   })
-//   return index
-// }
-
-
-
-
-
-
-// let taskNumbers = {}
-// function findRepeated() {
-//     tasks.forEach((task) => {
-//         taskNumbers[task.Number] = (taskNumbers[task.Number] || 0) + 1
-//     })
-//     const repeatedValue = Object.keys(taskNumbers).find((number) => {
-//         return taskNumbers[number] > 1
-//     })
-//     return repeatedValue
-// }
-// console.log(parseInt(findRepeated()))
-
-// function taskOrganizer() {
-//     // função que converte Number de string para num
-//     tasks.forEach(task => {
-//         task.Number = parseInt(task.Number)
-//     })
-//     // função que remove e armazena a ultima posição do vetor, no caso, a nova tarefa
-//     lastTask = tasks.pop()
-//     // função que altera a numeração de todas as tarefa com numero maior que o da nova tarefa
-//     tasks.forEach(task => {
-//         if (task.Number >= lastTask.Number) {
-//             task.Number = task.Number + 1
-//         } else {
-//             task.Number = task.Number
-//         }
-//     })
-//     // função que concatena a nova tarefa ao array com numeração alterada
-//     tasks.push(lastTask)
-//     // função que ordena numeralmente as tarefas
-// }
-// taskOrganizer()
-// console.log(tasks)

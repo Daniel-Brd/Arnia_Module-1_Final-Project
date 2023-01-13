@@ -7,6 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gerenciador de Tarefas</title>
   <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/table_style.css">
+  <link rel="stylesheet" href="assets/task-formulary_style.css">
+  <link rel="stylesheet" href="assets/dropdown_style.css">
 </head>
 
 <body onload="pageOnLoad()">
@@ -37,65 +40,80 @@
           </svg>
           Gerenciador de Tarefas
         </h1>
-        <button id="addTask" class="button" type="button" onclick="openTaskModal()">
+        <button id="add-task" class="button" type="button" onclick="openTask()">
           + Adicionar nova tarefa
         </button>
       </div>
-    <main class="tableContainer">
-      <section id="tasksFilters">
-          <button id="forToday" class="button" type="button" onclick="addFilterType('forToday')">Hoje</button>
-          <button id="late" class="button" type="button" onclick="addFilterType('late')">Atrasadas</button>
-          <button id="Concluída" class="button" type="button" onclick="addFilterType('concluded')">Concluída</button>
-          <button id="Em-andamento" class="button" type="button" onclick="addFilterType('in-work')">Em
-            andamento</button>
-            <button id="Paralisada" class="button" type="button" onclick="addFilterType('stopped')">Paralisada</button>
-            <input id="searchBar" class="button" name="seachBar" type="text" placeholder="pesquisar"
-              oninput="addFilterType('search')">
+    <main class="table-container">
+      <section id="tasks-filters">
+        <div id="filters-dropdown" class="dropdown-menu">
+            <input id="selected-filter" type="text" class="" value="Filtros" readonly>
+          <ul>
+            <li id="all-filter-button" type="button">Limpar Filtros</li>
+            <li id="for-today-filter-button" type="button">Hoje</li>
+            <li id="late-filter-button" type="button">Atrasadas</li>
+            <li id="concluded-filter-button" type="button">Concluída</li>
+            <li id="in-work-filter-button" type="button">Em andamento</li>
+            <li id="stopped-filter-button" type="button">Paralisada</li>
+          </ul>
+        </div>
+          <input id="searchBar" class="" name="seachBar" type="text" placeholder="pesquisar">
       </section>
       <table class="table">
         <thead>
           <tr>
-            <th scope="col" class="pointer" onclick="addSortType('number')">Núm</th>
-            <th scope="col" class="pointer" onclick="addSortType('description')">Descrição</th>
-            <th scope="col" class="pointer" onclick="addSortType('date')">Data de entrega</th>
-            <th scope="col" class="pointer" onclick="addSortType('status')">Status</th>
-            <th scope="col">Ação</th>
+            <th id="number-header" scope="col" class="pointer" >Núm <img src="assets/images/up-down_icon.png"></th>
+            <th id="description-header" scope="col" class="pointer" >Descrição <img src="assets/images/up-down_icon.png"></th>
+            <th id="date-header" scope="col" class="pointer" >Data de entrega <img src="assets/images/up-down_icon.png"></th>
+            <th id="status-header" scope="col" class="pointer" >Status <img src="assets/images/up-down_icon.png"></th>
+            <th id="action-header" scope="col">Ação</th>
           </tr>
         </thead>
-        <tbody id="taskTable">
+        <tbody id="tasksTable">
         </tbody>
       </table>
-      <div id="tableNav">
-        <button id="previousPage" class="button" type="button" onclick="pageNavigate('previous')">anterior</button>
-        <button id="nextPage" class="button" type="button" onclick="pageNavigate('next')">próxima</button>
-      </div>
-      <section id="taskModal" class="modalContainer" style="display: none">
+      <section id="taskModal" class="modal-container" style="display: none">
         <main>
-          <form id="taskForm" class="modalContent" method="post">
-            <h1 id="taskTitle" class="title">Adicionar nova tarefa</h1>
+          <form id="taskForm" class="modalContent" method="post" novalidate >
+            <h1 id="task-title" class="title">Adicionar nova tarefa</h1>
             <section class="formulary">
-              <label for="numberInput">Número</label>
-              <input id="numberInput" class="bigInput" name="numberInput" type="number" min="0" />
-              <label for="descriptionInput">Descrição</label>
-              <input id="descriptionInput" class="bigInput" name="descriptionInput" type="text" />
-              <label for="dateInput">Data</label>
-              <input id="dateInput" class="smallInput" name="dateInput" type="date" />
-              <label for="statusInput">Status</label>
-              <select id="statusInput" class="smallInput" name="statusInput">
-                <option value="none" disabled selected></option>
-                <option value="Concluída">Concluída</option>
-                <option value="Em andamento">Em andamento</option>
-                <option value="Paralisada">Paralisada</option>
-              </select>
+              <div>
+                <label for="number-input">Número</label>
+                <input id="number-input" class=" big-input " name="number-input" type="number" min="1"/>
+                <small class="error-text"></small>
+              </div>
+              <div>
+                <label for="description-input">Descrição</label>
+                <input id="description-input" class=" big-input" name="description-input" type="text"/>
+                <small class="error-text"></small>
+              </div>
+              <div>
+                <label for="date-input">Data</label>
+                <input id="date-input" class=" small-input" name="date-input" type="date"/>
+                <small class="error-text"></small>
+              </div>
+              <div>
+                <label for="selected-status">Status</label>
+                <div id="status-dropdown" class="dropdown-menu small-input">
+                  <input id="selected-status" name="selected-status" type="text" value="Status" autocomplete="off">
+                <ul id="task-status" class="input">
+                  <li id="concluded-status-select" value="concluded">Concluída</li>
+                  <li id="in-work-status-select" value="in-work">Em andamento</li>
+                  <li id="stopped-status-select" value="stopped">Paralisada</li>
+                </ul>
+              </div>
+              <small class="error-text"></small>
+              </div>
             </section>
-            <section class="modalButtons">
-              <div id="cancelModal" class="cancelModal" onclick="cancelModal()">Cancelar</div>
+            <section class="modal-buttons">
+              <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
               <button type="submit" class="button">Salvar</button>
             </section>
           </form>
         </main>
       </section>
-      <section id="confirmActionModal" class="modalContainer" style="display: none">
+      <section id="confirm-action-modal" class="modal-container" style="display: none">
+      </section>
     </main>
     </main>
       <svg id="rightBar" width="265" height="634" viewBox="0 0 265 634" fill="none" xmlns="http://www.w3.org/2000/svg">

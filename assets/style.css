@@ -9,7 +9,8 @@
   --light-yellow: #FBF0E2;
   --light-background: #ffffff;
   --transparent-black: rgba(0, 0, 0, 0.25);
-  --tr-size: 2.5em
+  --tr-size: 2.5em;
+  --error-color: #B00020;
 }
 
 /* Index Style */
@@ -19,6 +20,7 @@
   padding: 0;
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
+  list-style: none;
 }
 
 #leftBar {
@@ -75,68 +77,10 @@
   color: var(--light-background);
 }
 
-.tableContainer{
-  display: flex;
-  flex-direction: column;
-  gap: 2.31vh;
-}
-
-#tasksFilters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  gap: 0.5em;
-  font-size: 14rem;
-}
-
 #tableNav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.table {
-  font-size: 16rem;
-  background-color: var(--light-background);
-  width: 100%;
-  color: var(--dark-purple);
-  border-radius: 10px;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.table td,
-.table th {
-  height: var(--tr-size);
-  padding: 0.5em 0.75em;
-}
-
-.table tbody tr:hover {
-  box-shadow: inset 0 0 0 var(--tr-size) var(--transparent-black);
-}
-
-.table tbody tr:nth-child(even) {
-  background-color: #F5F5F5;
-}
-
-.table tbody tr:nth-child(even):hover {
-  box-shadow: inset 0 0 0 var(--tr-size) var(--transparent-black);
-}
-
-tr .Concluída {
-  color: #27AE60;
-  font-weight: 400;
-}
-
-tr .Em-andamento {
-  color: #F8B04E;
-  font-weight: 400;
-}
-
-tr .Paralisada {
-  color: #EB5757;
-  font-weight: 400;
 }
 
 .pointer {
@@ -148,13 +92,60 @@ tr .Paralisada {
   gap: 0.75em;
 }
 
+#searchBar{
+  width: 100%;
+  background-color: var(--light-background);
+  border: 1px solid var(--main-purple);
+  border-radius: 20px;
+  padding: 0.5em 2em;
+  font-size: inherit;
+}
+
+#tasks-filters .dropdown-menu{
+  min-width: 30%;
+}
+
+#tasks-filters .dropdown-menu input {
+  background-color: var(--light-background);
+  border: 1px solid var(--main-purple);
+  border-radius: 20px;
+  padding: 0.5em 2em;
+}
+
+#tasks-filters .dropdown-menu ul{
+  top: 3.25em;
+  width: 100%;
+  position: absolute;
+  background-color: var(--light-background);
+  outline: 1px solid var(--main-purple);
+  border-radius: 20px;
+}
+
+#tasks-filters .dropdown-menu ul li:nth-child(1):hover{
+  background-color: var(--main-purple);
+  color: var(--light-background);
+  border-radius: 20px 20px 0 0;
+}
+
+#tasks-filters .dropdown-menu ul li:hover{
+  background-color: var(--main-purple);
+  color: var(--light-background);
+}
+
+#tasks-filters .dropdown-menu ul li:nth-last-child(1):hover{
+  background-color: var(--main-purple);
+  color: var(--light-background);
+  border-radius: 0 0 20px 20px;
+}
+
+
 /*  */
 /* Index Style */
 
 /* Modal Style */
 /*  */
 
-.modalContainer {
+.modal-container {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -164,7 +155,7 @@ tr .Paralisada {
   background-color: var(--transparent-black)
 }
 
-.modalContainer .modalContent {
+.modal-container .modalContent {
   position: absolute;
   transform: translateY(50%)translateX(50%);
   bottom: 50%;
@@ -176,45 +167,7 @@ tr .Paralisada {
   font-weight: 500;
 }
 
-.formulary {
-  font-size: 14rem;
-  display: flex;
-  flex-direction: column;
-  width: 38.54vw;
-  padding-bottom: 4.13vh;
-}
-
-form label {
-  padding: 10px 0 5px 0;
-  width: 100%;
-  color: var(--main-purple);
-  font-size: inherit;
-}
-
-form input,
-form select {
-  color: var(--dark-purple);
-  border: 1px solid #000000;
-  border-radius: 10px;
-  padding: 1em;
-  width: 100%;
-  font-size: inherit;
-  cursor: text;
-}
-
-.smallInput {
-  width: 40%;
-  min-width: 12em;
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-#dateInput {
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.modalButtons {
+.modal-buttons {
   color: #828282;
   display: flex;
   justify-content: space-between;
@@ -223,8 +176,25 @@ form select {
   font-size: 14px;
 }
 
-.modalButtons .cancelModal {
+.modal-buttons .cancel-modal {
   cursor: pointer;
+}
+
+.errorModal{
+  width: max-content;
+  position: absolute;
+  background-color: var(--light-background);
+  left: 50%;
+  transform: translateX(-50%);
+  top: auto;
+  font-size: 14rem;
+  font-weight: 400;
+  text-align: center;
+  border: 0.5px solid black;
+  box-shadow: 4px 4px 4px var(--transparent-black);
+  border-radius: 2.5px;
+  padding: 0.5em;
+  margin-top: 0.25em;
 }
 
 @media (max-width: 768px) {
@@ -257,12 +227,7 @@ form select {
     max-height: 100vh;
   }
 
-#tasksFilters{
-  justify-content: center;
-  gap: 1em;
-}
-
-  .modalContainer {
+  .modal-container {
     text-align: center;
   }
 }
