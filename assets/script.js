@@ -217,7 +217,7 @@ taskForm.addEventListener('submit', async (event) => {
 
 
 async function createTask(task) {
-  await fetch(`http://localhost:3000/tasks`, {
+  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`, {
     method: "POST",
     headers: {
       'Accept': 'application/json, text/plain, */*',
@@ -228,13 +228,13 @@ async function createTask(task) {
 }
 
 async function getTask(taskId) {
-  const response = await fetch(`http://localhost:3000/tasks/${taskId}`)
+  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`)
   const task = await response.json()
   return task
 }
 
 async function editTask(taskId, task) {
-  await fetch(`http://localhost:3000/tasks/${taskId}`, {
+  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
     method: "PUT",
     headers: {
       'Accept': 'application/json, text/plain, */*',
@@ -257,7 +257,7 @@ async function deleteTask(taskId) {
 }
 
 async function confirmDelete(taskId) {
-  await fetch(`http://localhost:3000/tasks/${taskId}`, {
+  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
     method: "DELETE"
   })
   location.reload()
@@ -275,7 +275,7 @@ async function confirmDelete(taskId) {
 //
 
 async function getTasksArray() {
-  const response = await fetch(`http://localhost:3000/tasks`)
+  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`)
   const tasks = await response.json()
   return tasks
 }
