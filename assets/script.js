@@ -42,8 +42,8 @@ const DATE_REQUIRED = 'Por favor defina um prazo de conclusão para a tarefa'
 // start of modal functions 
 //
 async function openTask() {
-  // numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
-  // numberInput.setAttribute('max', `${await maxTaskNumber()}`)
+  numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
+  numberInput.setAttribute('max', `${await maxTaskNumber()}`)
   taskModal.style.display = "block"
 }
 
@@ -217,7 +217,7 @@ taskForm.addEventListener('submit', async (event) => {
 
 
 async function createTask(task) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`, {
+  await fetch(`http://localhost:3000/tasks`, {
     method: "POST",
     headers: {
       'Accept': 'application/json, text/plain, */*',
@@ -228,13 +228,13 @@ async function createTask(task) {
 }
 
 async function getTask(taskId) {
-  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`)
+  const response = await fetch(`http://localhost:3000/tasks/${taskId}`)
   const task = await response.json()
   return task
 }
 
 async function editTask(taskId, task) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
+  await fetch(`http://localhost:3000/tasks/${taskId}`, {
     method: "PUT",
     headers: {
       'Accept': 'application/json, text/plain, */*',
@@ -257,7 +257,7 @@ async function deleteTask(taskId) {
 }
 
 async function confirmDelete(taskId) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
+  await fetch(`http://localhost:3000/tasks/${taskId}`, {
     method: "DELETE"
   })
   location.reload()
@@ -275,7 +275,7 @@ async function confirmDelete(taskId) {
 //
 
 async function getTasksArray() {
-  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`)
+  const response = await fetch(`http://localhost:3000/tasks`)
   const tasks = await response.json()
   return tasks
 }
@@ -304,20 +304,20 @@ function tableTemplate(task) {
     </tr>`
 }
 
-// async function maxTaskNumber() {
-//   let tasks = await getTasksArray()
-//   let tasksNumbers = tasks.map((task) => {
-//     return task.Number
-//   })
-//   let max = tasksNumbers.reduce(function (a, b) {
-//     return Math.max(a, b)
-//   })
-//   return max + 1
-// }
+async function maxTaskNumber() {
+  let tasks = await getTasksArray()
+  let tasksNumbers = tasks.map((task) => {
+    return task.Number
+  })
+  let max = tasksNumbers.reduce(function (a, b) {
+    return Math.max(a, b)
+  })
+  return max + 1
+}
 
 async function findRepeatedNumber() {
   let tasks = await getTasksArray()
-  // let maxNumber = await maxTaskNumber()
+  let maxNumber = await maxTaskNumber()
   maxNumber = maxNumber.toString()
   let numberInputValue = numberInput.value
 
