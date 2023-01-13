@@ -306,10 +306,10 @@ function tableTemplate(task) {
 
 async function maxTaskNumber() {
   let tasks = await getTasksArray()
-  let tasksNumbers = tasks.map((task) => {
+  let tasksNumbers = await tasks.map((task) => {
     return task.Number
   })
-  let max = tasksNumbers.reduce(function (a, b) {
+  let max = await tasksNumbers.reduce(function (a, b) {
     return Math.max(a, b)
   })
   return max + 1
