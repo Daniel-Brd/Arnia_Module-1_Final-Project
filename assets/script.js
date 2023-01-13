@@ -42,8 +42,8 @@ const DATE_REQUIRED = 'Por favor defina um prazo de conclusão para a tarefa'
 // start of modal functions 
 //
 async function openTask() {
-  numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
-  numberInput.setAttribute('max', `${await maxTaskNumber()}`)
+  // numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
+  // numberInput.setAttribute('max', `${await maxTaskNumber()}`)
   taskModal.style.display = "block"
 }
 
@@ -304,20 +304,20 @@ function tableTemplate(task) {
     </tr>`
 }
 
-async function maxTaskNumber() {
-  let tasks = await getTasksArray()
-  let tasksNumbers = tasks.map((task) => {
-    return task.Number
-  })
-  let max = tasksNumbers.reduce(function (a, b) {
-    return Math.max(a, b)
-  })
-  return max + 1
-}
+// async function maxTaskNumber() {
+//   let tasks = await getTasksArray()
+//   let tasksNumbers = tasks.map((task) => {
+//     return task.Number
+//   })
+//   let max = tasksNumbers.reduce(function (a, b) {
+//     return Math.max(a, b)
+//   })
+//   return max + 1
+// }
 
 async function findRepeatedNumber() {
   let tasks = await getTasksArray()
-  let maxNumber = await maxTaskNumber()
+  // let maxNumber = await maxTaskNumber()
   maxNumber = maxNumber.toString()
   let numberInputValue = numberInput.value
 
