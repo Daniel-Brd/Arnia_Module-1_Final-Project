@@ -6,8 +6,9 @@
   padding-bottom: 4.13vh;
 }
 
-.formulary div{
-  position: relative;
+.formulary > div {
+  display: flex;
+  flex-direction: column;
 }
 
 form label {
@@ -17,9 +18,9 @@ form label {
   font-size: inherit;
 }
 
-form input,
-form select {
+form input, form .input {
   color: var(--dark-purple);
+  background-color: var(--light-background);
   border: 1px solid #000000;
   border-radius: 10px;
   padding: 1em;
@@ -28,14 +29,47 @@ form select {
   cursor: text;
 }
 
-.smallInput {
+#status-dropdown .input{
+  padding: 0;
+}
+
+.small-input {
   width: 40%;
   min-width: 12em;
   font-size: inherit;
   font-weight: inherit;
 }
 
-#dateInput {
+#date-input {
   text-align: center;
   text-transform: uppercase;
+}
+
+#status-dropdown{
+  height: 51px;
+}
+
+form .dropdown-menu ul{
+  top: 4.25em;
+}
+
+#status-dropdown ul li:nth-child(1):hover{
+  background-color: var(--main-purple);
+  color: var(--light-background);
+  border-radius: 10px 10px 0 0;
+}
+
+#status-dropdown ul li:hover{
+  background-color: var(--main-purple);
+  color: var(--light-background);
+}
+
+#status-dropdown ul li:nth-last-child(1):hover{
+  background-color: var(--main-purple);
+  color: var(--light-background);
+  border-radius: 0 0 10px 10px;
+}
+
+.error-text{
+  color: var(--error-color)
 }

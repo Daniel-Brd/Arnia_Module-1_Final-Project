@@ -1,0 +1,62 @@
+
+*{
+  font-size: 14rem;
+}
+
+#tasks-filters{
+  display: flex;
+  justify-content: space-between;
+  gap: 2em;
+}
+
+.dropdown-menu{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-menu input {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.dropdown-menu ul{
+  top: 3.25em;
+  width: 100%;
+  position: absolute;
+  display: none;
+}
+
+.dropdown-menu.active ul{
+  display: block;
+}
+
+.dropdown-menu ul li{
+  padding: 0.5em 2em;
+  cursor: pointer;
+}
+
+.dropdown-menu::before{
+content: '';
+position: absolute;
+right: 1em;
+z-index:1;
+width: 0.5em;
+height:0.5em;
+border: 2px solid var(--main-purple);
+border-top: 2px solid var(--light-background);
+border-right: 2px solid var(--light-background);
+rotate:-45deg;
+transform: translateX(-50) translateY(-50);
+transition: 0.5s;
+pointer-events: none;
+}
+
+.dropdown-menu.active::before{
+  rotate:-225deg;
+}

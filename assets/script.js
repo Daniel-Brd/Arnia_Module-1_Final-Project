@@ -1,29 +1,55 @@
 
+let currentTask = null
+const taskModal = document.getElementById('taskModal')
+const confirmActionModal = document.getElementById('confirm-action-modal')
+
+const taskTitle = document.getElementById('task-title')
+const numberInput = document.getElementById('number-input')
+const descriptionInput = document.getElementById('description-input')
+const dateInput = document.getElementById('date-input')
+const selectedStatus = document.getElementById('selected-status')
+
+const taskForm = document.getElementById('taskForm')
+const statusDropdown = document.getElementById('status-dropdown')
+const concludedSelect = document.getElementById('concluded-status-select')
+const inWorkSelect = document.getElementById('in-work-status-select')
+const stoppedSelect = document.getElementById('stopped-status-select')
+
+
+const tasksTable = document.getElementById('tasksTable')
+
+const filtersDropdown = document.getElementById('filters-dropdown')
+const selectedFilter = document.getElementById('selected-filter')
+const allTasksFilterButton = document.getElementById('all-filter-button')
+const forTodayFilterButton = document.getElementById('for-today-filter-button')
+const lateFilterButton = document.getElementById('late-filter-button')
+const concludedFilterButton = document.getElementById('concluded-filter-button')
+const inWorkFilterButton = document.getElementById('in-work-filter-button')
+const stoppedFilterButton = document.getElementById('stopped-filter-button')
+const searchBar = document.getElementById('searchBar')
+
+const numberHeader = document.getElementById('number-header')
+const descriptionHeader = document.getElementById('description-header')
+const dateHeader = document.getElementById('date-header')
+const statusHeader = document.getElementById('status-header')
+
+const NUMBER_REQUIRED = 'Por favor informe o número da tarefa'
+const DESCRIPTION_REQUIRED = 'Por favor informe a descrição da tarefa'
+const DATE_REQUIRED = 'Por favor defina um prazo de conclusão para a tarefa'
+
+
+
 // start of modal functions 
 //
-const addTaskButton = document.getElementById('addTask')
-const closeTaskButton = document.querySelector('.cancelModal')
-const taskModal = document.getElementById('taskModal')
-const confirmActionModal = document.getElementById('confirmActionModal')
-let currentTask = null
-
 async function openTask() {
-  document.getElementById('numberInput').setAttribute('placeholder', `${await maxTaskNumber()}`)
-  document.getElementById('numberInput').setAttribute('max', `${await maxTaskNumber()}`)
+  numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
+  numberInput.setAttribute('max', `${await maxTaskNumber()}`)
   taskModal.style.display = "block"
 }
-
-addTaskButton.addEventListener('click', () => {
-  openTask()
-})
 
 function closeTask() {
   taskModal.style.display = "none"
 }
-
-closeTaskButton.addEventListener('click', () => {
-  cancelModal()
-})
 
 function openConfirmAction() {
   confirmActionModal.style.display = "block"
@@ -34,11 +60,15 @@ function closeConfirmAction() {
 }
 
 function clearForm() {
-  document.getElementById('taskTitle').innerHTML = 'Adicionar nova tarefa'
-  document.getElementById('numberInput').value = ''
-  document.getElementById('descriptionInput').value = ''
-  document.getElementById('dateInput').value = ''
-  document.getElementById('statusInput').value = ''
+  taskTitle.innerHTML = 'Adicionar nova tarefa'
+  numberInput.value = ''
+  descriptionInput.value = ''
+  dateInput.value = ''
+  selectedStatus.value = ''
+  let errorText = document.querySelectorAll('.error-text')
+  errorText.forEach(element => {
+    return element.innerHTML = ''
+  });
 }
 
 function cancelModal() {
@@ -49,11 +79,11 @@ function cancelModal() {
 
 async function editTaskModal(taskId) {
   currentTask = await getTask(taskId)
-  document.getElementById('taskTitle').innerHTML = 'Editar tarefa'
-  document.getElementById('numberInput').value = currentTask.Number
-  document.getElementById('descriptionInput').value = currentTask.Description
-  document.getElementById('dateInput').value = currentTask.Date
-  document.getElementById('statusInput').value = currentTask.Status
+  taskTitle.innerHTML = 'Editar tarefa'
+  numberInput.value = currentTask.Number
+  descriptionInput.value = currentTask.Description
+  dateInput.value = currentTask.Date
+  selectedStatus.value = currentTask.Status
   openTask()
 }
 //
@@ -61,32 +91,22 @@ async function editTaskModal(taskId) {
 
 // start of database functions
 //
-const taskForm = document.getElementById('taskForm')
 
-taskForm.addEventListener('submit', (event) => {
-  event.preventDefault()
-  const taskNumber = taskForm.elements['numberInput'].value
-  const taskDescription = taskForm.elements['descriptionInput'].value
-  const taskDate = taskForm.elements['dateInput'].value
-  const taskStatus = taskForm.elements['statusInput'].value
 
-  const task = {
-    Number: taskNumber,
-    Description: taskDescription,
-    Date: taskDate,
-    Status: taskStatus,
-  }
 
-  submitTask(task)
-})
+
+
+
+
+
+
+
+
+
 
 
 async function submitTask(task) {
-  let validate = await validateTask()
-  if (validate === 'error') {
-    return
-  }
-  else if (currentTask === null) {
+  if (currentTask === null) {
     await createTask(task)
     clearForm()
     closeTask
@@ -98,6 +118,103 @@ async function submitTask(task) {
     location.reload()
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function showMessage(input, message, type) {
+  const text = input.parentNode.querySelector('small')
+  text.innerText = message
+  input.className = `${input.className} ${type ? 'success' : 'error'}`
+  return type
+}
+
+async function showError(input, message) {
+  return showMessage(input, message, false)
+}
+async function showSucces(input) {
+  return showMessage(input, '', true)
+}
+
+async function hasValue(input, message) {
+  if (input.value === '') {
+    return showError(input, message)
+  } else {
+    return showSucces(input)
+  }
+}
+
+async function validateNumber(input, requiredMessage) {
+  const repeatedNumber = await findRepeatedNumber()
+  if (repeatedNumber !== false) {
+    await showError(input, `Já existe uma tarefa com o número ${repeatedNumber}.`)
+    return false
+  }
+
+  if (!await hasValue(input, requiredMessage)) {
+    return false
+  }
+  return true
+}
+
+
+numberInput.addEventListener('blur', async function () {
+  await validateNumber(numberInput, NUMBER_REQUIRED)
+})
+
+descriptionInput.addEventListener('blur', async function () {
+  await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
+})
+
+dateInput.addEventListener('blur', async function () {
+  await hasValue(dateInput, DATE_REQUIRED)
+})
+
+
+
+taskForm.addEventListener('submit', async (event) => {
+  event.preventDefault()
+  const taskNumber = taskForm.elements['number-input'].value
+  const taskDescription = taskForm.elements['description-input'].value
+  const taskDate = taskForm.elements['date-input'].value
+  const taskStatus = taskForm.elements['selected-status'].value
+
+  const numberValid = await validateNumber(numberInput, NUMBER_REQUIRED)
+  const descriptionValid = await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
+  const dateValid = await hasValue(dateInput, DATE_REQUIRED)
+
+  const task = {
+    Number: taskNumber,
+    Description: taskDescription,
+    Date: taskDate,
+    Status: taskStatus,
+  }
+
+  if (numberValid && descriptionValid && dateValid) {
+    return submitTask(task)
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function createTask(task) {
   await fetch(`http://localhost:3000/tasks`, {
@@ -111,8 +228,8 @@ async function createTask(task) {
 }
 
 async function getTask(taskId) {
-  const data = await fetch(`http://localhost:3000/tasks/${taskId}`)
-  const task = await data.json()
+  const response = await fetch(`http://localhost:3000/tasks/${taskId}`)
+  const task = await response.json()
   return task
 }
 
@@ -132,8 +249,8 @@ async function deleteTask(taskId) {
   confirmActionModal.innerHTML =
     `<main class="modalContent">
       <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
-      <section class="modalButtons">
-        <div id="cancelModal" class="cancelModal" onclick="cancelModal()">Cancelar</div>
+      <section class="modal-buttons">
+        <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
         <button id="confirmDelete" type="button" class="button" onclick="confirmDelete(${taskId})">Sim</button>
       </section>
     </main>`
@@ -156,21 +273,20 @@ async function confirmDelete(taskId) {
 //
 // start of tasks functions
 //
-const tasksTable = document.getElementById('tasksTable')
 
-async function getTasksArray(filterType) {
-  const data = await fetch(`http://localhost:3000/tasks`)
-  const tasks = await data.json()
+async function getTasksArray() {
+  const response = await fetch(`http://localhost:3000/tasks`)
+  const tasks = await response.json()
   return tasks
 }
 
 function tableTemplate(task) {
-  const date = new Date(task.Date)
+  const date = new Date(task.Date + "T00:00:00.000-03:00")
   return tasksTable.innerHTML = tasksTable.innerHTML +
     `<tr>
       <td id="taskNumber" class="taskCell" scope="row">${task.Number}</th>
       <td id="taskDescription" class="taskCell">${task.Description}</td>
-      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR", { timeZone: "Europe/London" })}</td>
+      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR")}</td>
       <td id="taskStatus" class="taskCell ${task.Status.replace(' ', '-')}">${task.Status}</td>
       <td id="taskFunctions" class="taskCell">
         <i id="editButton" class="pointer" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -194,8 +310,8 @@ async function maxTaskNumber() {
     return task.Number
   })
   let max = tasksNumbers.reduce(function (a, b) {
-    return Math.max(a, b);
-  });
+    return Math.max(a, b)
+  })
   return max + 1
 }
 
@@ -203,7 +319,7 @@ async function findRepeatedNumber() {
   let tasks = await getTasksArray()
   let maxNumber = await maxTaskNumber()
   maxNumber = maxNumber.toString()
-  let numberInputValue = document.getElementById('numberInput').value
+  let numberInputValue = numberInput.value
 
   if (currentTask !== null) {
     const repeatedNumberTask = tasks.filter(task => {
@@ -231,33 +347,16 @@ async function findRepeatedNumber() {
 
 }
 
-async function validateTask() {
-  const repeatedNumber = await findRepeatedNumber()
-  const numberInputError = document.getElementById('numberInputError')
-  if (repeatedNumber !== false) {
-    numberInputError.style.display = "block"
-    setTimeout(() => { numberInputError.style.display = 'none'; }, 3000)
-    numberInputError.innerHTML = `Já existe uma tarefa com o número ${repeatedNumber}.`
-    return 'error'
-  }
-}
-
-let tasksTableClasses = ['numberDescending', 'allTasks', undefined]
+let tasksTableClasses = ['number-ascending', 'all-tasks', undefined]
 function filterTasks(tasks) {
-  const allTasks = document.getElementById('all')
-  const forTodayBtn = document.getElementById('for-today')
-  const lateBtn = document.getElementById('late')
-  const concludedBtn = document.getElementById('concluded')
-  const inWorkBtn = document.getElementById('in-work')
-  const stoppedBtn = document.getElementById('stopped')
-  const searchBar = document.getElementById('searchBar')
-  const selectedFilter = document.getElementById('selected-filter')
-  const filtersDropdown = document.querySelector('.filters-dropdown')
-  const todayDate = new Date()
-  if (tasksTable.classList.contains('forToday')) {
-    const dateValue = todayDate.toISOString().slice(0, 10).replaceAll('/', '-')
+
+  let todayDate = new Date().toISOString().slice(0, 10)
+  todayDate = new Date(todayDate + "T00:00:00.000-03:00")
+
+  if (tasksTable.classList.contains('for-today')) {
     tasks = tasks.filter((task) => {
-      return task.Date === dateValue
+      let thisTaskDate = new Date(task.Date + "T00:00:00.000-03:00")
+      return (todayDate.toLocaleDateString()) === thisTaskDate.toLocaleDateString()
     })
     return tasks
   }
@@ -284,69 +383,92 @@ function filterTasks(tasks) {
       return task.Status !== 'Concluída'
     })
     tasks = tasks.filter((task) => {
-      const taskDate = new Date(task.Date)
-      return taskDate.valueOf() < todayDate.valueOf()
+      let thisTaskDate = new Date(task.Date + "T00:00:00.000-03:00")
+      return thisTaskDate.valueOf() < (todayDate.valueOf() - 86400000)
     })
     return tasks
   }
-  else if (tasksTable.classList.contains('allTasks')) {
+  else if (tasksTable.classList.contains('all-tasks')) {
     selectedFilter.value = 'Filtros'
     return tasks
   }
 
-  function dropdownDisplay() {
-    filtersDropdown.classList.toggle('active')
+  function dropdownDisplay(dropdown) {
+    if (dropdown === 'filters') {
+      filtersDropdown.classList.toggle('active')
+    } else if (dropdown === 'status') {
+      statusDropdown.classList.toggle('active')
+    }
   }
 
   selectedFilter.addEventListener('click', function () {
-    dropdownDisplay()
+    dropdownDisplay('filters')
   }
   )
 
-  allTasks.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'allTasks')
+  selectedStatus.addEventListener('click', function () {
+    dropdownDisplay('status')
+  })
+
+  concludedSelect.addEventListener('click', function () {
+    selectedStatus.value = 'Concluída'
+    dropdownDisplay('status')
+  })
+
+  inWorkSelect.addEventListener('click', function () {
+    selectedStatus.value = 'Em andamento'
+    dropdownDisplay('status')
+  })
+
+  stoppedSelect.addEventListener('click', function () {
+    selectedStatus.value = 'Paralisada'
+    dropdownDisplay('status')
+  })
+
+  allTasksFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'all-tasks')
     tasksTable.classList = tasksTableClasses.join(' ')
-    dropdownDisplay()
+    dropdownDisplay('filters')
     printTasks()
   })
 
-  forTodayBtn.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'forToday')
+  forTodayFilterButton.addEventListener('click', function () {
+    tasksTableClasses.splice(1, 1, 'for-today')
     tasksTable.classList = tasksTableClasses.join(' ')
     selectedFilter.value = 'Hoje'
-    dropdownDisplay()
+    dropdownDisplay('filters')
     printTasks()
   })
 
-  lateBtn.addEventListener('click', function () {
+  lateFilterButton.addEventListener('click', function () {
     tasksTableClasses.splice(1, 1, 'late')
     tasksTable.classList = tasksTableClasses.join(' ')
     selectedFilter.value = 'Atrasadas'
-    dropdownDisplay()
+    dropdownDisplay('filters')
     printTasks()
   })
 
-  concludedBtn.addEventListener('click', function () {
+  concludedFilterButton.addEventListener('click', function () {
     tasksTableClasses.splice(1, 1, 'concluded')
     tasksTable.classList = tasksTableClasses.join(' ')
     selectedFilter.value = 'Concluídas'
-    dropdownDisplay()
+    dropdownDisplay('filters')
     printTasks()
   })
 
-  inWorkBtn.addEventListener('click', function () {
+  inWorkFilterButton.addEventListener('click', function () {
     tasksTableClasses.splice(1, 1, 'in-work')
     tasksTable.classList = tasksTableClasses.join(' ')
     selectedFilter.value = 'Em andamento'
-    dropdownDisplay()
+    dropdownDisplay('filters')
     printTasks()
   })
 
-  stoppedBtn.addEventListener('click', function () {
+  stoppedFilterButton.addEventListener('click', function () {
     tasksTableClasses.splice(1, 1, 'stopped')
     tasksTable.classList = tasksTableClasses.join(' ')
     selectedFilter.value = 'Paralisada'
-    dropdownDisplay()
+    dropdownDisplay('filters')
     printTasks()
   })
 
@@ -371,11 +493,6 @@ function searchTasks(tasks) {
 }
 
 function orderTasks(tasks) {
-  const numberHeader = document.getElementById('numberHeader')
-  const descriptionHeader = document.getElementById('descriptionHeader')
-  const dateHeader = document.getElementById('dateHeader')
-  const statusHeader = document.getElementById('statusHeader')
-
   if (tasksTable.classList.contains('numberAscending')) {
     tasks.sort((a, b) => {
       return parseInt(a.Number) < parseInt(b.Number) ? -1 : parseInt(a.Number) > parseInt(b.Number) ? 1 : 0

@@ -60,14 +60,14 @@
       "Number": "15",
       "Description": "Adicionar filtros",
       "Date": "2022-12-16",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 9
     },
     {
       "Number": "10",
       "Description": "Adicionar filtro de atrasados",
       "Date": "2022-12-31",
-      "Status": "Paralisada",
+      "Status": "Concluída",
       "id": 10
     },
     {
@@ -90,6 +90,34 @@
       "Date": "2023-01-10",
       "Status": "Em andamento",
       "id": 14
+    },
+    {
+      "Number": "17",
+      "Description": "teste hoje",
+      "Date": "2023-01-11",
+      "Status": "Em andamento",
+      "id": 15
+    },
+    {
+      "Number": "18",
+      "Description": "aaaaaa",
+      "Date": "2023-01-11",
+      "Status": "Em andamento",
+      "id": 16
+    },
+    {
+      "Number": "19",
+      "Description": "teste",
+      "Date": "2023-01-11",
+      "Status": "Concluída",
+      "id": 17
+    },
+    {
+      "Number": "20",
+      "Description": "asdasd",
+      "Date": "2023-01-11",
+      "Status": "Concluída",
+      "id": 18
     }
   ]
 }
