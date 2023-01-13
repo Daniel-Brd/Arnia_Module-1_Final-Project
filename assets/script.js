@@ -309,10 +309,15 @@ async function maxTaskNumber() {
   let tasksNumbers = await tasks.map((task) => {
     return task.Number
   })
-  let max = await tasksNumbers.reduce(function (a, b) {
-    return Math.max(a, b)
-  })
-  return max + 1
+  if (tasksNumbers.length > 0) {
+    let max = await tasksNumbers.reduce(function (a, b) {
+      return Math.max(a, b)
+    })
+    return max + 1
+  } else {
+    return 1
+  }
+
 }
 
 async function findRepeatedNumber() {
