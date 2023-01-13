@@ -73,3 +73,8 @@ form .dropdown-menu ul{
 .error-text{
   color: var(--error-color)
 }
+
+.active {
+  background-color: var(--main-purple);
+  color: var(--light-background);
+}

@@ -74,28 +74,28 @@
       </table>
       <section id="taskModal" class="modal-container" style="display: none">
         <main>
-          <form id="taskForm" class="modalContent" method="post"  >
+          <form id="taskForm" class="modalContent" method="post" novalidate >
             <h1 id="task-title" class="title">Adicionar nova tarefa</h1>
             <section class="formulary">
               <div>
                 <label for="number-input">Número</label>
-                <input id="number-input" class=" big-input " name="number-input" type="number" min="1"/>
+                <input id="number-input" class="big-input" name="number-input" type="number" min="1" autocomplete="off"/>
                 <small class="error-text"></small>
               </div>
               <div>
                 <label for="description-input">Descrição</label>
-                <input id="description-input" class=" big-input" name="description-input" type="text"/>
+                <input id="description-input" class="big-input" name="description-input" type="text" autocomplete="off"/>
                 <small class="error-text"></small>
               </div>
               <div>
                 <label for="date-input">Data</label>
-                <input id="date-input" class=" small-input" name="date-input" type="date"/>
+                <input id="date-input" class=" small-input" name="date-input" type="date" autocomplete="off"/>
                 <small class="error-text"></small>
               </div>
               <div>
                 <label for="selected-status">Status</label>
                 <div id="status-dropdown" class="dropdown-menu small-input">
-                  <input id="selected-status" name="selected-status" type="text"  placeholder="Status" autocomplete="off" required>
+                  <input id="selected-status" name="selected-status" type="text" value="Status" autocomplete="off">
                 <ul id="task-status" class="input">
                   <li id="concluded-status-select" value="concluded">Concluída</li>
                   <li id="in-work-status-select" value="in-work">Em andamento</li>
@@ -107,7 +107,7 @@
             </section>
             <section class="modal-buttons">
               <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
-              <button type="submit" class="button">Salvar</button>
+              <button id="submit-button" type="submit" class="button" disabled>Salvar</button>
             </section>
           </form>
         </main>

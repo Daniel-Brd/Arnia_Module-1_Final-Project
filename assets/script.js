@@ -14,6 +14,8 @@ const statusDropdown = document.getElementById('status-dropdown')
 const concludedSelect = document.getElementById('concluded-status-select')
 const inWorkSelect = document.getElementById('in-work-status-select')
 const stoppedSelect = document.getElementById('stopped-status-select')
+const submitButton = document.getElementById('submit-button')
+
 
 
 const tasksTable = document.getElementById('tasksTable')
@@ -134,7 +136,8 @@ async function submitTask(task) {
 async function showMessage(input, message, type) {
   const text = input.parentNode.querySelector('small')
   text.innerText = message
-  input.className = `${input.className} ${type ? 'success' : 'error'}`
+  input.classList.remove(`${type ? 'success' : 'error'}`)
+  input.classList.add(`${type ? 'success' : 'error'}`)
   return type
 }
 
@@ -167,19 +170,41 @@ async function validateNumber(input, requiredMessage) {
 }
 
 
+
+
 numberInput.addEventListener('blur', async function () {
   await validateNumber(numberInput, NUMBER_REQUIRED)
+
 })
 
 descriptionInput.addEventListener('blur', async function () {
   await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
 })
 
+
+
 dateInput.addEventListener('blur', async function () {
   await hasValue(dateInput, DATE_REQUIRED)
+
 })
 
+taskForm.addEventListener('change', async function () {
+  const numberValid = await validateNumber(numberInput, NUMBER_REQUIRED)
+  const descriptionValid = await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
+  const dateValid = await hasValue(dateInput, DATE_REQUIRED)
 
+  if (numberValid && descriptionValid && dateValid) {
+    console.log('funciona');
+    submitButton.classList.remove('disabled')
+    submitButton.classList.add('active')
+    submitButton.disabled = false
+  } else {
+    submitButton.classList.remove('active')
+    submitButton.classList.add('disabled')
+    submitButton.disabled = true
+  }
+
+})
 
 taskForm.addEventListener('submit', async (event) => {
   event.preventDefault()
@@ -200,7 +225,10 @@ taskForm.addEventListener('submit', async (event) => {
   }
 
   if (numberValid && descriptionValid && dateValid) {
+    console.log('passou');
     return submitTask(task)
+  } else {
+    console.log('não passou');
   }
 })
 
