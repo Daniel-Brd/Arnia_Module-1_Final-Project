@@ -25,7 +25,7 @@
       "Number": "4",
       "Description": "Definir APIs Reset",
       "Date": "2022-12-01",
-      "Status": "Concluída",
+      "Status": "Paralisada",
       "id": 4
     },
     {
@@ -109,14 +109,14 @@
       "Number": "19",
       "Description": "teste",
       "Date": "2023-01-11",
-      "Status": "Concluída",
+      "Status": "Paralisada",
       "id": 17
     },
     {
       "Number": "20",
       "Description": "asdasd",
       "Date": "2023-01-11",
-      "Status": "Concluída",
+      "Status": "Paralisada",
       "id": 18
     }
   ]

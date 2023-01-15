@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="assets/dropdown_style.css">
 </head>
 
-<body onload="pageOnLoad()">
+<body>
   <div id="leftBar">&nbsp;</div>
   <div id="content">
       <figure id="PageLogo">
@@ -72,6 +72,10 @@
         <tbody id="tasksTable">
         </tbody>
       </table>
+      <nav class="tableNav">
+        <button type="button" onclick="pageNavigate('previous')">anterior</button>
+        <button type="button" onclick="pageNavigate('next')">próxima</button>
+      </nav>
       <section id="taskModal" class="modal-container" style="display: none">
         <main>
           <form id="taskForm" class="modalContent" method="post"  >

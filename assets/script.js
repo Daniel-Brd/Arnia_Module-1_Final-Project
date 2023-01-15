@@ -1,5 +1,6 @@
 
 let currentTask = null
+let currentPage = 1
 const taskModal = document.getElementById('taskModal')
 const confirmActionModal = document.getElementById('confirm-action-modal')
 
@@ -33,11 +34,9 @@ const descriptionHeader = document.getElementById('description-header')
 const dateHeader = document.getElementById('date-header')
 const statusHeader = document.getElementById('status-header')
 
-const NUMBER_REQUIRED = 'Por favor informe o número da tarefa'
-const DESCRIPTION_REQUIRED = 'Por favor informe a descrição da tarefa'
-const DATE_REQUIRED = 'Por favor defina um prazo de conclusão para a tarefa'
-
-
+const NUMBER_REQUIRED = 'Por favor, informe o número da tarefa.'
+const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
+const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 
 // start of modal functions 
 //
@@ -91,19 +90,28 @@ async function editTaskModal(taskId) {
 
 // start of database functions
 //
+const itensPerPage = 8
+async function pageNavigate(type) {
+  const tasks = await getTasksArray()
+  maxPage = Math.ceil(tasks.length / itensPerPage)
+  console.log(maxPage);
+  if (type === "next" && currentPage < maxPage) {
+    currentPage = currentPage + 1
+  }
+  else if (type === "previous" && currentPage > 1) {
+    currentPage = currentPage - 1
+  }
+  console.log(currentPage);
+  printTasks()
 
+}
 
-
-
-
-
-
-
-
-
-
-
-
+function paginate(array, currentPage, itensPerPage) {
+  const firstIndex = (currentPage - 1) * itensPerPage
+  const lastIndex = firstIndex + itensPerPage
+  array = array.slice(firstIndex, lastIndex)
+  return array
+}
 
 async function submitTask(task) {
   if (currentTask === null) {
@@ -118,18 +126,6 @@ async function submitTask(task) {
     location.reload()
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 async function showMessage(input, message, type) {
   const text = input.parentNode.querySelector('small')
@@ -166,7 +162,6 @@ async function validateNumber(input, requiredMessage) {
   return true
 }
 
-
 numberInput.addEventListener('blur', async function () {
   await validateNumber(numberInput, NUMBER_REQUIRED)
 })
@@ -178,8 +173,6 @@ descriptionInput.addEventListener('blur', async function () {
 dateInput.addEventListener('blur', async function () {
   await hasValue(dateInput, DATE_REQUIRED)
 })
-
-
 
 taskForm.addEventListener('submit', async (event) => {
   event.preventDefault()
@@ -204,20 +197,8 @@ taskForm.addEventListener('submit', async (event) => {
   }
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
 async function createTask(task) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`, {
+  await fetch(`http://localhost:3000/tasks`, {
     method: "POST",
     headers: {
       'Accept': 'application/json, text/plain, */*',
@@ -228,13 +209,13 @@ async function createTask(task) {
 }
 
 async function getTask(taskId) {
-  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`)
+  const response = await fetch(`http://localhost:3000/tasks/${taskId}`)
   const task = await response.json()
   return task
 }
 
 async function editTask(taskId, task) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
+  await fetch(`http://localhost:3000/tasks/${taskId}`, {
     method: "PUT",
     headers: {
       'Accept': 'application/json, text/plain, */*',
@@ -257,7 +238,7 @@ async function deleteTask(taskId) {
 }
 
 async function confirmDelete(taskId) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
+  await fetch(`http://localhost:3000/tasks/${taskId}`, {
     method: "DELETE"
   })
   location.reload()
@@ -273,9 +254,8 @@ async function confirmDelete(taskId) {
 //
 // start of tasks functions
 //
-
 async function getTasksArray() {
-  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`)
+  const response = await fetch(`http://localhost:3000/tasks`)
   const tasks = await response.json()
   return tasks
 }
@@ -317,7 +297,6 @@ async function maxTaskNumber() {
   } else {
     return 1
   }
-
 }
 
 async function findRepeatedNumber() {
@@ -352,8 +331,94 @@ async function findRepeatedNumber() {
 
 }
 
-let tasksTableClasses = ['number-ascending', 'all-tasks', undefined]
-function filterTasks(tasks) {
+function modifyClasses(element, classArray, initialIndex, endIndex, type) {
+  classArray.splice(initialIndex, endIndex, type)
+  element.classList = classArray.join(' ')
+}
+
+function dropdownDisplay(dropdown) {
+  if (dropdown === 'filters') {
+    filtersDropdown.classList.toggle('active')
+  } else if (dropdown === 'status') {
+    statusDropdown.classList.toggle('active')
+  }
+}
+
+let tasksTableClasses = ['number-ascending', undefined, undefined]
+
+selectedFilter.addEventListener('click', function () {
+  dropdownDisplay('filters')
+}
+)
+
+selectedStatus.addEventListener('click', function () {
+  dropdownDisplay('status')
+})
+
+concludedSelect.addEventListener('click', function () {
+  selectedStatus.value = 'Concluída'
+  dropdownDisplay('status')
+})
+
+inWorkSelect.addEventListener('click', function () {
+  selectedStatus.value = 'Em andamento'
+  dropdownDisplay('status')
+})
+
+stoppedSelect.addEventListener('click', function () {
+  selectedStatus.value = 'Paralisada'
+  dropdownDisplay('status')
+})
+
+
+allTasksFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'all-tasks')
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+forTodayFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'for-today')
+  selectedFilter.value = 'Hoje'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+lateFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'late')
+  selectedFilter.value = 'Atrasadas'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+concludedFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'concluded')
+  selectedFilter.value = 'Concluídas'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+inWorkFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'in-work')
+  selectedFilter.value = 'Em andamento'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+stoppedFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'stopped')
+  selectedFilter.value = 'Paralisada'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+searchBar.addEventListener('input', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 2, 2, 'search')
+  tasksTableClasses.splice(2, 2, 'search')
+  printTasks()
+})
+
+function filterByClass(tasks) {
 
   let todayDate = new Date().toISOString().slice(0, 10)
   todayDate = new Date(todayDate + "T00:00:00.000-03:00")
@@ -397,104 +462,18 @@ function filterTasks(tasks) {
     selectedFilter.value = 'Filtros'
     return tasks
   }
-
-  function dropdownDisplay(dropdown) {
-    if (dropdown === 'filters') {
-      filtersDropdown.classList.toggle('active')
-    } else if (dropdown === 'status') {
-      statusDropdown.classList.toggle('active')
-    }
-  }
-
-  selectedFilter.addEventListener('click', function () {
-    dropdownDisplay('filters')
-  }
-  )
-
-  selectedStatus.addEventListener('click', function () {
-    dropdownDisplay('status')
-  })
-
-  concludedSelect.addEventListener('click', function () {
-    selectedStatus.value = 'Concluída'
-    dropdownDisplay('status')
-  })
-
-  inWorkSelect.addEventListener('click', function () {
-    selectedStatus.value = 'Em andamento'
-    dropdownDisplay('status')
-  })
-
-  stoppedSelect.addEventListener('click', function () {
-    selectedStatus.value = 'Paralisada'
-    dropdownDisplay('status')
-  })
-
-  allTasksFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'all-tasks')
-    tasksTable.classList = tasksTableClasses.join(' ')
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  forTodayFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'for-today')
-    tasksTable.classList = tasksTableClasses.join(' ')
-    selectedFilter.value = 'Hoje'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  lateFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'late')
-    tasksTable.classList = tasksTableClasses.join(' ')
-    selectedFilter.value = 'Atrasadas'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  concludedFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'concluded')
-    tasksTable.classList = tasksTableClasses.join(' ')
-    selectedFilter.value = 'Concluídas'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  inWorkFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'in-work')
-    tasksTable.classList = tasksTableClasses.join(' ')
-    selectedFilter.value = 'Em andamento'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  stoppedFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'stopped')
-    tasksTable.classList = tasksTableClasses.join(' ')
-    selectedFilter.value = 'Paralisada'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  searchBar.addEventListener('input', function () {
-    tasksTableClasses.splice(2, 2, 'search')
-    tasksTable.classList = tasksTableClasses.join(' ')
-    printTasks()
-  })
-
   return tasks
 }
 
-function searchTasks(tasks) {
-  if (tasksTable.classList.contains('search')) {
+function search(array, classElement, searchBar) {
+  if (classElement.classList.contains('search')) {
     searchBarValue = searchBar.value.toLowerCase()
-    tasks = tasks.filter((task) => {
+    array = array.filter((task) => {
       return task.Description.toLowerCase().includes(searchBarValue)
     })
-    return tasks
+    return array
   }
-  return tasks
+  return array
 }
 
 function orderTasks(tasks) {
@@ -548,12 +527,10 @@ function orderTasks(tasks) {
 
   numberHeader.addEventListener('click', function () {
     if (tasksTableClasses[0] !== 'numberAscending') {
-      tasksTableClasses.splice(0, 1, 'numberAscending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0,1 ,'numberAscending')
     }
     else if (tasksTableClasses[0] === 'numberAscending') {
-      tasksTableClasses.splice(0, 1, 'numberDescending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0,1 ,'numberDescending')
     }
     printTasks()
   })
@@ -595,15 +572,16 @@ function orderTasks(tasks) {
 
 async function printTasks() {
   let tasks = await getTasksArray()
+  tasks = paginate(tasks, currentPage, itensPerPage)
   tasks = orderTasks(tasks)
-  tasks = filterTasks(tasks)
-  tasks = searchTasks(tasks)
+  tasks = filterByClass(tasks)
+  tasks = search(tasks, tasksTable, searchBar)
   tasksTable.innerHTML = ""
   tasks.forEach((task) => {
     tableTemplate(task)
   })
 }
 
-async function pageOnLoad() {
+document.addEventListener('DOMContentLoaded', function () {
   printTasks()
-}
+})
