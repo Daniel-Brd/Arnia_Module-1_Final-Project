@@ -84,7 +84,7 @@ button {
   cursor: pointer;
 }
 
-.main-bordered-button:enabled:hover {
+.main-bordered-button:enabled:hover:not(.submit-button) {
   background-color: var(--main-purple);
   color: var(--light-background);
 }
@@ -163,6 +163,10 @@ button {
   padding: 0.5em 0.75em;
 }
 
+.table th {
+  cursor: pointer;
+}
+
 .table th img {
   height: 1em;
   padding-top: 0.25em;
@@ -195,7 +199,7 @@ tr .Paralisada {
   font-weight: 400;
 }
 
-#taskFunctions>i {
+#taskFunctions>i  {
   cursor: pointer;
 }
 
