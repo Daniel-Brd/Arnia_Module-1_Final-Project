@@ -32,7 +32,7 @@
   display: none;
 }
 
-.dropdown-menu.active ul{
+.dropdown-menu.dropdown-active ul{
   display: block;
 }
 
@@ -52,11 +52,10 @@ border: 2px solid var(--main-purple);
 border-top: 2px solid var(--light-background);
 border-right: 2px solid var(--light-background);
 rotate:-45deg;
-transform: translateX(-50) translateY(-50);
 transition: 0.5s;
 pointer-events: none;
 }
 
-.dropdown-menu.active::before{
+.dropdown-menu.dropdown-active::before{
   rotate:-225deg;
 }

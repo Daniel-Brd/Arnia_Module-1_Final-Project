@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="assets/dropdown_style.css">
 </head>
 
-<body onload="pageOnLoad()">
+<body>
   <div id="leftBar">&nbsp;</div>
   <div id="content">
       <figure id="PageLogo">
@@ -72,6 +72,10 @@
         <tbody id="tasksTable">
         </tbody>
       </table>
+      <nav class="tableNav">
+        <button type="button" onclick="pageNavigate('previous')">anterior</button>
+        <button type="button" onclick="pageNavigate('next')">próxima</button>
+      </nav>
       <section id="taskModal" class="modal-container" style="display: none">
         <main>
           <form id="taskForm" class="modalContent" method="post" novalidate >
@@ -95,14 +99,14 @@
               <div>
                 <label for="selected-status">Status</label>
                 <div id="status-dropdown" class="dropdown-menu small-input">
-                  <input id="selected-status" name="selected-status" type="text" value="Status" autocomplete="off">
-                <ul id="task-status" class="input">
-                  <li id="concluded-status-select" value="concluded">Concluída</li>
-                  <li id="in-work-status-select" value="in-work">Em andamento</li>
-                  <li id="stopped-status-select" value="stopped">Paralisada</li>
-                </ul>
-              </div>
-              <small class="error-text"></small>
+                  <input id="selected-status" name="selected-status" type="text" placeholder="Status" autocomplete="off">
+                  <ul id="task-status" class="input">
+                    <li id="concluded-status-select" value="concluded">Concluída</li>
+                    <li id="in-work-status-select" value="in-work">Em andamento</li>
+                    <li id="stopped-status-select" value="stopped">Paralisada</li>
+                  </ul>
+                </div>
+                <small id="status-error" class="error-text"></small>
               </div>
             </section>
             <section class="modal-buttons">
