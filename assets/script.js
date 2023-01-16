@@ -1,22 +1,8 @@
 
 let currentTask = null
-const taskModal = document.getElementById('taskModal')
-const confirmActionModal = document.getElementById('confirm-action-modal')
+let currentPage = 1
 
-const taskTitle = document.getElementById('task-title')
-const numberInput = document.getElementById('number-input')
-const descriptionInput = document.getElementById('description-input')
-const dateInput = document.getElementById('date-input')
-const selectedStatus = document.getElementById('selected-status')
-
-const taskForm = document.getElementById('taskForm')
-const statusDropdown = document.getElementById('status-dropdown')
-const concludedSelect = document.getElementById('concluded-status-select')
-const inWorkSelect = document.getElementById('in-work-status-select')
-const stoppedSelect = document.getElementById('stopped-status-select')
-
-
-const tasksTable = document.getElementById('tasksTable')
+const tasksTable = document.getElementById('tasks-table')
 
 const filtersDropdown = document.getElementById('filters-dropdown')
 const selectedFilter = document.getElementById('selected-filter')
@@ -26,37 +12,100 @@ const lateFilterButton = document.getElementById('late-filter-button')
 const concludedFilterButton = document.getElementById('concluded-filter-button')
 const inWorkFilterButton = document.getElementById('in-work-filter-button')
 const stoppedFilterButton = document.getElementById('stopped-filter-button')
-const searchBar = document.getElementById('searchBar')
+const searchBar = document.getElementById('search-bar')
 
 const numberHeader = document.getElementById('number-header')
 const descriptionHeader = document.getElementById('description-header')
 const dateHeader = document.getElementById('date-header')
 const statusHeader = document.getElementById('status-header')
 
-const NUMBER_REQUIRED = 'Por favor informe o número da tarefa'
-const DESCRIPTION_REQUIRED = 'Por favor informe a descrição da tarefa'
-const DATE_REQUIRED = 'Por favor defina um prazo de conclusão para a tarefa'
+const NUMBER_REQUIRED = 'Por favor, informe o número da tarefa.'
+const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
+const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
+const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
 
+const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
 
+async function createTask(task) {
+  await fetch(TASKS_ARRAY_URL, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(task)
+  })
+}
 
-// start of modal functions 
-//
+async function getTask(taskId) {
+  const response = await fetch(`${TASKS_ARRAY_URL}${taskId}`)
+  const task = await response.json()
+  return task
+}
+
+async function editTask(taskId, task) {
+  await fetch(`${TASKS_ARRAY_URL}${taskId}`, {
+    method: "PUT",
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(task)
+  })
+}
+
+async function deleteTask(taskId) {
+  openConfirmAction()
+  confirmActionModal.innerHTML =
+    `<main class="modal-content">
+      <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
+      <section class="modal-buttons">
+        <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
+        <button id="confirmDelete" type="button" class="main-bordered-button" onclick="confirmDelete(${taskId})">Sim</button>
+      </section>
+    </main>`
+}
+
+async function confirmDelete(taskId) {
+  await fetch(`${TASKS_ARRAY_URL}${taskId}`, {
+    method: "DELETE"
+  })
+  location.reload()
+}
+
+const taskModal = document.getElementById('task-modal')
+const confirmActionModal = document.getElementById('confirm-action-modal')
+
+const taskTitle = document.getElementById('task-title')
+const numberInput = document.getElementById('number-input')
+const descriptionInput = document.getElementById('description-input')
+const dateInput = document.getElementById('date-input')
+const selectedStatusInput = document.getElementById('selected-status')
+const selectedStatusError = document.getElementById('status-error')
+
+const taskForm = document.getElementById('task-form')
+const statusDropdown = document.getElementById('status-dropdown')
+const concludedSelect = document.getElementById('concluded-status-select')
+const inWorkSelect = document.getElementById('in-work-status-select')
+const stoppedSelect = document.getElementById('stopped-status-select')
+const submitButton = document.getElementById('task-submit-button')
+
 async function openTask() {
   numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
   numberInput.setAttribute('max', `${await maxTaskNumber()}`)
-  taskModal.style.display = "block"
+  taskModal.classList.add('modal-active')
 }
 
 function closeTask() {
-  taskModal.style.display = "none"
+  taskModal.classList.remove('modal-active')
 }
 
 function openConfirmAction() {
-  confirmActionModal.style.display = "block"
+  confirmActionModal.classList.add('modal-active')
 }
 
 function closeConfirmAction() {
-  confirmActionModal.style.display = "none"
+  confirmActionModal.classList.remove('modal-active')
 }
 
 function clearForm() {
@@ -64,7 +113,7 @@ function clearForm() {
   numberInput.value = ''
   descriptionInput.value = ''
   dateInput.value = ''
-  selectedStatus.value = ''
+  selectedStatusInput.value = ''
   let errorText = document.querySelectorAll('.error-text')
   errorText.forEach(element => {
     return element.innerHTML = ''
@@ -77,33 +126,38 @@ function cancelModal() {
   closeConfirmAction()
 }
 
-async function editTaskModal(taskId) {
-  currentTask = await getTask(taskId)
-  taskTitle.innerHTML = 'Editar tarefa'
-  numberInput.value = currentTask.Number
-  descriptionInput.value = currentTask.Description
-  dateInput.value = currentTask.Date
-  selectedStatus.value = currentTask.Status
-  openTask()
+function dropdownDisplay(dropdown) {
+  if (dropdown === 'filters') {
+    filtersDropdown.classList.toggle('dropdown-active')
+  } else if (dropdown === 'status') {
+    statusDropdown.classList.toggle('dropdown-active')
+  }
 }
-//
-// end of modal functions
 
-// start of database functions
-//
+selectedStatusInput.addEventListener('click', function () {
+  dropdownDisplay('status')
+})
 
+concludedSelect.addEventListener('click', function () {
+  selectedStatusInput.value = 'Concluída'
+  dropdownDisplay('status')
+})
 
+inWorkSelect.addEventListener('click', function () {
+  selectedStatusInput.value = 'Em andamento'
+  dropdownDisplay('status')
+})
 
+stoppedSelect.addEventListener('click', function () {
+  selectedStatusInput.value = 'Paralisada'
+  dropdownDisplay('status')
+})
 
-
-
-
-
-
-
-
-
-
+searchBar.addEventListener('input', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 2, 2, 'search')
+  tasksTableClasses.splice(2, 2, 'search')
+  printTasks()
+})
 
 async function submitTask(task) {
   if (currentTask === null) {
@@ -119,22 +173,16 @@ async function submitTask(task) {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 async function showMessage(input, message, type) {
-  const text = input.parentNode.querySelector('small')
+  let text
+  if (input === selectedStatusInput) {
+    text = selectedStatusError
+  } else {
+    text = input.parentNode.querySelector('small')
+  }
   text.innerText = message
-  input.className = `${input.className} ${type ? 'success' : 'error'}`
+  input.classList.remove(`${type ? 'success' : 'error'}`)
+  input.classList.add(`${type ? 'success' : 'error'}`)
   return type
 }
 
@@ -155,6 +203,8 @@ async function hasValue(input, message) {
 
 async function validateNumber(input, requiredMessage) {
   const repeatedNumber = await findRepeatedNumber()
+  const maxNumber = await maxTaskNumber()
+
   if (repeatedNumber !== false) {
     await showError(input, `Já existe uma tarefa com o número ${repeatedNumber}.`)
     return false
@@ -163,9 +213,13 @@ async function validateNumber(input, requiredMessage) {
   if (!await hasValue(input, requiredMessage)) {
     return false
   }
+
+  if (input.value > maxNumber) {
+    await showError(input, `Por favor, insira um número menor que ${maxNumber}.`)
+    return false
+  }
   return true
 }
-
 
 numberInput.addEventListener('blur', async function () {
   await validateNumber(numberInput, NUMBER_REQUIRED)
@@ -179,7 +233,20 @@ dateInput.addEventListener('blur', async function () {
   await hasValue(dateInput, DATE_REQUIRED)
 })
 
+taskForm.addEventListener('change', async function () {
+  const numberValid = await validateNumber(numberInput, null)
+  const descriptionValid = await hasValue(descriptionInput, null)
+  const dateValid = await hasValue(dateInput, null)
+  const statusValid = await hasValue(selectedStatusInput, null)
 
+  if (numberValid && descriptionValid && dateValid && statusValid) {
+    submitButton.classList.remove('disabled')
+    submitButton.classList.add('active')
+  } else {
+    submitButton.classList.remove('active')
+    submitButton.classList.add('disabled')
+  }
+})
 
 taskForm.addEventListener('submit', async (event) => {
   event.preventDefault()
@@ -191,6 +258,7 @@ taskForm.addEventListener('submit', async (event) => {
   const numberValid = await validateNumber(numberInput, NUMBER_REQUIRED)
   const descriptionValid = await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
   const dateValid = await hasValue(dateInput, DATE_REQUIRED)
+  const statusValid = await hasValue(selectedStatusInput, STATUS_REQUIRED)
 
   const task = {
     Number: taskNumber,
@@ -199,83 +267,23 @@ taskForm.addEventListener('submit', async (event) => {
     Status: taskStatus,
   }
 
-  if (numberValid && descriptionValid && dateValid) {
+  if (numberValid && descriptionValid && dateValid && statusValid) {
     return submitTask(task)
   }
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-async function createTask(task) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`, {
-    method: "POST",
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(task)
-  })
+async function editTaskModal(taskId) {
+  currentTask = await getTask(taskId)
+  taskTitle.innerHTML = 'Editar tarefa'
+  numberInput.value = currentTask.Number
+  descriptionInput.value = currentTask.Description
+  dateInput.value = currentTask.Date
+  selectedStatusInput.value = currentTask.Status
+  openTask()
 }
-
-async function getTask(taskId) {
-  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`)
-  const task = await response.json()
-  return task
-}
-
-async function editTask(taskId, task) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
-    method: "PUT",
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(task)
-  })
-}
-
-async function deleteTask(taskId) {
-  openConfirmAction()
-  confirmActionModal.innerHTML =
-    `<main class="modalContent">
-      <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
-      <section class="modal-buttons">
-        <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
-        <button id="confirmDelete" type="button" class="button" onclick="confirmDelete(${taskId})">Sim</button>
-      </section>
-    </main>`
-}
-
-async function confirmDelete(taskId) {
-  await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks/${taskId}`, {
-    method: "DELETE"
-  })
-  location.reload()
-}
-//
-// end of database functions
-//
-//
-//
-//
-//
-//
-//
-// start of tasks functions
-//
 
 async function getTasksArray() {
-  const response = await fetch(`https://arniamodule-1final-project.herokuapp.com/tasks`)
+  const response = await fetch(TASKS_ARRAY_URL)
   const tasks = await response.json()
   return tasks
 }
@@ -284,17 +292,17 @@ function tableTemplate(task) {
   const date = new Date(task.Date + "T00:00:00.000-03:00")
   return tasksTable.innerHTML = tasksTable.innerHTML +
     `<tr>
-      <td id="taskNumber" class="taskCell" scope="row">${task.Number}</th>
-      <td id="taskDescription" class="taskCell">${task.Description}</td>
-      <td id="taskDate" class="taskCell">${date.toLocaleDateString("pt-BR")}</td>
-      <td id="taskStatus" class="taskCell ${task.Status.replace(' ', '-')}">${task.Status}</td>
-      <td id="taskFunctions" class="taskCell">
-        <i id="editButton" class="pointer" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <td id="taskNumber" scope="row">${task.Number}</th>
+      <td id="taskDescription">${task.Description}</td>
+      <td id="taskDate">${date.toLocaleDateString("pt-BR")}</td>
+      <td id="taskStatus" class="${task.Status.replace(' ', '-')}">${task.Status}</td>
+      <td id="taskFunctions">
+        <i id="editButton" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14.4 13.575H0.6C0.268125 13.575 0 13.8431 0 14.175V14.85C0 14.9325 0.0675 15 0.15 15H14.85C14.9325 15 15 14.9325 15 14.85V14.175C15 13.8431 14.7319 13.575 14.4 13.575ZM2.73188 12C2.76938 12 2.80688 11.9963 2.84438 11.9906L5.99813 11.4375C6.03562 11.43 6.07125 11.4131 6.0975 11.385L14.0456 3.43687C14.063 3.41953 14.0768 3.39892 14.0862 3.37624C14.0956 3.35356 14.1005 3.32924 14.1005 3.30469C14.1005 3.28013 14.0956 3.25582 14.0862 3.23313C14.0768 3.21045 14.063 3.18985 14.0456 3.1725L10.9294 0.054375C10.8938 0.01875 10.8469 0 10.7963 0C10.7456 0 10.6988 0.01875 10.6631 0.054375L2.715 8.0025C2.68687 8.03063 2.67 8.06437 2.6625 8.10188L2.10938 11.2556C2.09113 11.3561 2.09765 11.4594 2.12836 11.5568C2.15907 11.6542 2.21305 11.7426 2.28562 11.8144C2.40937 11.9344 2.565 12 2.73188 12Z"
               fill="#2C2661" />
           </svg>
         </i>
-        <i id="deleteButton" class="pointer" onclick="deleteTask(${task.id})"
+        <i id="deleteButton" onclick="deleteTask(${task.id})"
           ><svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M13.4167 2.7H11.0833V1.2C11.0833 0.538125 10.5602 0 9.91667 0H4.08333C3.43984 0 2.91667 0.538125 2.91667 1.2V2.7H0.583333C0.260677 2.7 0 2.96813 0 3.3V3.9C0 3.9825 0.065625 4.05 0.145833 4.05H1.24687L1.69714 13.8563C1.7263 14.4956 2.24036 15 2.86198 15H11.138C11.7615 15 12.2737 14.4975 12.3029 13.8563L12.7531 4.05H13.8542C13.9344 4.05 14 3.9825 14 3.9V3.3C14 2.96813 13.7393 2.7 13.4167 2.7ZM9.77083 2.7H4.22917V1.35H9.77083V2.7Z"
               fill="#D7CAE5"/>
@@ -302,6 +310,27 @@ function tableTemplate(task) {
         </i>
       </td>
     </tr>`
+}
+
+const ITENS_PER_PAGE = 8
+
+async function pageNavigate(type) {
+  const tasks = await getTasksArray()
+  maxPage = Math.ceil(tasks.length / ITENS_PER_PAGE)
+  if (type === "next" && currentPage < maxPage) {
+    currentPage = currentPage + 1
+  }
+  else if (type === "previous" && currentPage > 1) {
+    currentPage = currentPage - 1
+  }
+  printTasks()
+}
+
+function paginate(array, currentPage, ITENS_PER_PAGE) {
+  const firstIndex = (currentPage - 1) * ITENS_PER_PAGE
+  const lastIndex = firstIndex + ITENS_PER_PAGE
+  array = array.slice(firstIndex, lastIndex)
+  return array
 }
 
 async function maxTaskNumber() {
@@ -317,7 +346,6 @@ async function maxTaskNumber() {
   } else {
     return 1
   }
-
 }
 
 async function findRepeatedNumber() {
@@ -349,12 +377,16 @@ async function findRepeatedNumber() {
       return false
     }
   }
-
 }
 
-let tasksTableClasses = ['number-ascending', 'all-tasks', undefined]
-function filterTasks(tasks) {
+let tasksTableClasses = ['number-ascending', undefined, undefined]
 
+function modifyClasses(element, classArray, initialIndex, endIndex, type) {
+  classArray.splice(initialIndex, endIndex, type)
+  element.classList = classArray.join(' ')
+}
+
+function filterByClass(tasks) {
   let todayDate = new Date().toISOString().slice(0, 10)
   todayDate = new Date(todayDate + "T00:00:00.000-03:00")
 
@@ -398,103 +430,63 @@ function filterTasks(tasks) {
     return tasks
   }
 
-  function dropdownDisplay(dropdown) {
-    if (dropdown === 'filters') {
-      filtersDropdown.classList.toggle('active')
-    } else if (dropdown === 'status') {
-      statusDropdown.classList.toggle('active')
-    }
-  }
-
   selectedFilter.addEventListener('click', function () {
     dropdownDisplay('filters')
-  }
-  )
-
-  selectedStatus.addEventListener('click', function () {
-    dropdownDisplay('status')
-  })
-
-  concludedSelect.addEventListener('click', function () {
-    selectedStatus.value = 'Concluída'
-    dropdownDisplay('status')
-  })
-
-  inWorkSelect.addEventListener('click', function () {
-    selectedStatus.value = 'Em andamento'
-    dropdownDisplay('status')
-  })
-
-  stoppedSelect.addEventListener('click', function () {
-    selectedStatus.value = 'Paralisada'
-    dropdownDisplay('status')
   })
 
   allTasksFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'all-tasks')
-    tasksTable.classList = tasksTableClasses.join(' ')
+    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'all-tasks')
     dropdownDisplay('filters')
     printTasks()
   })
 
   forTodayFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'for-today')
-    tasksTable.classList = tasksTableClasses.join(' ')
+    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'for-today')
     selectedFilter.value = 'Hoje'
     dropdownDisplay('filters')
     printTasks()
   })
 
   lateFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'late')
-    tasksTable.classList = tasksTableClasses.join(' ')
+    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'late')
     selectedFilter.value = 'Atrasadas'
     dropdownDisplay('filters')
     printTasks()
   })
 
   concludedFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'concluded')
-    tasksTable.classList = tasksTableClasses.join(' ')
+    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'concluded')
     selectedFilter.value = 'Concluídas'
     dropdownDisplay('filters')
     printTasks()
   })
 
   inWorkFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'in-work')
-    tasksTable.classList = tasksTableClasses.join(' ')
+    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'in-work')
     selectedFilter.value = 'Em andamento'
     dropdownDisplay('filters')
     printTasks()
   })
 
   stoppedFilterButton.addEventListener('click', function () {
-    tasksTableClasses.splice(1, 1, 'stopped')
-    tasksTable.classList = tasksTableClasses.join(' ')
+    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'stopped')
     selectedFilter.value = 'Paralisada'
     dropdownDisplay('filters')
-    printTasks()
-  })
-
-  searchBar.addEventListener('input', function () {
-    tasksTableClasses.splice(2, 2, 'search')
-    tasksTable.classList = tasksTableClasses.join(' ')
     printTasks()
   })
 
   return tasks
 }
 
-function searchTasks(tasks) {
-  if (tasksTable.classList.contains('search')) {
+function search(array, classElement, searchBar) {
+  if (classElement.classList.contains('search')) {
     searchBarValue = searchBar.value.toLowerCase()
-    tasks = tasks.filter((task) => {
+    array = array.filter((task) => {
       return task.Description.toLowerCase().includes(searchBarValue)
     })
-    return tasks
+    return array
   }
-  return tasks
+  return array
 }
 
 function orderTasks(tasks) {
@@ -548,12 +540,10 @@ function orderTasks(tasks) {
 
   numberHeader.addEventListener('click', function () {
     if (tasksTableClasses[0] !== 'numberAscending') {
-      tasksTableClasses.splice(0, 1, 'numberAscending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0, 1, 'numberAscending')
     }
     else if (tasksTableClasses[0] === 'numberAscending') {
-      tasksTableClasses.splice(0, 1, 'numberDescending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0, 1, 'numberDescending')
     }
     printTasks()
   })
@@ -595,15 +585,16 @@ function orderTasks(tasks) {
 
 async function printTasks() {
   let tasks = await getTasksArray()
+  tasks = paginate(tasks, currentPage, ITENS_PER_PAGE)
   tasks = orderTasks(tasks)
-  tasks = filterTasks(tasks)
-  tasks = searchTasks(tasks)
+  tasks = filterByClass(tasks)
+  tasks = search(tasks, tasksTable, searchBar)
   tasksTable.innerHTML = ""
   tasks.forEach((task) => {
     tableTemplate(task)
   })
 }
 
-async function pageOnLoad() {
+document.addEventListener('DOMContentLoaded', function () {
   printTasks()
-}
+})
