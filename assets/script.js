@@ -135,7 +135,6 @@ function dropdownDisplay(dropdown) {
 }
 
 selectedStatusInput.addEventListener('click', function () {
-  console.log('click click')
   dropdownDisplay('status')
 })
 
@@ -432,6 +431,7 @@ function filterByClass(tasks) {
   }
 
   selectedFilter.addEventListener('click', function () {
+    console.log('click click')
     dropdownDisplay('filters')
   })
 
