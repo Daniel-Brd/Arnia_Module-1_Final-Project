@@ -24,7 +24,7 @@ const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
 const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
 
-const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
+const TASKS_ARRAY_URL = 'http://localhost:3000/tasks/'
 
 async function createTask(task) {
   await fetch(TASKS_ARRAY_URL, {
@@ -128,8 +128,10 @@ function cancelModal() {
 
 function dropdownDisplay(dropdown) {
   if (dropdown === 'filters') {
+    console.log('teste1');
     filtersDropdown.classList.toggle('dropdown-active')
   } else if (dropdown === 'status') {
+    console.log('teste2');
     statusDropdown.classList.toggle('dropdown-active')
   }
 }
@@ -292,11 +294,11 @@ function tableTemplate(task) {
   const date = new Date(task.Date + "T00:00:00.000-03:00")
   return tasksTable.innerHTML = tasksTable.innerHTML +
     `<tr>
-      <td id="taskNumber" scope="row">${task.Number}</th>
-      <td id="taskDescription">${task.Description}</td>
-      <td id="taskDate">${date.toLocaleDateString("pt-BR")}</td>
-      <td id="taskStatus" class="${task.Status.replace(' ', '-')}">${task.Status}</td>
-      <td id="taskFunctions">
+      <td>${task.Number}</th>
+      <td>${task.Description}</td>
+      <td>${date.toLocaleDateString("pt-BR")}</td>
+      <td class="${task.Status.replace(' ', '-')}">${task.Status}</td>
+      <td id="task-functions">
         <i id="editButton" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14.4 13.575H0.6C0.268125 13.575 0 13.8431 0 14.175V14.85C0 14.9325 0.0675 15 0.15 15H14.85C14.9325 15 15 14.9325 15 14.85V14.175C15 13.8431 14.7319 13.575 14.4 13.575ZM2.73188 12C2.76938 12 2.80688 11.9963 2.84438 11.9906L5.99813 11.4375C6.03562 11.43 6.07125 11.4131 6.0975 11.385L14.0456 3.43687C14.063 3.41953 14.0768 3.39892 14.0862 3.37624C14.0956 3.35356 14.1005 3.32924 14.1005 3.30469C14.1005 3.28013 14.0956 3.25582 14.0862 3.23313C14.0768 3.21045 14.063 3.18985 14.0456 3.1725L10.9294 0.054375C10.8938 0.01875 10.8469 0 10.7963 0C10.7456 0 10.6988 0.01875 10.6631 0.054375L2.715 8.0025C2.68687 8.03063 2.67 8.06437 2.6625 8.10188L2.10938 11.2556C2.09113 11.3561 2.09765 11.4594 2.12836 11.5568C2.15907 11.6542 2.21305 11.7426 2.28562 11.8144C2.40937 11.9344 2.565 12 2.73188 12Z"
               fill="#2C2661" />
@@ -386,6 +388,51 @@ function modifyClasses(element, classArray, initialIndex, endIndex, type) {
   element.classList = classArray.join(' ')
 }
 
+selectedFilter.addEventListener('click', function () {
+  dropdownDisplay('filters')
+})
+
+allTasksFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'all-tasks')
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+forTodayFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'for-today')
+  selectedFilter.value = 'Hoje'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+lateFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'late')
+  selectedFilter.value = 'Atrasadas'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+concludedFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'concluded')
+  selectedFilter.value = 'Concluídas'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+inWorkFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'in-work')
+  selectedFilter.value = 'Em andamento'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
+stoppedFilterButton.addEventListener('click', function () {
+  modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'stopped')
+  selectedFilter.value = 'Paralisada'
+  dropdownDisplay('filters')
+  printTasks()
+})
+
 function filterByClass(tasks) {
   let todayDate = new Date().toISOString().slice(0, 10)
   todayDate = new Date(todayDate + "T00:00:00.000-03:00")
@@ -429,52 +476,6 @@ function filterByClass(tasks) {
     selectedFilter.value = 'Filtros'
     return tasks
   }
-
-  selectedFilter.addEventListener('click', function () {
-    dropdownDisplay('filters')
-  })
-
-  allTasksFilterButton.addEventListener('click', function () {
-    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'all-tasks')
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  forTodayFilterButton.addEventListener('click', function () {
-    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'for-today')
-    selectedFilter.value = 'Hoje'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  lateFilterButton.addEventListener('click', function () {
-    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'late')
-    selectedFilter.value = 'Atrasadas'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  concludedFilterButton.addEventListener('click', function () {
-    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'concluded')
-    selectedFilter.value = 'Concluídas'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  inWorkFilterButton.addEventListener('click', function () {
-    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'in-work')
-    selectedFilter.value = 'Em andamento'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
-  stoppedFilterButton.addEventListener('click', function () {
-    modifyClasses(tasksTable, tasksTableClasses, 1, 1, 'stopped')
-    selectedFilter.value = 'Paralisada'
-    dropdownDisplay('filters')
-    printTasks()
-  })
-
   return tasks
 }
 
@@ -550,22 +551,18 @@ function orderTasks(tasks) {
 
   descriptionHeader.addEventListener('click', function () {
     if (tasksTableClasses[0] !== 'descriptionAscending') {
-      tasksTableClasses.splice(0, 1, 'descriptionAscending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0, 1, 'descriptionAscending')
     } else if (tasksTableClasses[0] === 'descriptionAscending') {
-      tasksTableClasses.splice(0, 1, 'descriptionDescending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0, 1, 'descriptionDescending')
     }
     printTasks()
   })
 
   dateHeader.addEventListener('click', function () {
     if (tasksTableClasses[0] !== 'dateAscending') {
-      tasksTableClasses.splice(0, 1, 'dateAscending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0, 1, 'dateAscending')
     } else if (tasksTableClasses[0] === 'dateAscending') {
-      tasksTableClasses.splice(0, 1, 'dateDescending')
-      tasksTable.classList = tasksTableClasses.join(' ')
+      modifyClasses(tasksTable, tasksTableClasses, 0, 1, 'dateDescending')
     }
     printTasks()
   })
