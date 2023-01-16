@@ -1,26 +1,8 @@
 
 let currentTask = null
 let currentPage = 1
-const taskModal = document.getElementById('taskModal')
-const confirmActionModal = document.getElementById('confirm-action-modal')
 
-const taskTitle = document.getElementById('task-title')
-const numberInput = document.getElementById('number-input')
-const descriptionInput = document.getElementById('description-input')
-const dateInput = document.getElementById('date-input')
-const selectedStatusInput = document.getElementById('selected-status')
-const selectedStatusError = document.getElementById('status-error')
-
-const taskForm = document.getElementById('taskForm')
-const statusDropdown = document.getElementById('status-dropdown')
-const concludedSelect = document.getElementById('concluded-status-select')
-const inWorkSelect = document.getElementById('in-work-status-select')
-const stoppedSelect = document.getElementById('stopped-status-select')
-const submitButton = document.getElementById('submit-button')
-
-
-
-const tasksTable = document.getElementById('tasksTable')
+const tasksTable = document.getElementById('tasks-table')
 
 const filtersDropdown = document.getElementById('filters-dropdown')
 const selectedFilter = document.getElementById('selected-filter')
@@ -30,7 +12,7 @@ const lateFilterButton = document.getElementById('late-filter-button')
 const concludedFilterButton = document.getElementById('concluded-filter-button')
 const inWorkFilterButton = document.getElementById('in-work-filter-button')
 const stoppedFilterButton = document.getElementById('stopped-filter-button')
-const searchBar = document.getElementById('searchBar')
+const searchBar = document.getElementById('search-bar')
 
 const numberHeader = document.getElementById('number-header')
 const descriptionHeader = document.getElementById('description-header')
@@ -44,22 +26,89 @@ const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
 
 // start of modal functions 
 //
+
+const TASKS_ARRAY_URL = 'http://localhost:3000/tasks/'
+
+async function createTask(task) {
+  await fetch(TASKS_ARRAY_URL, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(task)
+  })
+}
+
+async function getTask(taskId) {
+  const response = await fetch(`${TASKS_ARRAY_URL}${taskId}`)
+  const task = await response.json()
+  return task
+}
+
+async function editTask(taskId, task) {
+  await fetch(`${TASKS_ARRAY_URL}${taskId}`, {
+    method: "PUT",
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(task)
+  })
+}
+
+async function deleteTask(taskId) {
+  openConfirmAction()
+  confirmActionModal.innerHTML =
+    `<main class="modal-content">
+      <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
+      <section class="modal-buttons">
+        <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
+        <button id="confirmDelete" type="button" class="main-bordered-button" onclick="confirmDelete(${taskId})">Sim</button>
+      </section>
+    </main>`
+}
+
+async function confirmDelete(taskId) {
+  await fetch(`${TASKS_ARRAY_URL}${taskId}`, {
+    method: "DELETE"
+  })
+  location.reload()
+}
+
+const taskModal = document.getElementById('task-modal')
+const confirmActionModal = document.getElementById('confirm-action-modal')
+
+const taskTitle = document.getElementById('task-title')
+const numberInput = document.getElementById('number-input')
+const descriptionInput = document.getElementById('description-input')
+const dateInput = document.getElementById('date-input')
+const selectedStatusInput = document.getElementById('selected-status')
+const selectedStatusError = document.getElementById('status-error')
+
+const taskForm = document.getElementById('task-form')
+const statusDropdown = document.getElementById('status-dropdown')
+const concludedSelect = document.getElementById('concluded-status-select')
+const inWorkSelect = document.getElementById('in-work-status-select')
+const stoppedSelect = document.getElementById('stopped-status-select')
+const submitButton = document.getElementById('submit-button')
+
 async function openTask() {
   numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
   numberInput.setAttribute('max', `${await maxTaskNumber()}`)
-  taskModal.style.display = "block"
+  taskModal.classList.add('modal-active')
 }
 
 function closeTask() {
-  taskModal.style.display = "none"
+  taskModal.classList.remove('modal-active')
 }
 
 function openConfirmAction() {
-  confirmActionModal.style.display = "block"
+  confirmActionModal.classList.add('modal-active')
 }
 
 function closeConfirmAction() {
-  confirmActionModal.style.display = "none"
+  confirmActionModal.classList.remove('modal-active')
 }
 
 function clearForm() {
@@ -89,31 +138,23 @@ async function editTaskModal(taskId) {
   selectedStatusInput.value = currentTask.Status
   openTask()
 }
-//
-// end of modal functions
 
-// start of database functions
-//
-const itensPerPage = 8
-async function pageNavigate(type) {
-  const tasks = await getTasksArray()
-  maxPage = Math.ceil(tasks.length / itensPerPage)
-  if (type === "next" && currentPage < maxPage) {
-    currentPage = currentPage + 1
-  }
-  else if (type === "previous" && currentPage > 1) {
-    currentPage = currentPage - 1
-  }
-  printTasks()
 
-}
 
-function paginate(array, currentPage, itensPerPage) {
-  const firstIndex = (currentPage - 1) * itensPerPage
-  const lastIndex = firstIndex + itensPerPage
-  array = array.slice(firstIndex, lastIndex)
-  return array
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function submitTask(task) {
   if (currentTask === null) {
@@ -240,52 +281,6 @@ taskForm.addEventListener('submit', async (event) => {
   }
 })
 
-async function createTask(task) {
-  await fetch(`http://localhost:3000/tasks`, {
-    method: "POST",
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(task)
-  })
-}
-
-async function getTask(taskId) {
-  const response = await fetch(`http://localhost:3000/tasks/${taskId}`)
-  const task = await response.json()
-  return task
-}
-
-async function editTask(taskId, task) {
-  await fetch(`http://localhost:3000/tasks/${taskId}`, {
-    method: "PUT",
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(task)
-  })
-}
-
-async function deleteTask(taskId) {
-  openConfirmAction()
-  confirmActionModal.innerHTML =
-    `<main class="modalContent">
-      <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
-      <section class="modal-buttons">
-        <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
-        <button id="confirmDelete" type="button" class="button" onclick="confirmDelete(${taskId})">Sim</button>
-      </section>
-    </main>`
-}
-
-async function confirmDelete(taskId) {
-  await fetch(`http://localhost:3000/tasks/${taskId}`, {
-    method: "DELETE"
-  })
-  location.reload()
-}
 //
 // end of database functions
 //
@@ -297,8 +292,28 @@ async function confirmDelete(taskId) {
 //
 // start of tasks functions
 //
+const ITENS_PER_PAGE = 8
+async function pageNavigate(type) {
+  const tasks = await getTasksArray()
+  maxPage = Math.ceil(tasks.length / ITENS_PER_PAGE)
+  if (type === "next" && currentPage < maxPage) {
+    currentPage = currentPage + 1
+  }
+  else if (type === "previous" && currentPage > 1) {
+    currentPage = currentPage - 1
+  }
+  printTasks()
+}
+
+function paginate(array, currentPage, ITENS_PER_PAGE) {
+  const firstIndex = (currentPage - 1) * ITENS_PER_PAGE
+  const lastIndex = firstIndex + ITENS_PER_PAGE
+  array = array.slice(firstIndex, lastIndex)
+  return array
+}
+
 async function getTasksArray() {
-  const response = await fetch(`http://localhost:3000/tasks`)
+  const response = await fetch(TASKS_ARRAY_URL)
   const tasks = await response.json()
   return tasks
 }
@@ -615,7 +630,7 @@ function orderTasks(tasks) {
 
 async function printTasks() {
   let tasks = await getTasksArray()
-  tasks = paginate(tasks, currentPage, itensPerPage)
+  tasks = paginate(tasks, currentPage, ITENS_PER_PAGE)
   tasks = orderTasks(tasks)
   tasks = filterByClass(tasks)
   tasks = search(tasks, tasksTable, searchBar)
