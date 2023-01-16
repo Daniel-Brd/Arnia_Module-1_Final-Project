@@ -431,7 +431,6 @@ function filterByClass(tasks) {
   }
 
   selectedFilter.addEventListener('click', function () {
-    console.log('click click')
     dropdownDisplay('filters')
   })
 
