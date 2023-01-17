@@ -1,4 +1,4 @@
-const TASKS_ARRAY_URL = 'http://localhost:3000/tasks/'
+const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
 
 const tasksTable = document.getElementById('tasks-table')
 
