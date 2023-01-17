@@ -582,10 +582,10 @@ function orderTasks(tasks) {
 
 async function printTasks() {
   let tasks = await getTasksArray()
-  tasks = paginate(tasks, currentPage, ITENS_PER_PAGE)
   tasks = orderTasks(tasks)
   tasks = filterByClass(tasks)
   tasks = search(tasks, tasksTable, searchBar)
+  tasks = paginate(tasks, currentPage, ITENS_PER_PAGE)
   tasksTable.innerHTML = ""
   tasks.forEach((task) => {
     tableTemplate(task)
