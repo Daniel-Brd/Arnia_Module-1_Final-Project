@@ -73,6 +73,7 @@ async function confirmDelete(taskId) {
   location.reload()
 }
 
+const addTaskButton = document.getElementById('add-task')
 const taskModal = document.getElementById('task-modal')
 const confirmActionModal = document.getElementById('confirm-action-modal')
 
@@ -95,6 +96,10 @@ async function openTask() {
   numberInput.setAttribute('max', `${await maxTaskNumber()}`)
   taskModal.classList.add('modal-active')
 }
+
+addTaskButton.addEventListener('click', function () {
+  openTask()
+})
 
 function closeTask() {
   taskModal.classList.remove('modal-active')
@@ -314,10 +319,11 @@ function tableTemplate(task) {
     </tr>`
 }
 
+const nextPageBtn = document.getElementById('table-next')
+const previousPageBtn = document.getElementById('table-previous')
 const ITENS_PER_PAGE = 8
 
-async function pageNavigate(type) {
-  const tasks = await getTasksArray()
+async function pageNavigate(tasks, type) {
   maxPage = Math.ceil(tasks.length / ITENS_PER_PAGE)
   if (type === "next" && currentPage < maxPage) {
     currentPage = currentPage + 1
@@ -334,6 +340,17 @@ function paginate(array, currentPage, ITENS_PER_PAGE) {
   array = array.slice(firstIndex, lastIndex)
   return array
 }
+
+nextPageBtn.addEventListener('click', async function () {
+  let tasks = await tasksRetun()
+  pageNavigate(tasks, 'next')
+})
+
+previousPageBtn.addEventListener('click', async function () {
+  let tasks = await tasksRetun()
+  pageNavigate(tasks, 'previous')
+})
+
 
 async function maxTaskNumber() {
   let tasks = await getTasksArray()
@@ -580,11 +597,16 @@ function orderTasks(tasks) {
   return tasks
 }
 
-async function printTasks() {
+async function tasksRetun() {
   let tasks = await getTasksArray()
   tasks = orderTasks(tasks)
   tasks = filterByClass(tasks)
   tasks = search(tasks, tasksTable, searchBar)
+  return tasks
+}
+
+async function printTasks() {
+  let tasks = await tasksRetun()
   tasks = paginate(tasks, currentPage, ITENS_PER_PAGE)
   tasksTable.innerHTML = ""
   tasks.forEach((task) => {

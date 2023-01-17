@@ -7,9 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gerenciador de Tarefas</title>
   <link rel="stylesheet" href="assets/style.css" />
-  <link rel="stylesheet" href="assets/task-formulary.css">
   <link rel="stylesheet" href="assets/dropdown.css">
-  <link rel="stylesheet" href="assets/modal.css">
 </head>
 
 <body>
@@ -40,7 +38,7 @@
         </svg>
         Gerenciador de Tarefas
       </h1>
-      <button id="add-task" class="main-bordered-button" type="button" onclick="openTask()">
+      <button id="add-task" class="main-bordered-button" type="button">
         + Adicionar nova tarefa
       </button>
     </div>
@@ -75,8 +73,8 @@
         </tbody>
       </table>
       <nav class="table-nav">
-        <button type="button" onclick="pageNavigate('previous')">anterior</button>
-        <button type="button" onclick="pageNavigate('next')">próxima</button>
+        <button id="table-previous" type="button" >anterior</button>
+        <button id="table-next" type="button" >próxima</button>
       </nav>
       <section id="task-modal" class="modal-container">
         <main>
