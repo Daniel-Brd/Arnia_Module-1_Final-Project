@@ -24,7 +24,7 @@ const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
 const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
 
-const TASKS_ARRAY_URL = 'http://localhost:3000/tasks/'
+const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
 
 async function createTask(task) {
   await fetch(TASKS_ARRAY_URL, {
