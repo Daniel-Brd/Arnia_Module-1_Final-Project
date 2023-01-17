@@ -1,4 +1,4 @@
-const TASKS_ARRAY_URL = 'http://localhost:3000/tasks/'
+const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
 
 const tasksTable = document.getElementById('tasks-table')
 
@@ -21,6 +21,7 @@ const NUMBER_REQUIRED = 'Por favor, informe o número da tarefa.'
 const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
 const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
+
 
 const addTaskButton = document.getElementById('add-task')
 const taskModal = document.getElementById('task-modal')
@@ -46,6 +47,7 @@ const ITENS_PER_PAGE = 8
 
 let currentTask = null
 let currentPage = 1
+
 
 async function createTask(task) {
   await fetch(TASKS_ARRAY_URL, {
@@ -148,6 +150,7 @@ function clearForm() {
 function cancelModal() {
   clearForm()
   closeTask()
+
 }
 
 async function submitTask(task) {
@@ -207,6 +210,7 @@ async function validateNumber(input, requiredMessage) {
   const maxNumber = await maxTaskNumber()
 
   if (!await hasValue(input, requiredMessage)) {
+
     return false
   } else if (input.value > maxNumber) {
     await showError(input, `Por favor, insira um número menor ou igual a ${maxNumber}.`)
@@ -344,11 +348,13 @@ function tableTemplate(task) {
     </tr>`
 }
 
+
 function dropdownDisplay(dropdown) {
   if (dropdown === 'filters') {
     filtersDropdown.classList.toggle('dropdown-active')
   } else if (dropdown === 'status') {
     statusDropdown.classList.toggle('dropdown-active')
+
   }
 }
 
@@ -606,6 +612,7 @@ function paginate(array, currentPage, ITENS_PER_PAGE) {
 }
 
 async function processedTasks() {
+
   let tasks = await getTasksArray()
   tasks = orderTasks(tasks)
   tasks = filterByClass(tasks)
