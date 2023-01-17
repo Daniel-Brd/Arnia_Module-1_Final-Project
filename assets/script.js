@@ -161,13 +161,9 @@ stoppedSelect.addEventListener('click', function () {
 })
 
 searchBar.addEventListener('input', function () {
+  currentPage = 1
   modifyClasses(tasksTable, tasksTableClasses, 2, 2, 'search')
   tasksTableClasses.splice(2, 2, 'search')
-  printTasks()
-})
-
-searchBar.addEventListener('click', function () {
-  currentPage = 1
   printTasks()
 })
 
