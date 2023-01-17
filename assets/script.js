@@ -166,6 +166,11 @@ searchBar.addEventListener('input', function () {
   printTasks()
 })
 
+searchBar.addEventListener('click', function () {
+  currentPage = 1
+  printTasks()
+})
+
 async function submitTask(task) {
   if (currentTask === null) {
     await createTask(task)
