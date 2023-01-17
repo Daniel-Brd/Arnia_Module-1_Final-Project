@@ -60,7 +60,7 @@ async function deleteTask(taskId) {
     `<main class="modal-content">
       <h1 class="title">Tem certeza que deseja excluir essa tarefa?</h1>
       <section class="modal-buttons">
-        <div class="cancel-modal" onclick="cancelModal()">Cancelar</div>
+        <div class="cancel-modal" onclick="closeConfirmAction()">Cancelar</div>
         <button id="confirmDelete" type="button" class="main-bordered-button" onclick="confirmDelete(${taskId})">Sim</button>
       </section>
     </main>`
@@ -122,21 +122,18 @@ function clearForm() {
   let errorText = document.querySelectorAll('.error-text')
   errorText.forEach(element => {
     return element.innerHTML = ''
-  });
+  })
 }
 
 function cancelModal() {
   clearForm()
   closeTask()
-  closeConfirmAction()
 }
 
 function dropdownDisplay(dropdown) {
   if (dropdown === 'filters') {
-    console.log('teste1');
     filtersDropdown.classList.toggle('dropdown-active')
   } else if (dropdown === 'status') {
-    console.log('teste2');
     statusDropdown.classList.toggle('dropdown-active')
   }
 }
@@ -216,17 +213,13 @@ async function validateNumber(input, requiredMessage) {
   if (repeatedNumber !== false) {
     await showError(input, `Já existe uma tarefa com o número ${repeatedNumber}.`)
     return false
-  }
-
-  if (!await hasValue(input, requiredMessage)) {
+  } else if (!await hasValue(input, requiredMessage)) {
     return false
-  }
-
-  if (input.value > maxNumber) {
-    await showError(input, `Por favor, insira um número menor que ${maxNumber}.`)
+  } else if (input.value > maxNumber) {
+    await showError(input, `Por favor, insira um número menor ou igual a ${maxNumber}.`)
     return false
-  }
-  return true
+  } else {
+    return true}
 }
 
 numberInput.addEventListener('blur', async function () {
