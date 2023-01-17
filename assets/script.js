@@ -22,7 +22,6 @@ const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
 const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
 
-
 const addTaskButton = document.getElementById('add-task')
 const taskModal = document.getElementById('task-modal')
 const confirmActionModal = document.getElementById('confirm-action-modal')
@@ -47,7 +46,6 @@ const ITENS_PER_PAGE = 8
 
 let currentTask = null
 let currentPage = 1
-
 
 async function createTask(task) {
   await fetch(TASKS_ARRAY_URL, {
