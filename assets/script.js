@@ -107,8 +107,8 @@ async function replaceTask(taskId, taskNumber, task) {
       </section>
     </main>`
   const confirmReplaceButton = document.getElementById('confirm-replace')
-  confirmReplaceButton.addEventListener('click', function () {
-    editTask(taskId, task)
+  confirmReplaceButton.addEventListener('click', async function () {
+    await editTask(taskId, task)
     location.reload()
   })
 }
