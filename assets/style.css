@@ -189,6 +189,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 2.31vh;
+  padding-bottom: 2.31vh;
 }
 
 .table {
@@ -407,5 +408,9 @@ form .dropdown-menu ul {
 
   .modal-buttons {
     width: 100%;
+  }
+
+  .table-nav{
+    justify-content: space-around;
   }
 }
