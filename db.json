@@ -37,8 +37,8 @@
     },
     {
       "Number": "6",
-      "Description": "Desenvolver a parte dinâmica do FrontEnd",
-      "Date": "2022-12-20",
+      "Description": "substituição",
+      "Date": "2023-01-17",
       "Status": "Concluída",
       "id": 6
     },
@@ -111,6 +111,13 @@
       "Date": "2023-01-11",
       "Status": "Paralisada",
       "id": 18
+    },
+    {
+      "Number": "21",
+      "Description": "a",
+      "Date": "2023-01-06",
+      "Status": "Concluída",
+      "id": 19
     }
   ]
 }
