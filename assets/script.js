@@ -1,6 +1,4 @@
-
-let currentTask = null
-let currentPage = 1
+const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
 
 const tasksTable = document.getElementById('tasks-table')
 
@@ -24,7 +22,32 @@ const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
 const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
 
-const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
+
+const addTaskButton = document.getElementById('add-task')
+const taskModal = document.getElementById('task-modal')
+const confirmActionModal = document.getElementById('confirm-action-modal')
+
+const taskTitle = document.getElementById('task-title')
+const numberInput = document.getElementById('number-input')
+const descriptionInput = document.getElementById('description-input')
+const dateInput = document.getElementById('date-input')
+const selectedStatusInput = document.getElementById('selected-status')
+const selectedStatusError = document.getElementById('status-error')
+
+const taskForm = document.getElementById('task-form')
+const statusDropdown = document.getElementById('status-dropdown')
+const concludedSelect = document.getElementById('concluded-status-select')
+const inWorkSelect = document.getElementById('in-work-status-select')
+const stoppedSelect = document.getElementById('stopped-status-select')
+const submitButton = document.getElementById('task-submit-button')
+
+const nextPageBtn = document.getElementById('table-next')
+const previousPageBtn = document.getElementById('table-previous')
+const ITENS_PER_PAGE = 8
+
+let currentTask = null
+let currentPage = 1
+
 
 async function createTask(task) {
   await fetch(TASKS_ARRAY_URL, {
@@ -73,23 +96,22 @@ async function confirmDelete(taskId) {
   location.reload()
 }
 
-const addTaskButton = document.getElementById('add-task')
-const taskModal = document.getElementById('task-modal')
-const confirmActionModal = document.getElementById('confirm-action-modal')
-
-const taskTitle = document.getElementById('task-title')
-const numberInput = document.getElementById('number-input')
-const descriptionInput = document.getElementById('description-input')
-const dateInput = document.getElementById('date-input')
-const selectedStatusInput = document.getElementById('selected-status')
-const selectedStatusError = document.getElementById('status-error')
-
-const taskForm = document.getElementById('task-form')
-const statusDropdown = document.getElementById('status-dropdown')
-const concludedSelect = document.getElementById('concluded-status-select')
-const inWorkSelect = document.getElementById('in-work-status-select')
-const stoppedSelect = document.getElementById('stopped-status-select')
-const submitButton = document.getElementById('task-submit-button')
+async function replaceTask(taskId, taskNumber, task) {
+  openConfirmAction()
+  confirmActionModal.innerHTML =
+    `<main class="modal-content">
+      <h1 class="title">Já existe uma tarefa com o número ${taskNumber}, deseja substituí-la?</h1>
+      <section class="modal-buttons">
+        <div class="cancel-modal" onclick="closeConfirmAction()">Cancelar</div>
+        <button id="confirm-replace" type="button" class="main-bordered-button")">Sim</button>
+      </section>
+    </main>`
+  const confirmReplaceButton = document.getElementById('confirm-replace')
+  confirmReplaceButton.addEventListener('click', function () {
+    editTask(taskId, task)
+    location.reload()
+  })
+}
 
 async function openTask() {
   numberInput.setAttribute('placeholder', `${await maxTaskNumber()}`)
@@ -128,52 +150,15 @@ function clearForm() {
 function cancelModal() {
   clearForm()
   closeTask()
+
 }
-
-function dropdownDisplay(dropdown) {
-  if (dropdown === 'filters') {
-    filtersDropdown.classList.toggle('dropdown-active')
-  } else if (dropdown === 'status') {
-    statusDropdown.classList.toggle('dropdown-active')
-  }
-}
-
-selectedStatusInput.addEventListener('click', function () {
-  dropdownDisplay('status')
-})
-
-concludedSelect.addEventListener('click', function () {
-  selectedStatusInput.value = 'Concluída'
-  dropdownDisplay('status')
-})
-
-inWorkSelect.addEventListener('click', function () {
-  selectedStatusInput.value = 'Em andamento'
-  dropdownDisplay('status')
-})
-
-stoppedSelect.addEventListener('click', function () {
-  selectedStatusInput.value = 'Paralisada'
-  dropdownDisplay('status')
-})
-
-searchBar.addEventListener('input', function () {
-  currentPage = 1
-  modifyClasses(tasksTable, tasksTableClasses, 2, 2, 'search')
-  tasksTableClasses.splice(2, 2, 'search')
-  printTasks()
-})
 
 async function submitTask(task) {
   if (currentTask === null) {
     await createTask(task)
-    clearForm()
-    closeTask
     location.reload()
   } else if (currentTask !== null) {
     await editTask(currentTask.id, task)
-    clearForm()
-    closeTask
     location.reload()
   }
 }
@@ -206,20 +191,64 @@ async function hasValue(input, message) {
   }
 }
 
+async function maxTaskNumber() {
+  let tasks = await getTasksArray()
+  let tasksNumbers = await tasks.map((task) => {
+    return task.Number
+  })
+  if (tasksNumbers.length > 0) {
+    let max = await tasksNumbers.reduce(function (a, b) {
+      return Math.max(a, b)
+    })
+    return parseInt(max) + 1
+  } else {
+    return 1
+  }
+}
+
 async function validateNumber(input, requiredMessage) {
-  const repeatedNumber = await findRepeatedNumber()
   const maxNumber = await maxTaskNumber()
 
-  if (repeatedNumber !== false) {
-    await showError(input, `Já existe uma tarefa com o número ${repeatedNumber}.`)
-    return false
-  } else if (!await hasValue(input, requiredMessage)) {
+  if (!await hasValue(input, requiredMessage)) {
+
     return false
   } else if (input.value > maxNumber) {
     await showError(input, `Por favor, insira um número menor ou igual a ${maxNumber}.`)
     return false
   } else {
-    return true}
+    return true
+  }
+}
+
+async function findRepeatedNumber() {
+  let tasks = await getTasksArray()
+  let maxNumber = await maxTaskNumber()
+  maxNumber = maxNumber.toString()
+  let numberInputValue = numberInput.value
+
+  if (currentTask !== null) {
+    const repeatedNumberTasks = tasks.filter(task => {
+      if (task.Number === numberInputValue && task.Number !== currentTask.Number && task.Number !== maxNumber) {
+        return task
+      }
+    })
+    if (repeatedNumberTasks.length > 0) {
+      return repeatedNumberTasks[0]
+    } else {
+      return false
+    }
+  } else {
+    const repeatedNumberTasks = tasks.filter(task => {
+      if (task.Number === numberInputValue && task.Number !== maxNumber) {
+        return task
+      }
+    })
+    if (repeatedNumberTasks.length > 0) {
+      return repeatedNumberTasks[0]
+    } else {
+      return false
+    }
+  }
 }
 
 numberInput.addEventListener('blur', async function () {
@@ -261,6 +290,10 @@ taskForm.addEventListener('submit', async (event) => {
   const dateValid = await hasValue(dateInput, DATE_REQUIRED)
   const statusValid = await hasValue(selectedStatusInput, STATUS_REQUIRED)
 
+  const repeatedNumberTask = await findRepeatedNumber()
+  const repeatedNumber = repeatedNumberTask.Number
+  const repeatedNumberId = repeatedNumberTask.id
+
   const task = {
     Number: taskNumber,
     Description: taskDescription,
@@ -268,7 +301,9 @@ taskForm.addEventListener('submit', async (event) => {
     Status: taskStatus,
   }
 
-  if (numberValid && descriptionValid && dateValid && statusValid) {
+  if (numberValid && descriptionValid && dateValid && statusValid && repeatedNumberTask) {
+    return replaceTask(repeatedNumberId, repeatedNumber, task)
+  } else if (numberValid && descriptionValid && dateValid && statusValid) {
     return submitTask(task)
   }
 })
@@ -313,84 +348,41 @@ function tableTemplate(task) {
     </tr>`
 }
 
-const nextPageBtn = document.getElementById('table-next')
-const previousPageBtn = document.getElementById('table-previous')
-const ITENS_PER_PAGE = 8
 
-async function pageNavigate(tasks, type) {
-  maxPage = Math.ceil(tasks.length / ITENS_PER_PAGE)
-  if (type === "next" && currentPage < maxPage) {
-    currentPage = currentPage + 1
+function dropdownDisplay(dropdown) {
+  if (dropdown === 'filters') {
+    filtersDropdown.classList.toggle('dropdown-active')
+  } else if (dropdown === 'status') {
+    statusDropdown.classList.toggle('dropdown-active')
+
   }
-  else if (type === "previous" && currentPage > 1) {
-    currentPage = currentPage - 1
-  }
+}
+
+selectedStatusInput.addEventListener('click', function () {
+  dropdownDisplay('status')
+})
+
+concludedSelect.addEventListener('click', function () {
+  selectedStatusInput.value = 'Concluída'
+  dropdownDisplay('status')
+})
+
+inWorkSelect.addEventListener('click', function () {
+  selectedStatusInput.value = 'Em andamento'
+  dropdownDisplay('status')
+})
+
+stoppedSelect.addEventListener('click', function () {
+  selectedStatusInput.value = 'Paralisada'
+  dropdownDisplay('status')
+})
+
+searchBar.addEventListener('input', function () {
+  currentPage = 1
+  modifyClasses(tasksTable, tasksTableClasses, 2, 2, 'search')
+  tasksTableClasses.splice(2, 2, 'search')
   printTasks()
-}
-
-function paginate(array, currentPage, ITENS_PER_PAGE) {
-  const firstIndex = (currentPage - 1) * ITENS_PER_PAGE
-  const lastIndex = firstIndex + ITENS_PER_PAGE
-  array = array.slice(firstIndex, lastIndex)
-  return array
-}
-
-nextPageBtn.addEventListener('click', async function () {
-  let tasks = await tasksRetun()
-  pageNavigate(tasks, 'next')
 })
-
-previousPageBtn.addEventListener('click', async function () {
-  let tasks = await tasksRetun()
-  pageNavigate(tasks, 'previous')
-})
-
-
-async function maxTaskNumber() {
-  let tasks = await getTasksArray()
-  let tasksNumbers = await tasks.map((task) => {
-    return task.Number
-  })
-  if (tasksNumbers.length > 0) {
-    let max = await tasksNumbers.reduce(function (a, b) {
-      return Math.max(a, b)
-    })
-    return parseInt(max) + 1
-  } else {
-    return 1
-  }
-}
-
-async function findRepeatedNumber() {
-  let tasks = await getTasksArray()
-  let maxNumber = await maxTaskNumber()
-  maxNumber = maxNumber.toString()
-  let numberInputValue = numberInput.value
-
-  if (currentTask !== null) {
-    const repeatedNumberTask = tasks.filter(task => {
-      if (task.Number === numberInputValue && task.Number !== currentTask.Number && task.Number !== maxNumber) {
-        return task.Number
-      }
-    })
-    if (repeatedNumberTask.length > 0) {
-      return repeatedNumberTask[0].Number
-    } else {
-      return false
-    }
-  } else {
-    const repeatedNumberTask = tasks.filter(task => {
-      if (task.Number === numberInputValue && task.Number !== maxNumber) {
-        return task.Number
-      }
-    })
-    if (repeatedNumberTask.length > 0) {
-      return repeatedNumberTask[0].Number
-    } else {
-      return false
-    }
-  }
-}
 
 let tasksTableClasses = ['number-ascending', undefined, undefined]
 
@@ -591,7 +583,36 @@ function orderTasks(tasks) {
   return tasks
 }
 
-async function tasksRetun() {
+async function pageNavigate(tasks, type) {
+  const maxPage = Math.ceil(tasks.length / ITENS_PER_PAGE)
+  if (type === "next" && currentPage < maxPage) {
+    currentPage = currentPage + 1
+  }
+  else if (type === "previous" && currentPage > 1) {
+    currentPage = currentPage - 1
+  }
+  printTasks()
+}
+
+nextPageBtn.addEventListener('click', async function () {
+  let tasks = await processedTasks()
+  pageNavigate(tasks, 'next')
+})
+
+previousPageBtn.addEventListener('click', async function () {
+  let tasks = await processedTasks()
+  pageNavigate(tasks, 'previous')
+})
+
+function paginate(array, currentPage, ITENS_PER_PAGE) {
+  const firstIndex = (currentPage - 1) * ITENS_PER_PAGE
+  const lastIndex = firstIndex + ITENS_PER_PAGE
+  array = array.slice(firstIndex, lastIndex)
+  return array
+}
+
+async function processedTasks() {
+
   let tasks = await getTasksArray()
   tasks = orderTasks(tasks)
   tasks = filterByClass(tasks)
@@ -600,7 +621,7 @@ async function tasksRetun() {
 }
 
 async function printTasks() {
-  let tasks = await tasksRetun()
+  let tasks = await processedTasks()
   tasks = paginate(tasks, currentPage, ITENS_PER_PAGE)
   tasksTable.innerHTML = ""
   tasks.forEach((task) => {

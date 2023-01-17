@@ -30,9 +30,9 @@
     },
     {
       "Number": "14",
-      "Description": "Criar APIs Reset",
-      "Date": "2022-12-01",
-      "Status": "Concluída",
+      "Description": "substituição 1234567",
+      "Date": "2023-01-18",
+      "Status": "Em andamento",
       "id": 5
     },
     {
@@ -76,13 +76,6 @@
       "Date": "2023-01-15",
       "Status": "Concluída",
       "id": 11
-    },
-    {
-      "Number": "12",
-      "Description": "Implementar Validação no Formulário",
-      "Date": "2023-01-06",
-      "Status": "Em andamento",
-      "id": 13
     },
     {
       "Number": "16",
