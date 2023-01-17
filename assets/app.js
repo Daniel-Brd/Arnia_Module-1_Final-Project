@@ -1,4 +1,4 @@
-const TASKS_ARRAY_URL = 'https://arniamodule-1final-project.herokuapp.com/tasks/'
+const TASKS_ARRAY_URL = 'http://localhost:3000/tasks/'
 
 const tasksTable = document.getElementById('tasks-table')
 
@@ -21,6 +21,7 @@ const NUMBER_REQUIRED = 'Por favor, informe o número da tarefa.'
 const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
 const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
+
 
 const addTaskButton = document.getElementById('add-task')
 const taskModal = document.getElementById('task-modal')
@@ -47,6 +48,7 @@ const ITENS_PER_PAGE = 8
 let currentTask = null
 let currentPage = 1
 
+
 async function createTask(task) {
   await fetch(TASKS_ARRAY_URL, {
     method: "POST",
@@ -56,12 +58,6 @@ async function createTask(task) {
     },
     body: JSON.stringify(task)
   })
-}
-
-async function getTask(taskId) {
-  const response = await fetch(`${TASKS_ARRAY_URL}${taskId}`)
-  const task = await response.json()
-  return task
 }
 
 async function editTask(taskId, task) {
@@ -87,28 +83,19 @@ async function deleteTask(taskId) {
     </main>`
 }
 
+function openConfirmAction() {
+  confirmActionModal.classList.add('modal-active')
+}
+
+function closeConfirmAction() {
+  confirmActionModal.classList.remove('modal-active')
+}
+
 async function confirmDelete(taskId) {
   await fetch(`${TASKS_ARRAY_URL}${taskId}`, {
     method: "DELETE"
   })
   location.reload()
-}
-
-async function replaceTask(taskId, taskNumber, task) {
-  openConfirmAction()
-  confirmActionModal.innerHTML =
-    `<main class="modal-content">
-      <h1 class="title">Já existe uma tarefa com o número ${taskNumber}, deseja substituí-la?</h1>
-      <section class="modal-buttons">
-        <div class="cancel-modal" onclick="closeConfirmAction()">Cancelar</div>
-        <button id="confirm-replace" type="button" class="main-bordered-button")">Sim</button>
-      </section>
-    </main>`
-  const confirmReplaceButton = document.getElementById('confirm-replace')
-  confirmReplaceButton.addEventListener('click', async function () {
-    await editTask(taskId, task)
-    location.reload()
-  })
 }
 
 async function openTask() {
@@ -125,14 +112,6 @@ function closeTask() {
   taskModal.classList.remove('modal-active')
 }
 
-function openConfirmAction() {
-  confirmActionModal.classList.add('modal-active')
-}
-
-function closeConfirmAction() {
-  confirmActionModal.classList.remove('modal-active')
-}
-
 function clearForm() {
   taskTitle.innerHTML = 'Adicionar nova tarefa'
   numberInput.value = ''
@@ -145,10 +124,9 @@ function clearForm() {
   })
 }
 
-function cancelModal() {
+function cancelTask() {
   clearForm()
   closeTask()
-
 }
 
 async function submitTask(task) {
@@ -161,32 +139,26 @@ async function submitTask(task) {
   }
 }
 
-async function showMessage(input, message, type) {
-  let text
-  if (input === selectedStatusInput) {
-    text = selectedStatusError
-  } else {
-    text = input.parentNode.querySelector('small')
-  }
-  text.innerText = message
-  input.classList.remove(`${type ? 'success' : 'error'}`)
-  input.classList.add(`${type ? 'success' : 'error'}`)
-  return type
+async function getTask(taskId) {
+  const response = await fetch(`${TASKS_ARRAY_URL}${taskId}`)
+  const task = await response.json()
+  return task
 }
 
-async function showError(input, message) {
-  return showMessage(input, message, false)
-}
-async function showSucces(input) {
-  return showMessage(input, '', true)
+async function editTaskModal(taskId) {
+  currentTask = await getTask(taskId)
+  taskTitle.innerHTML = 'Editar tarefa'
+  numberInput.value = currentTask.Number
+  descriptionInput.value = currentTask.Description
+  dateInput.value = currentTask.Date
+  selectedStatusInput.value = currentTask.Status
+  openTask()
 }
 
-async function hasValue(input, message) {
-  if (input.value === '') {
-    return showError(input, message)
-  } else {
-    return showSucces(input)
-  }
+async function getTasksArray() {
+  const response = await fetch(TASKS_ARRAY_URL)
+  const tasks = await response.json()
+  return tasks
 }
 
 async function maxTaskNumber() {
@@ -201,20 +173,6 @@ async function maxTaskNumber() {
     return parseInt(max) + 1
   } else {
     return 1
-  }
-}
-
-async function validateNumber(input, requiredMessage) {
-  const maxNumber = await maxTaskNumber()
-
-  if (!await hasValue(input, requiredMessage)) {
-
-    return false
-  } else if (input.value > maxNumber) {
-    await showError(input, `Por favor, insira um número menor ou igual a ${maxNumber}.`)
-    return false
-  } else {
-    return true
   }
 }
 
@@ -249,6 +207,93 @@ async function findRepeatedNumber() {
   }
 }
 
+async function replaceTask(taskId, taskNumber, task) {
+  openConfirmAction()
+  confirmActionModal.innerHTML =
+    `<main class="modal-content">
+      <h1 class="title">Já existe uma tarefa com o número ${taskNumber}, deseja substituí-la?</h1>
+      <section class="modal-buttons">
+        <div class="cancel-modal" onclick="closeConfirmAction()">Cancelar</div>
+        <button id="confirm-replace" type="button" class="main-bordered-button")">Sim</button>
+      </section>
+    </main>`
+  const confirmReplaceButton = document.getElementById('confirm-replace')
+  confirmReplaceButton.addEventListener('click', async function () {
+    await editTask(taskId, task)
+    location.reload()
+  })
+}
+
+async function showMessage(input, message, type) {
+  let text
+  if (input === selectedStatusInput) {
+    text = selectedStatusError
+  } else {
+    text = input.parentNode.querySelector('small')
+  }
+  text.innerText = message
+  input.classList.remove(`${type ? 'success' : 'error'}`)
+  input.classList.add(`${type ? 'success' : 'error'}`)
+  return type
+}
+
+async function showError(input, message) {
+  return showMessage(input, message, false)
+}
+async function showSucces(input) {
+  return showMessage(input, '', true)
+}
+
+async function hasValue(input, message) {
+  if (input.value === '') {
+    return showError(input, message)
+  } else {
+    return showSucces(input)
+  }
+}
+
+async function validateNumber(input, requiredMessage) {
+  const maxNumber = await maxTaskNumber()
+
+  if (!await hasValue(input, requiredMessage)) {
+    return false
+  } else if (input.value > maxNumber) {
+    await showError(input, `Por favor, insira um número menor ou igual a ${maxNumber}.`)
+    return false
+  } else {
+    return true
+  }
+}
+async function showMessage(input, message, type) {
+  let text
+  if (input === selectedStatusInput) {
+    text = selectedStatusError
+  } else {
+    text = input.parentNode.querySelector('small')
+  }
+  text.innerText = message
+  input.classList.remove(`${type ? 'success' : 'error'}`)
+  input.classList.add(`${type ? 'success' : 'error'}`)
+  return type
+}
+
+async function showError(input, message) {
+  return showMessage(input, message, false)
+}
+async function showSucces(input) {
+  return showMessage(input, '', true)
+}
+
+async function hasValue(input, message) {
+  if (input.value === '') {
+    return showError(input, message)
+  } else {
+    return showSucces(input)
+  }
+}
+
+
+
 numberInput.addEventListener('blur', async function () {
   await validateNumber(numberInput, NUMBER_REQUIRED)
 })
@@ -261,98 +306,11 @@ dateInput.addEventListener('blur', async function () {
   await hasValue(dateInput, DATE_REQUIRED)
 })
 
-taskForm.addEventListener('change', async function () {
-  const numberValid = await validateNumber(numberInput, null)
-  const descriptionValid = await hasValue(descriptionInput, null)
-  const dateValid = await hasValue(dateInput, null)
-  const statusValid = await hasValue(selectedStatusInput, null)
-
-  if (numberValid && descriptionValid && dateValid && statusValid) {
-    submitButton.classList.remove('disabled')
-    submitButton.classList.add('active')
-  } else {
-    submitButton.classList.remove('active')
-    submitButton.classList.add('disabled')
-  }
-})
-
-taskForm.addEventListener('submit', async (event) => {
-  event.preventDefault()
-  const taskNumber = taskForm.elements['number-input'].value
-  const taskDescription = taskForm.elements['description-input'].value
-  const taskDate = taskForm.elements['date-input'].value
-  const taskStatus = taskForm.elements['selected-status'].value
-
-  const numberValid = await validateNumber(numberInput, NUMBER_REQUIRED)
-  const descriptionValid = await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
-  const dateValid = await hasValue(dateInput, DATE_REQUIRED)
-  const statusValid = await hasValue(selectedStatusInput, STATUS_REQUIRED)
-
-  const repeatedNumberTask = await findRepeatedNumber()
-  const repeatedNumber = repeatedNumberTask.Number
-  const repeatedNumberId = repeatedNumberTask.id
-
-  const task = {
-    Number: taskNumber,
-    Description: taskDescription,
-    Date: taskDate,
-    Status: taskStatus,
-  }
-
-  if (numberValid && descriptionValid && dateValid && statusValid && repeatedNumberTask) {
-    return replaceTask(repeatedNumberId, repeatedNumber, task)
-  } else if (numberValid && descriptionValid && dateValid && statusValid) {
-    return submitTask(task)
-  }
-})
-
-async function editTaskModal(taskId) {
-  currentTask = await getTask(taskId)
-  taskTitle.innerHTML = 'Editar tarefa'
-  numberInput.value = currentTask.Number
-  descriptionInput.value = currentTask.Description
-  dateInput.value = currentTask.Date
-  selectedStatusInput.value = currentTask.Status
-  openTask()
-}
-
-async function getTasksArray() {
-  const response = await fetch(TASKS_ARRAY_URL)
-  const tasks = await response.json()
-  return tasks
-}
-
-function tableTemplate(task) {
-  const date = new Date(task.Date + "T00:00:00.000-03:00")
-  return tasksTable.innerHTML = tasksTable.innerHTML +
-    `<tr>
-      <td>${task.Number}</th>
-      <td>${task.Description}</td>
-      <td>${date.toLocaleDateString("pt-BR")}</td>
-      <td class="${task.Status.replace(' ', '-')}">${task.Status}</td>
-      <td id="task-functions">
-        <i id="editButton" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14.4 13.575H0.6C0.268125 13.575 0 13.8431 0 14.175V14.85C0 14.9325 0.0675 15 0.15 15H14.85C14.9325 15 15 14.9325 15 14.85V14.175C15 13.8431 14.7319 13.575 14.4 13.575ZM2.73188 12C2.76938 12 2.80688 11.9963 2.84438 11.9906L5.99813 11.4375C6.03562 11.43 6.07125 11.4131 6.0975 11.385L14.0456 3.43687C14.063 3.41953 14.0768 3.39892 14.0862 3.37624C14.0956 3.35356 14.1005 3.32924 14.1005 3.30469C14.1005 3.28013 14.0956 3.25582 14.0862 3.23313C14.0768 3.21045 14.063 3.18985 14.0456 3.1725L10.9294 0.054375C10.8938 0.01875 10.8469 0 10.7963 0C10.7456 0 10.6988 0.01875 10.6631 0.054375L2.715 8.0025C2.68687 8.03063 2.67 8.06437 2.6625 8.10188L2.10938 11.2556C2.09113 11.3561 2.09765 11.4594 2.12836 11.5568C2.15907 11.6542 2.21305 11.7426 2.28562 11.8144C2.40937 11.9344 2.565 12 2.73188 12Z"
-              fill="#2C2661" />
-          </svg>
-        </i>
-        <i id="deleteButton" onclick="deleteTask(${task.id})"
-          ><svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13.4167 2.7H11.0833V1.2C11.0833 0.538125 10.5602 0 9.91667 0H4.08333C3.43984 0 2.91667 0.538125 2.91667 1.2V2.7H0.583333C0.260677 2.7 0 2.96813 0 3.3V3.9C0 3.9825 0.065625 4.05 0.145833 4.05H1.24687L1.69714 13.8563C1.7263 14.4956 2.24036 15 2.86198 15H11.138C11.7615 15 12.2737 14.4975 12.3029 13.8563L12.7531 4.05H13.8542C13.9344 4.05 14 3.9825 14 3.9V3.3C14 2.96813 13.7393 2.7 13.4167 2.7ZM9.77083 2.7H4.22917V1.35H9.77083V2.7Z"
-              fill="#D7CAE5"/>
-          </svg>
-        </i>
-      </td>
-    </tr>`
-}
-
-
 function dropdownDisplay(dropdown) {
   if (dropdown === 'filters') {
     filtersDropdown.classList.toggle('dropdown-active')
   } else if (dropdown === 'status') {
     statusDropdown.classList.toggle('dropdown-active')
-
   }
 }
 
@@ -382,15 +340,61 @@ searchBar.addEventListener('input', function () {
   printTasks()
 })
 
+taskForm.addEventListener('change', async function () {
+  const numberValid = await validateNumber(numberInput, null)
+  const descriptionValid = await hasValue(descriptionInput, null)
+  const dateValid = await hasValue(dateInput, null)
+  const statusValid = await hasValue(selectedStatusInput, null)
+
+  if (numberValid && descriptionValid && dateValid && statusValid) {
+    submitButton.classList.remove('disabled')
+    submitButton.classList.add('active')
+  } else {
+    submitButton.classList.remove('active')
+    submitButton.classList.add('disabled')
+  }
+})
+
+taskForm.addEventListener('submit', async (event) => {
+  event.preventDefault()
+  const taskNumber = taskForm.elements['number-input'].value
+  const taskDescription = taskForm.elements['description-input'].value
+  const taskDate = taskForm.elements['date-input'].value
+  const taskStatus = taskForm.elements['selected-status'].value
+
+  const task = {
+    Number: taskNumber,
+    Description: taskDescription,
+    Date: taskDate,
+    Status: taskStatus,
+  }
+
+  const numberValid = await validateNumber(numberInput, NUMBER_REQUIRED)
+  const descriptionValid = await hasValue(descriptionInput, DESCRIPTION_REQUIRED)
+  const dateValid = await hasValue(dateInput, DATE_REQUIRED)
+  const statusValid = await hasValue(selectedStatusInput, STATUS_REQUIRED)
+
+  const repeatedNumberTask = await findRepeatedNumber()
+  const repeatedNumber = repeatedNumberTask.Number
+  const repeatedNumberId = repeatedNumberTask.id
+
+  if (numberValid && descriptionValid && dateValid && statusValid && repeatedNumberTask) {
+    return replaceTask(repeatedNumberId, repeatedNumber, task)
+  } else if (numberValid && descriptionValid && dateValid && statusValid) {
+    return submitTask(task)
+  }
+})
+
 let tasksTableClasses = ['number-ascending', undefined, undefined]
 
-function modifyClasses(element, classArray, initialIndex, endIndex, type) {
-  classArray.splice(initialIndex, endIndex, type)
+function modifyClasses(element, classArray, initialIndex, endIndex, className) {
+  classArray.splice(initialIndex, endIndex, className)
   element.classList = classArray.join(' ')
 }
 
 selectedFilter.addEventListener('click', function () {
   dropdownDisplay('filters')
+  currentPage = 1
 })
 
 allTasksFilterButton.addEventListener('click', function () {
@@ -609,8 +613,31 @@ function paginate(array, currentPage, ITENS_PER_PAGE) {
   return array
 }
 
-async function processedTasks() {
+function tableTemplate(task) {
+  const date = new Date(task.Date + "T00:00:00.000-03:00")
+  return tasksTable.innerHTML = tasksTable.innerHTML +
+    `<tr>
+      <td>${task.Number}</th>
+      <td>${task.Description}</td>
+      <td>${date.toLocaleDateString("pt-BR")}</td>
+      <td class="${task.Status.replace(' ', '-')}">${task.Status}</td>
+      <td id="task-functions">
+        <i id="editButton" onclick="editTaskModal(${task.id})"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14.4 13.575H0.6C0.268125 13.575 0 13.8431 0 14.175V14.85C0 14.9325 0.0675 15 0.15 15H14.85C14.9325 15 15 14.9325 15 14.85V14.175C15 13.8431 14.7319 13.575 14.4 13.575ZM2.73188 12C2.76938 12 2.80688 11.9963 2.84438 11.9906L5.99813 11.4375C6.03562 11.43 6.07125 11.4131 6.0975 11.385L14.0456 3.43687C14.063 3.41953 14.0768 3.39892 14.0862 3.37624C14.0956 3.35356 14.1005 3.32924 14.1005 3.30469C14.1005 3.28013 14.0956 3.25582 14.0862 3.23313C14.0768 3.21045 14.063 3.18985 14.0456 3.1725L10.9294 0.054375C10.8938 0.01875 10.8469 0 10.7963 0C10.7456 0 10.6988 0.01875 10.6631 0.054375L2.715 8.0025C2.68687 8.03063 2.67 8.06437 2.6625 8.10188L2.10938 11.2556C2.09113 11.3561 2.09765 11.4594 2.12836 11.5568C2.15907 11.6542 2.21305 11.7426 2.28562 11.8144C2.40937 11.9344 2.565 12 2.73188 12Z"
+              fill="#2C2661" />
+          </svg>
+        </i>
+        <i id="deleteButton" onclick="deleteTask(${task.id})"
+          ><svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.4167 2.7H11.0833V1.2C11.0833 0.538125 10.5602 0 9.91667 0H4.08333C3.43984 0 2.91667 0.538125 2.91667 1.2V2.7H0.583333C0.260677 2.7 0 2.96813 0 3.3V3.9C0 3.9825 0.065625 4.05 0.145833 4.05H1.24687L1.69714 13.8563C1.7263 14.4956 2.24036 15 2.86198 15H11.138C11.7615 15 12.2737 14.4975 12.3029 13.8563L12.7531 4.05H13.8542C13.9344 4.05 14 3.9825 14 3.9V3.3C14 2.96813 13.7393 2.7 13.4167 2.7ZM9.77083 2.7H4.22917V1.35H9.77083V2.7Z"
+              fill="#D7CAE5"/>
+          </svg>
+        </i>
+      </td>
+    </tr>`
+}
 
+async function processedTasks() {
   let tasks = await getTasksArray()
   tasks = orderTasks(tasks)
   tasks = filterByClass(tasks)
