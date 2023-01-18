@@ -22,7 +22,6 @@ const DESCRIPTION_REQUIRED = 'Por favor, informe a descrição da tarefa.'
 const DATE_REQUIRED = 'Por favor, defina um prazo de conclusão para a tarefa.'
 const STATUS_REQUIRED = 'Por favor, selecione o status da tarefa.'
 
-
 const addTaskButton = document.getElementById('add-task')
 const taskModal = document.getElementById('task-modal')
 const confirmActionModal = document.getElementById('confirm-action-modal')
@@ -264,35 +263,6 @@ async function validateNumber(input, requiredMessage) {
     return true
   }
 }
-async function showMessage(input, message, type) {
-  let text
-  if (input === selectedStatusInput) {
-    text = selectedStatusError
-  } else {
-    text = input.parentNode.querySelector('small')
-  }
-  text.innerText = message
-  input.classList.remove(`${type ? 'success' : 'error'}`)
-  input.classList.add(`${type ? 'success' : 'error'}`)
-  return type
-}
-
-async function showError(input, message) {
-  return showMessage(input, message, false)
-}
-async function showSucces(input) {
-  return showMessage(input, '', true)
-}
-
-async function hasValue(input, message) {
-  if (input.value === '') {
-    return showError(input, message)
-  } else {
-    return showSucces(input)
-  }
-}
-
-
 
 numberInput.addEventListener('blur', async function () {
   await validateNumber(numberInput, NUMBER_REQUIRED)
