@@ -440,7 +440,7 @@ stoppedFilterButton.addEventListener('click', function () {
 
 function filterByClass(tasks) {
   let todayDate = new Date().toISOString().slice(0, 10)
-  todayDate = new Date(todayDate + "T00:00:00.000-03:00")
+  todayDate = new Date(todayDate + "T00:00:00.000-02:59")
 
   if (tasksTable.classList.contains('for-today')) {
     tasks = tasks.filter((task) => {
